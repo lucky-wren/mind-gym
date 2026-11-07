@@ -1,0 +1,2941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="version" content="v1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236c5ce7'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23ffd166'/%3E%3C/svg%3E">
+<title>趣学益智馆 v1 · 成语接龙 / 歇后语 / 古诗词 / 地道口语</title>
+<style>
+:root{
+  --bg:#f6f8fd;
+  --ink:#20243f;
+  --muted:#7b83a3;
+  --line:#e8ecf6;
+  --card:#ffffff;
+  --primary:#6c5ce7;
+  --primary2:#a29bfe;
+  --green:#16a34a;
+  --green-bg:#e9f9ef;
+  --red:#e5484d;
+  --red-bg:#fdecec;
+  --amber:#f59e0b;
+  --shadow:0 18px 45px rgba(37,44,86,.09);
+  --shadow-sm:0 8px 22px rgba(37,44,86,.07);
+  --radius:22px;
+  --theme:#6c5ce7;
+  --theme-soft:#f0eeff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","WenQuanYi Micro Hei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);background:var(--bg);min-height:100vh;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(620px 420px at 8% 2%,rgba(108,92,231,.13),transparent 70%),
+    radial-gradient(560px 400px at 95% 8%,rgba(255,159,67,.14),transparent 70%),
+    radial-gradient(700px 500px at 50% 100%,rgba(0,184,148,.09),transparent 70%);
+}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(108,92,231,.35);outline-offset:2px}
+
+/* ---------- 顶栏 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.78);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(232,236,246,.9);
+}
+.topbar-inner{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:.5px}
+.brand-mark{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:21px;
+  background:linear-gradient(135deg,var(--primary),#ff9f43);box-shadow:0 6px 16px rgba(108,92,231,.3);
+}
+.brand span{background:linear-gradient(90deg,#6c5ce7,#e17055);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-sub{color:var(--muted);font-size:12px;font-weight:500;margin-left:2px}
+.top-stats{margin-left:auto;display:flex;gap:10px;align-items:center}
+.chip{
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 15px;
+  font-size:13px;font-weight:700;box-shadow:var(--shadow-sm);white-space:nowrap;
+}
+.chip b{color:var(--primary);font-size:15px}
+.chip.ghost{background:transparent;box-shadow:none;color:var(--muted);font-weight:600}
+
+/* ---------- 布局 ---------- */
+main{max-width:1120px;margin:0 auto;padding:38px 24px 70px}
+.view{display:none;animation:fadeUp .38s ease both}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.94);opacity:0}60%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.shake{animation:shake .38s ease}
+
+/* ---------- 首页 ---------- */
+.hero{text-align:center;margin-bottom:38px}
+.hero-kicker{
+  display:inline-block;background:#fff;border:1px solid var(--line);color:var(--primary);
+  border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700;margin-bottom:18px;box-shadow:var(--shadow-sm)
+}
+.hero h1{font-size:clamp(30px,4.6vw,48px);line-height:1.25;letter-spacing:-1px;font-weight:900}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,#6c5ce7 10%,#e17055 55%,#f59e0b 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:16px;margin-top:12px}
+.hero-tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+.hero-tags span{font-size:13px;background:rgba(255,255,255,.75);border:1px solid var(--line);padding:5px 13px;border-radius:999px;color:#59617f}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.mcard{
+  position:relative;overflow:hidden;text-align:left;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 22px;
+  box-shadow:var(--shadow-sm);transition:transform .25s ease,box-shadow .25s ease;
+}
+.mcard:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.mcard::before{content:"";position:absolute;left:0;top:0;width:100%;height:5px;background:var(--c)}
+.mcard::after{content:"";position:absolute;right:-60px;top:-60px;width:170px;height:170px;border-radius:50%;background:var(--soft);opacity:.75}
+.mcard>*{position:relative;z-index:1}
+.mcard-top{display:flex;align-items:flex-start;gap:16px}
+.micon{width:60px;height:60px;flex:0 0 60px;border-radius:18px;background:var(--soft);display:grid;place-items:center;font-size:31px}
+.mcard h2{font-size:22px;font-weight:800;margin-bottom:4px}
+.mcard .desc{color:var(--muted);font-size:14px;min-height:44px}
+.mmeta{display:flex;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;background:var(--soft);color:var(--c)}
+.best{font-size:12px;color:var(--muted);margin-left:auto}
+.mbtn{
+  margin-top:18px;width:100%;padding:12px;border-radius:13px;font-weight:800;font-size:15px;color:#fff;
+  background:var(--c);box-shadow:0 8px 18px color-mix(in srgb,var(--c) 32%,transparent);
+  transition:filter .2s,transform .2s
+}
+.mbtn:hover{filter:brightness(1.07);transform:translateY(-2px)}
+.how{
+  margin-top:34px;background:rgba(255,255,255,.7);border:1px dashed #d8deee;border-radius:20px;
+  padding:22px 26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px
+}
+.how div{font-size:13px;color:var(--muted)}
+.how strong{display:block;color:var(--ink);font-size:14px;margin-bottom:5px}
+.how b{color:var(--primary)}
+footer{text-align:center;color:#a3a9c0;font-size:12px;padding:0 24px 34px}
+
+/* ---------- 游戏区 ---------- */
+.play-wrap{max-width:780px;margin:0 auto}
+.play-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.back{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 15px;font-weight:700;font-size:14px;box-shadow:var(--shadow-sm)}
+.back:hover{color:var(--primary);border-color:var(--primary2)}
+.play-title{font-size:19px;font-weight:800}
+.play-title small{color:var(--muted);font-size:12px;font-weight:600;margin-left:8px}
+.play-score{margin-left:auto;display:flex;gap:8px}
+.score-pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;box-shadow:var(--shadow-sm)}
+.score-pill b{color:var(--theme)}
+.score-pill.combo b{color:var(--amber)}
+.progress{height:8px;background:#e9edf7;border-radius:99px;overflow:hidden;margin-bottom:20px}
+.progress i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--theme),#ff9f43);transition:width .4s ease}
+
+.qcard{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:32px;animation:pop .3s ease both
+}
+.qmeta{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.qbadge{font-size:12px;font-weight:800;color:var(--theme);background:var(--theme-soft);padding:5px 12px;border-radius:8px}
+.qcount{font-size:12px;color:var(--muted);font-weight:600}
+.qscene{font-size:13px;color:var(--muted);background:#f7f9fd;border-radius:10px;padding:9px 13px;margin-bottom:14px;border-left:3px solid var(--theme)}
+.qtext{font-size:clamp(21px,3vw,27px);font-weight:800;line-height:1.5;margin-bottom:6px;letter-spacing:.3px}
+.qhint{color:var(--muted);font-size:14px;margin-bottom:22px}
+.qtext .blank{color:var(--theme);border-bottom:2px dashed var(--theme);padding:0 6px}
+
+.options{display:grid;gap:11px}
+.opt{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  background:#fbfcff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;
+  font-size:16px;font-weight:600;transition:all .18s ease
+}
+.opt:hover:not(:disabled){border-color:var(--theme);background:var(--theme-soft);transform:translateX(3px)}
+.opt .letter{
+  flex:0 0 30px;height:30px;border-radius:9px;background:#eef1f9;color:#6b7391;
+  display:grid;place-items:center;font-size:13px;font-weight:800
+}
+.opt:hover:not(:disabled) .letter{background:var(--theme);color:#fff}
+.opt.correct{background:var(--green-bg);border-color:var(--green);color:#136c33}
+.opt.correct .letter{background:var(--green);color:#fff}
+.opt.wrong{background:var(--red-bg);border-color:var(--red);color:#a3272b;animation:shake .38s ease}
+.opt.wrong .letter{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.opt .en{font-size:16px}
+.options.compact{grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.options.compact .opt{padding:11px 13px;font-size:15px}
+.candidate-label{font-size:13px;color:var(--muted);font-weight:700;margin-top:22px}
+
+.chain-box{background:linear-gradient(135deg,var(--theme-soft),#fff);border:1px dashed var(--theme);border-radius:16px;padding:18px 20px;margin-bottom:20px}
+.chain-label{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.chain-words{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chain-words .w{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:800;font-size:16px;box-shadow:var(--shadow-sm)}
+.chain-words .cw{display:inline-flex;align-items:center;gap:8px}
+.chain-words .w.last{background:var(--theme);color:#fff;border-color:var(--theme)}
+.chain-words .arrow{color:var(--muted);font-size:14px}
+.chain-tip{font-size:13px;color:var(--muted);margin-top:12px}
+.chain-tip b{color:var(--theme);font-size:16px}
+.input-row{display:flex;gap:10px;flex-wrap:wrap}
+.input-row input{
+  flex:1 1 220px;min-width:0;border:1.5px solid var(--line);background:#fbfcff;
+  border-radius:14px;padding:14px 16px;font-size:17px;font-weight:700;letter-spacing:2px
+}
+.input-row input:focus{border-color:var(--theme);background:#fff;outline:none;box-shadow:0 0 0 4px var(--theme-soft)}
+.input-row input::placeholder{color:#b3bacd;font-weight:500;letter-spacing:0}
+.input-row input.bad{border-color:var(--red);background:var(--red-bg);animation:shake .38s ease}
+.inline-tip{display:none;margin-top:12px;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;line-height:1.7}
+.inline-tip.show{display:block;animation:fadeUp .2s ease both}
+.inline-tip.bad{background:var(--red-bg);border:1px solid var(--red);color:var(--red)}
+.inline-tip b{font-weight:800}
+.inline-tip .fill-btn{margin-left:8px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:5px 10px;font-size:12px;font-weight:800;color:var(--theme)}
+.inline-tip .fill-btn:hover{border-color:var(--theme)}
+.btn{padding:14px 22px;border-radius:14px;font-weight:800;font-size:15px;transition:filter .2s,transform .2s}
+.btn:hover{filter:brightness(1.06);transform:translateY(-2px)}
+.btn-primary{background:linear-gradient(135deg,var(--theme),var(--primary2));color:#fff;box-shadow:0 8px 18px rgba(108,92,231,.25)}
+.btn-soft{background:#f1f3fa;color:#59617f}
+.btn-line{background:#fff;border:1.5px solid var(--line);color:#59617f}
+.tool-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.tool-row .btn{padding:10px 16px;font-size:13px;flex:1 1 auto}
+
+.feedback{margin-top:18px;border-radius:16px;padding:16px 18px;display:none;animation:fadeUp .25s ease both}
+.feedback.show{display:block}
+.feedback.ok{background:var(--green-bg);border:1px solid #bce9cc}
+.feedback.no{background:var(--red-bg);border:1px solid #f6c9c9}
+.feedback.info{background:#eef4ff;border:1px solid #cfe0ff}
+.fb-title{font-weight:800;font-size:16px;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.feedback.ok .fb-title{color:#136c33}
+.feedback.no .fb-title{color:#a3272b}
+.feedback.info .fb-title{color:#2b5cad}
+.fb-body{font-size:14px;color:#4b5370;line-height:1.75}
+.fb-body .src{color:var(--muted);font-size:13px;margin-top:6px}
+.use-line{margin-top:11px;background:rgba(255,255,255,.62);border-left:3px solid var(--theme);border-radius:10px;padding:10px 13px;font-size:13px;line-height:1.7;color:var(--ink)}
+.use-line b{color:var(--theme)}
+.hint-panel[hidden]{display:none!important}
+.hint-panel{animation:fadeUp .28s ease both}
+#aiBtn.on{background:var(--green-bg);border-color:var(--green);color:#1a7f45}
+.no-local{border:1px dashed var(--theme);border-radius:14px;padding:14px 16px;background:var(--theme-soft)}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;background:var(--bg);border-radius:5px;padding:1px 5px}
+.bridge-code{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11.5px;line-height:1.65;
+  white-space:pre;overflow-x:auto}
+.ai-opt.ok{color:#1a7f45;font-weight:700}
+.ai-opt.warn{color:#c0392b;font-weight:700}
+.ai-addr{font-size:12px;line-height:1.85;color:var(--muted);background:var(--bg);border-radius:9px;
+  padding:10px 12px;margin:-4px 0 14px}
+.ai-addr b{color:var(--ink)}
+.ai-diag{font-size:11.5px;line-height:1.8;background:var(--bg);border-radius:8px;padding:8px 10px;margin:8px 0;
+  font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+.ai-do{background:var(--green-bg,#e7f7ee);border-radius:8px;padding:9px 11px;margin:8px 0;font-size:12.5px;line-height:1.75}
+.ai-models{font-size:12.5px;line-height:1.8;margin:0 0 14px}
+.am-head{margin-bottom:8px}
+.am-list{display:flex;flex-wrap:wrap;gap:6px;max-height:210px;overflow-y:auto}
+.am-item{border:1px solid var(--line);background:var(--card,#fff);color:var(--ink);border-radius:7px;
+  padding:5px 9px;font-size:11.5px;cursor:pointer;font-family:ui-monospace,Consolas,monospace}
+.am-item:hover{border-color:var(--theme)}
+.am-item.cur{border-color:var(--theme);background:var(--theme-soft);font-weight:700}
+.ai-errtbl{display:grid;gap:0;font-size:12px;line-height:1.75}
+.ai-errtbl>div{display:grid;grid-template-columns:190px 1fr;gap:10px;border-top:1px dashed var(--line);padding:7px 0}
+.ai-errtbl>div:first-child{border-top:0}
+.ai-errtbl b{color:var(--theme)}
+.ai-presets{border:1px dashed var(--theme);border-radius:12px;padding:12px 14px;margin:2px 0 14px;background:var(--theme-soft)}
+.ap-title{font-weight:800;font-size:13px;color:var(--theme);margin-bottom:9px}
+.ap-title span{font-weight:400;font-size:11.5px;color:var(--muted);margin-left:6px}
+.ap-list{display:flex;flex-wrap:wrap;gap:7px}
+.ap-btn{border:1px solid var(--line);background:var(--card,#fff);color:var(--ink);border-radius:9px;
+  padding:7px 10px;font-size:12px;cursor:pointer;text-align:left;line-height:1.45;transition:.15s;max-width:100%}
+.ap-btn:hover{border-color:var(--theme);transform:translateY(-1px)}
+.ap-btn b{display:block;font-size:12.5px}
+.ap-btn small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.ap-btn.cur{border-color:var(--theme);background:var(--theme-soft);box-shadow:0 0 0 2px var(--theme-soft)}
+.ap-note{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.7}
+.ap-tip{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.75;border-top:1px dashed var(--line);padding-top:9px}
+.bridge-guide{background:var(--theme-soft);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin-bottom:14px;font-size:13px;line-height:1.9}
+.bridge-guide h4{margin:0 0 8px;font-size:14px;color:var(--theme);font-weight:800}
+.bridge-guide .bg-step{margin:6px 0 6px 2px}
+.bridge-guide .bg-ok{background:var(--green-bg);border-radius:8px;padding:8px 11px;margin:8px 0}
+.bridge-guide .bg-warn{margin-top:9px;color:var(--muted);font-size:12px}
+.bridge-guide code{white-space:nowrap}
+.ai-research{display:grid;gap:11px;font-size:12.5px;line-height:1.85}
+.ai-research>div{border-top:1px dashed var(--line);padding-top:10px}
+.ai-research>div:first-child{border-top:0;padding-top:0}
+.ai-research .ar-foot{color:var(--muted)}
+.nl-title{font-weight:800;font-size:14px;color:var(--theme);margin-bottom:7px}
+.nl-body{font-size:13px;line-height:1.75}
+.nl-chars{margin-top:10px;background:rgba(255,255,255,.7);border-radius:9px;padding:9px 11px;font-size:13px;line-height:1.7}
+.nl-chars span{color:var(--muted);font-size:12px}
+.nl-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.ai-box{margin-top:10px}
+.ai-loading,.ai-fallback,.ai-test{font-size:12px;line-height:1.7;border-radius:10px;padding:10px 12px;margin-top:10px}
+.ai-loading{background:var(--theme-soft);color:var(--theme);font-weight:700}
+.ai-fallback,.ai-test.bad{background:var(--red-bg);color:var(--red)}
+.ai-test.good{background:var(--green-bg);color:#1a7f45}
+.ai-tag{margin-left:7px;font-size:10px;font-weight:800;color:#fff;background:var(--theme);border-radius:6px;padding:2px 6px}
+.ai-notice{background:var(--theme-soft);border:1px solid var(--line);border-radius:14px;padding:15px 18px;font-size:13px;line-height:1.85;margin-bottom:18px}
+.ai-form{display:grid;gap:14px;max-width:640px}
+.ai-form label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.ai-form input,.ai-form select{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:var(--card);color:var(--ink);font-family:inherit}
+.ai-form input:focus,.ai-form select:focus{outline:none;border-color:var(--theme)}
+.ai-form input:disabled{background:var(--bg)}
+.ai-check{display:flex!important;align-items:center;gap:9px;font-size:14px!important}
+.ai-check input{width:17px;height:17px}
+.ai-opt{font-weight:500;color:var(--muted);font-size:12px}
+.ai-how{font-size:12px;line-height:1.8;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px}
+.ai-btns{display:flex;gap:10px;flex-wrap:wrap}
+.clip-teaser{display:inline-block;margin:-4px 0 14px;font-size:12px;font-weight:700;color:var(--theme);background:var(--theme-soft);border-radius:9px;padding:7px 12px}
+.clip-card{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:linear-gradient(135deg,var(--theme-soft),rgba(255,255,255,.62))}
+.clip-top{font-size:12px;color:var(--theme);font-weight:800;margin-bottom:8px}
+.clip-quote{font-size:16px;font-weight:800;font-style:italic;line-height:1.55;margin-bottom:7px}
+.clip-note{font-size:12px;color:var(--muted);line-height:1.7}
+.clip-row{border-top:1px dashed var(--line);padding:13px 0}
+.clip-row:first-of-type{border-top:0}
+.clip-q{font-size:15px;font-weight:800;font-style:italic;line-height:1.5}
+.clip-src{font-size:12px;color:var(--theme);font-weight:700;margin:4px 0 6px}
+.clip-where{font-size:12px;color:var(--muted);margin-top:5px}
+.clip-row .speak{margin-top:9px}
+.chain-sep{flex-basis:100%;font-size:12px;color:var(--muted);font-weight:700;background:rgba(255,255,255,.62);border-radius:8px;padding:6px 10px;margin:2px 0}
+.fb-actions{margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.speak{background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700}
+.speak:hover{color:var(--primary)}
+.next{margin-left:auto;background:var(--theme);color:#fff;border-radius:10px;padding:9px 18px;font-weight:800;font-size:14px}
+.next:hover{filter:brightness(1.08)}
+
+/* ---------- 结算 ---------- */
+.result-card{max-width:620px;margin:20px auto 0;background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:40px 34px;text-align:center;animation:pop .4s ease both}
+.ring{
+  width:150px;height:150px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--theme) calc(var(--p)*1%),#eef1f9 0);position:relative
+}
+.ring::after{content:"";position:absolute;inset:14px;background:#fff;border-radius:50%}
+.ring div{position:relative;z-index:1;font-size:38px;font-weight:900;color:var(--theme);line-height:1.1}
+.ring div small{display:block;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:1px}
+.result-card h2{font-size:26px;font-weight:900}
+.result-card .rsub{color:var(--muted);font-size:14px;margin:6px 0 22px}
+.rstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-bottom:18px}
+.rstats div{background:#f8faff;border:1px solid var(--line);border-radius:14px;padding:14px 8px}
+.rstats b{display:block;font-size:22px;font-weight:900;color:var(--theme)}
+.rstats span{font-size:12px;color:var(--muted)}
+.rbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.rbtns .btn{min-width:140px}
+
+/* ---------- 顶栏设置按钮 / 首页入口 ---------- */
+.icon-btn{
+  width:36px;height:36px;flex:0 0 36px;border-radius:11px;background:var(--card);
+  border:1px solid var(--line);display:grid;place-items:center;font-size:16px;
+  box-shadow:var(--shadow-sm);transition:transform .18s,opacity .18s
+}
+.icon-btn:hover{transform:translateY(-2px)}
+.icon-btn.off{opacity:.42}
+.home-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:26px 0 4px}
+.home-actions .btn{padding:11px 20px;font-size:14px}
+
+/* ---------- 我的战绩 ---------- */
+.profile-wrap{max-width:900px;margin:0 auto}
+.profile-head{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.profile-head h2{font-size:22px;font-weight:900}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow-sm)}
+.panel.wide{grid-column:1 / -1}
+.panel h3{font-size:16px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.panel .psub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.badges{display:flex;flex-wrap:wrap;gap:10px}
+.badge{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:10px 13px;min-width:150px}
+.badge .bi{font-size:22px}
+.badge b{display:block;font-size:13px;font-weight:800}
+.badge span{font-size:11px;color:var(--muted)}
+.badge.locked{opacity:.42;filter:grayscale(1)}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.lb-row:last-child{border-bottom:0}
+.lb-row .rank{width:26px;height:26px;flex:0 0 26px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-weight:800;font-size:12px;color:var(--primary)}
+.lb-row .who{flex:1;font-weight:700}
+.lb-row .val{font-weight:900;color:var(--primary)}
+.lb-row .when{font-size:11px;color:var(--muted)}
+.wrong-item{background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:10px;font-size:13px}
+.wrong-item .wi-top{display:flex;gap:9px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.wrong-item .wi-tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:7px;background:var(--red-bg);color:var(--red)}
+.wrong-item .wi-date{font-size:11px;color:var(--muted);margin-left:auto}
+.wrong-item .wi-q{font-weight:700;margin-bottom:4px}
+.wrong-item .wi-a{color:#136c33;font-weight:700}
+.wrong-item .wi-note{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.6}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:24px 10px}
+.panel-foot{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- 深色模式 ---------- */
+html[data-theme="dark"]{
+  --bg:#111524;--ink:#eef1fb;--muted:#929cc0;--line:#2a3048;--card:#1b2136;
+  --primary:#a29bfe;--green:#4ade80;--green-bg:#153626;--red:#ff7b80;--red-bg:#3a1d22;
+  --amber:#fbbf24;--shadow:0 18px 45px rgba(0,0,0,.4);--shadow-sm:0 8px 22px rgba(0,0,0,.28);
+}
+html[data-theme="dark"] body::before{opacity:.5}
+html[data-theme="dark"] .topbar{background:rgba(20,25,41,.82);border-bottom-color:var(--line)}
+html[data-theme="dark"] .chip,
+html[data-theme="dark"] .hero-kicker,
+html[data-theme="dark"] .back,
+html[data-theme="dark"] .score-pill,
+html[data-theme="dark"] .btn-line,
+html[data-theme="dark"] .speak,
+html[data-theme="dark"] .result-card{background:var(--card)}
+html[data-theme="dark"] .hero-tags span{background:rgba(255,255,255,.06);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .how{background:rgba(255,255,255,.035);border-color:var(--line)}
+html[data-theme="dark"] .progress,
+html[data-theme="dark"] .opt .letter{background:#2a3048}
+html[data-theme="dark"] .opt .letter{color:var(--ink)}
+html[data-theme="dark"] .qscene{background:#202741}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] .input-row input{background:#202741}
+html[data-theme="dark"] .input-row input:focus,
+html[data-theme="dark"] .btn-soft{background:#2a3048}
+html[data-theme="dark"] .btn-soft,
+html[data-theme="dark"] .btn-line{color:var(--ink)}
+html[data-theme="dark"] .opt.correct{background:var(--green-bg);color:#9ff0bb;border-color:var(--green)}
+html[data-theme="dark"] .opt.wrong{background:var(--red-bg);color:#ffb3b6;border-color:var(--red)}
+html[data-theme="dark"] .feedback.ok{background:var(--green-bg);border-color:#276b42}
+html[data-theme="dark"] .feedback.no{background:var(--red-bg);border-color:#7a3540}
+html[data-theme="dark"] .feedback.info{background:#1c2b4a;border-color:#34528c}
+html[data-theme="dark"] .feedback.ok .fb-title{color:#9ff0bb}
+html[data-theme="dark"] .feedback.no .fb-title{color:#ffb3b6}
+html[data-theme="dark"] .feedback.info .fb-title{color:#9ec2ff}
+html[data-theme="dark"] .fb-body{color:var(--ink)}
+html[data-theme="dark"] .use-line,
+html[data-theme="dark"] .chain-sep{background:#202741}
+html[data-theme="dark"] .clip-teaser{background:#2a3048}
+html[data-theme="dark"] .clip-card{background:linear-gradient(135deg,#2b2544,#1b2136)}
+html[data-theme="dark"] .clip-top{color:var(--primary)}
+html[data-theme="dark"] .no-local{background:#2a3048}
+html[data-theme="dark"] .nl-chars,
+html[data-theme="dark"] .ai-notice,
+html[data-theme="dark"] .ai-how,
+html[data-theme="dark"] .bridge-code{background:#202741}
+html[data-theme="dark"] .ai-addr,
+html[data-theme="dark"] .ai-diag,
+html[data-theme="dark"] .am-item{background:#202741}
+html[data-theme="dark"] .ai-do{background:#17382a}
+html[data-theme="dark"] .ai-opt.ok{color:#6ddba0}
+html[data-theme="dark"] .ai-opt.warn{color:#ff9b8f}
+html[data-theme="dark"] .ai-presets{background:#202741}
+html[data-theme="dark"] .ap-btn{background:#2a3048;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .bridge-guide{background:#202741;border-color:var(--line)}
+html[data-theme="dark"] .bridge-guide h4{color:#b6a8ff}
+html[data-theme="dark"] .bridge-guide .bg-ok{background:#17382a}
+html[data-theme="dark"] .bridge-guide .bg-warn{color:#a9b2cc}
+html[data-theme="dark"] .bridge-guide div[style*="background:var(--bg)"]{background:#151a2b!important}
+html[data-theme="dark"] code{background:#2a3048}
+html[data-theme="dark"] .ai-test.good{background:var(--green-bg);color:#9ff0bb}
+html[data-theme="dark"] .ai-fallback,
+html[data-theme="dark"] .ai-test.bad{background:var(--red-bg);color:#ffb3b6}
+html[data-theme="dark"] #aiBtn.on{background:var(--green-bg);color:#9ff0bb}
+html[data-theme="dark"] .chain-box{background:linear-gradient(135deg,#2b2544,var(--card))}
+html[data-theme="dark"] .chain-words .w{background:var(--card)}
+html[data-theme="dark"] .chain-words .w:last-child{background:var(--theme);color:#fff}
+html[data-theme="dark"] .mcard::after{opacity:.12}
+html[data-theme="dark"] .ring{background:conic-gradient(var(--theme) calc(var(--p)*1%),#2a3048 0)}
+html[data-theme="dark"] .ring::after{background:var(--card)}
+html[data-theme="dark"] .rstats div,
+html[data-theme="dark"] .badge,
+html[data-theme="dark"] .wrong-item,
+html[data-theme="dark"] .lb-row .rank{background:#202741}
+html[data-theme="dark"] .wrong-item .wi-a{color:#9ff0bb}
+html[data-theme="dark"] .opt:hover:not(:disabled){background:#2a3048}
+html[data-theme="dark"] .qbadge{background:#2a3048;color:var(--theme)}
+html[data-theme="dark"] .input-row input:focus{box-shadow:none}
+html[data-theme="dark"] .inline-tip.bad{background:var(--red-bg);border-color:#7a3540;color:#ffb3b6}
+html[data-theme="dark"] .inline-tip .fill-btn{background:#2a3048;color:var(--ink)}
+html[data-theme="dark"] .input-row input.bad{background:var(--red-bg)}
+
+@media(max-width:760px){
+  .topbar-inner{padding:12px 16px}
+  .brand-sub,.chip.ghost{display:none}
+  main{padding:26px 16px 50px}
+  .grid,.profile-grid{grid-template-columns:1fr;gap:14px}
+  .panel.wide{grid-column:auto}
+  .mcard{padding:22px}
+  .how{grid-template-columns:repeat(2,1fr);padding:18px}
+  .qcard{padding:22px 18px}
+  .options.compact{grid-template-columns:1fr}
+  .play-score{width:100%;margin-left:0;justify-content:flex-start}
+  .rbtns .btn{flex:1}
+  .icon-btn{width:34px;height:34px;flex-basis:34px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="brand-mark">🧠</div><span>趣学益智馆</span></div>
+    <div class="brand-sub">每天十分钟，脑力不掉线</div>
+    <div class="top-stats">
+      <div class="chip ghost" id="verChip" style="color:#e17055;font-weight:800">v1</div>
+      <div class="chip ghost">纯静态 · 离线可玩</div>
+      <div class="chip">累计积分 <b id="totalScore">0</b></div>
+      <button class="icon-btn" id="soundBtn" data-act="sound" title="音效开关">🔊</button>
+      <button class="icon-btn" id="themeBtn" data-act="theme" title="深色 / 浅色模式">🌙</button>
+      <button class="icon-btn" id="aiBtn" data-act="aiSettings" title="AI 增强设置（可选、免费）">🤖</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 首页 -->
+  <section id="home" class="view active">
+    <div class="hero">
+      <div class="hero-kicker">✨ 七大关卡 · 边玩边学</div>
+      <h1>把碎片时间，玩成<em>涨知识的十分钟</em></h1>
+      <p>成语接龙、歇后语、古诗词、地道口语，加上涨姿势、历史知识、辟谣 —— 每一关都有即时解析与应用场景示例。</p>
+      <div class="hero-tags"><span>🎮 7 种玩法</span><span>🌐 可静态托管</span><span>🤖 可选免费 AI · 魔搭 / Quick Tunnel</span><span>🎬 28 句影视台词</span><span>💬 应用场景示例</span><span>📖 逐题解析</span><span>🏆 连击加分</span><span>📒 错题本 · 徽章</span><span>🌙 深色模式</span><span>⌨️ 键盘 1-4 作答</span></div>
+    </div>
+    <div class="grid" id="moduleGrid"></div>
+    <div class="home-actions">
+      <button class="btn btn-line" data-act="profile">🏅 我的战绩 · 徽章 / 排行榜 / 错题本</button>
+      <button class="btn btn-line" data-act="clips">🎬 影视台词小抄（28 句）</button>
+      <button class="btn btn-line" data-act="aiSettings">🤖 免费 AI 方案与设置（魔搭 / 零配置 / 本地桥）</button>
+    </div>
+    <div class="how">
+      <div><strong>🀄 成语接龙</strong>系统起头，你接下句。首字与上一句尾字<b>同字或同音</b>即可；793 条内置词库＋3755 字读音表，<b>词库外成语照样接、链不会断</b>，本地想不出还能开免费 AI 帮想。接满 10 个通关。</div>
+      <div><strong>🪭 歇后语</strong>给出前半句，四选一猜后半句。谐音梗、典故梗，答完看<b>出处与用法</b>。</div>
+      <div><strong>📜 古诗词</strong>补全名句，答对后显示<b>诗名、作者与赏析</b>，顺带复习一遍。</div>
+      <div><strong>🗣️ 地道口语</strong>避开中式英语，选出母语者真会说的那句，答完附一句<b>英剧 / 美剧 / 电影台词</b>，可跟读。</div>
+      <div><strong>🧪 涨姿势</strong>厨房、急救、用电、用药里的小判断，每答一题都能<b>当场用上</b>。</div>
+      <div><strong>🏛️ 历史知识</strong>朝代、制度、人物与典籍，按<b>时间线</b>把碎片串起来。</div>
+      <div><strong>🕵️ 辟谣</strong>专治「一直以为是对的」：先选，再看<b>错在哪、正解是什么</b>。</div>
+    </div>
+  </section>
+
+  <!-- 游戏区 -->
+  <section id="play" class="view">
+    <div class="play-wrap" id="playWrap">
+      <div class="play-head">
+        <button class="back" data-act="home">← 返回</button>
+        <div class="play-title" id="playTitle">关卡</div>
+        <div class="play-score">
+          <div class="score-pill">得分 <b id="curScore">0</b></div>
+          <div class="score-pill combo">连击 <b id="curCombo">0</b></div>
+          <div class="score-pill" id="chancePill" style="display:none">机会 <b id="curChance">3</b></div>
+        </div>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+      <div id="stage"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </section>
+
+  <!-- 影视台词小抄 -->
+  <section id="clips" class="view">
+    <div class="profile-wrap">
+      <div class="profile-head">
+        <button class="back" data-act="home">← 返回首页</button>
+        <h2>🎬 影视台词小抄</h2>
+        <div class="play-score" style="margin-left:auto"><div class="score-pill">共 <b>28</b> 句</div></div>
+      </div>
+      <div class="psub" style="margin-bottom:16px">按出处分组，点 🔊 跟读：英剧用英音、美剧与电影用美音。每句都对应「地道口语」里的一个真实场景，答完题还会再揭晓一次。</div>
+      <div id="clipWall"></div>
+    </div>
+  </section>
+
+  <!-- AI 增强设置 -->
+  <section id="ai" class="view">
+    <div class="profile-wrap">
+      <div class="profile-head">
+        <button class="back" data-act="home">← 返回首页</button>
+        <h2>🤖 AI 增强（可选 · 最轻量化方案）</h2>
+        <div class="play-score" style="margin-left:auto"><div class="score-pill" id="aiStatePill">未开启</div></div>
+      </div>
+      <div class="ai-notice">
+        <b>默认关闭，关掉时整页依然纯静态、离线可玩。</b>开启后默认只在你主动点「AI 帮想一个」时联网一次；词库外成语的释义 / 用法补全是下面的可选开关、默认关闭，免得悄悄耗掉免费额度。
+        <b>不会用 AI 判对错</b>，所以不会出现「AI 说不算就不算」。请求超时、限流、跨域被拦都会<b>静默回退本地</b>，不影响答题。
+        Key 只保存在本机浏览器 localStorage；用「本地桥」时 Key 可以完全不进浏览器。
+      </div>
+      <div class="panel" style="margin-bottom:16px">
+        <h3>⚙️ 连接设置（按「要不要填东西」分了三组）</h3>
+        <div class="ai-form">
+          <label class="ai-check"><input type="checkbox" id="aiEnabled"> 开启 AI 增强</label>
+          <label class="ai-check"><input type="checkbox" id="aiEnrich"> 词库外成语自动补全释义 / 用法（每接一个多发一次请求，默认关以省免费额度）</label>
+          <label>免费通道
+            <select id="aiProvider"></select>
+          </label>
+          <div class="ai-how" id="aiHow"></div>
+          <label>API Key <span class="ai-opt" id="aiKeyHint">（该通道需要，留空则不启用）</span>
+            <input type="password" id="aiKey" placeholder="粘贴你自己的免费 Key" autocomplete="off">
+          </label>
+          <label>接口地址（OpenAI 兼容 /chat/completions）
+            <input type="text" id="aiBase" placeholder="切换通道会自动填入，也可手动改" autocomplete="off">
+          </label>
+          <div class="ai-addr">
+            <b>❓ 地址填得对吗？</b>官方文档写的 <code>https://api-inference.modelscope.cn/v1</code> 是给 <b>SDK</b> 用的
+            （SDK 会自动在后面拼 <code>/chat/completions</code>）。本页不用 SDK、直接 <code>fetch</code>，
+            所以必须填<b>完整路径</b> <code>https://api-inference.modelscope.cn/v1/chat/completions</code> —— 上面自动填的就是这个，<b>是对的</b>。
+            别填成不带 <code>/v1</code> 的 Anthropic 地址，也别填网上流传的 <code>/compatible-mode/v1/</code>（实测 404）。
+          </div>
+          <div class="ai-btns" style="margin:0 0 12px">
+            <button class="btn btn-line" data-act="aiCheckModels">🔎 查当前可用模型（公开清单 · 不用 Token）</button>
+          </div>
+          <div id="aiModelsBox" class="ai-models"></div>
+          <label>模型名
+            <input type="text" id="aiModel" placeholder="切换通道会自动填入" autocomplete="off">
+          </label>
+          <div class="ai-presets">
+            <div class="ap-title">⭐ 推荐模型 <span>点一下自动填入上面的「模型名」，模型下架时换一个点即可</span></div>
+            <div class="ap-list" id="aiPresetList"></div>
+            <div class="ap-note" id="aiPresetNote"></div>
+            <div class="ap-tip">💡 换完模型记得点「🧪 测试连接」：<b>先测再接</b>。魔搭列表里「挂着」不等于真能返回，第三方 2026-09 实测 37 个模型里有 22 个返回空内容，而空响应也扣魔粒，所以别挨个试。页面只取回答里前 4 个汉字当成语，因此别选带长思考过程的模型。</div>
+          </div>
+          <label>超时（秒）
+            <input type="number" id="aiTimeout" min="3" max="60" value="12">
+          </label>
+          <div class="ai-btns">
+            <button class="btn btn-primary" data-act="aiSave">💾 保存设置</button>
+            <button class="btn btn-line" data-act="aiTest">🧪 测试连接</button>
+          </div>
+          <div id="aiTestResult" class="ai-test"></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-bottom:16px">
+        <h3>🩺 「测试连接」没通？按状态码一眼定位</h3>
+        <div class="psub" style="margin-bottom:10px">现在测试失败会直接显示 <b>HTTP 状态码 + 服务端原文</b>，不再一句笼统的「没通」。对照下表处理：</div>
+        <div class="ai-errtbl">
+          <div><b>401 + bind / Alibaba Cloud</b><span>账号没绑定阿里云或未实名 → 去账号设置绑定并实名，等 1~3 分钟，必要时重新生成 Token</span></div>
+          <div><b>401 其它 / Invalid token</b><span>Token 复制不全、过期或权限没勾 → 回 <code>modelscope.cn/my/myaccesstoken</code> 重复制完整 <code>ms-</code> 串</span></div>
+          <div><b>403 + email verification / Magicubes</b><span><b>最常见</b>：邮箱没验证。魔搭规定「邮箱验证通过」才开放魔粒 / API-Inference → 去 <code>modelscope.cn/my/settings/account</code> 点「验证邮箱」，到邮箱（含垃圾箱）点链接，回来确认已验证；顺手把「身份」也选一下并保存。一般不用换 Token</span></div>
+          <div><b>403 + real name verified</b><span>阿里云账号未完成实名认证 → 完成实名后等几分钟，用同一个 Token 重试</span></div>
+          <div><b>400 / 404 ModelNotFound</b><span>模型 id 不在当前清单 → 点「🔎 查当前可用模型」从官方清单里挑一个，或点「⭐ 推荐模型」换</span></div>
+          <div><b>429</b><span>限流或当天魔粒用完 → 等一会儿 / 明天再试，换轻量模型</span></div>
+          <div><b>网络错误 / 无状态码</b><span>浏览器跨域预检被拦或网络不通 → 先点「🔎 查当前可用模型」判定（它不要 Token）；不通就走本地桥</span></div>
+          <div><b>HTTP 200 但无内容</b><span>挂牌模型或思考型模型 → 换一个 id 再测</span></div>
+          <div><b>5xx</b><span>魔搭服务端临时故障 → 稍后重试，不是你的配置问题</span></div>
+        </div>
+        <div class="psub" style="margin-top:10px;color:var(--muted)">顺序建议：先看 Key 框旁边的格式自检 → 点「🔎 查当前可用模型」确认网络与真实 id → 再点「🧪 测试连接」。三步就能把「地址 / 网络」「Token / 账号」「模型名」彻底分开。</div>
+        <div class="ai-addr" style="margin-top:10px"><b>账号三道关，别混淆：</b>① 绑定阿里云账号　② 阿里云实名认证　③ <b>邮箱验证通过</b>。前两关过了也可能卡在第 ③ 关——魔搭官方《Magicube Rewards Program》明确写「使用魔粒的前置条件是完善个人信息且邮箱验证通过」，而 API-Inference 用魔粒结算，所以邮箱没验证会直接 403。账号设置页里邮箱旁边还显示「验证邮箱」几个字，就说明没验证完。</div>
+      </div>
+      <div class="panel" style="margin-bottom:16px">
+        <h3>🛠 本地桥（可选）· 最省额度、Key 不进浏览器</h3>
+        <div class="bridge-guide">
+          <h4>先看这里：你真的需要它吗？</h4>
+          <div>· <b>不开 AI</b> → 整块都不用看，直接关掉这个页面去玩就行。</div>
+          <div>· <b>开了 AI，而且「🧪 测试连接」显示「✅ 通了」</b> → 也不用看，已经能用。</div>
+          <div>· <b>只有两种情况才往下看</b>：测试连接没通、提示跨域被拦；或者网站已经部署到 https 上，你想用自己电脑上的桥。</div>
+          <div class="bg-ok"><b>下面那一大段代码，你一个字都不用看懂，也不用改。</b>它只是个「传话员」：浏览器只跟自己电脑里的传话员说话（这个允许），传话员再替你去问魔搭，把答案带回来。令牌也只交给传话员，不进浏览器。你要做的只是把它下载下来、跑起来。</div>
+          <h4>照着做三步（电脑需要有 Python；Windows 可在微软商店搜「Python」安装，Mac 一般自带）</h4>
+          <div class="bg-step"><b>第 1 步</b>　点这个按钮 →
+            <button class="btn btn-line" data-act="aiDownloadBridge" style="padding:5px 12px;font-size:12px;margin:0 4px">⬇️ 下载 bridge.py</button>
+            （页面最下面也有一个，点哪个都行）。文件会存到「下载」文件夹，<b>不用打开、不用编辑</b>。</div>
+          <div class="bg-step"><b>第 2 步</b>　打开命令行，进入「下载」文件夹，粘贴下面其中一行后按回车：</div>
+          <div style="margin:4px 0 8px 14px;font-family:ui-monospace,Consolas,monospace;font-size:12px;background:var(--bg);border-radius:7px;padding:8px 10px">
+            Windows PowerShell：<br>
+            <b>cd $env:USERPROFILE\Downloads</b><br>
+            <b>$env:MODELSCOPE_TOKEN="ms-你的令牌"; python bridge.py</b><br><br>
+            Mac / Linux：<br>
+            <b>cd ~/Downloads</b><br>
+            <b>MODELSCOPE_TOKEN=ms-你的令牌 python3 bridge.py</b>
+          </div>
+          <div class="bg-step">看到 <code>bridge&nbsp; -> &nbsp;http://localhost:8787/v1/chat/completions</code> 就成了。<b>这个黑窗口不要关</b>，关了桥就停了。</div>
+          <div class="bg-step"><b>第 3 步</b>　回到本页：上面「免费通道」选「本地桥 / Cloudflare Quick Tunnel」，接口地址会自动填好 → 勾「开启 AI 增强」→ 点「💾 保存设置」→ 点「🧪 测试连接」→ 出现「✅ 通了」就完成。之后回成语接龙，卡住时点「🤖 让 AI 帮我想一个」。</div>
+          <div class="bg-warn">小提醒：黑窗口关掉、电脑重启后要再跑一次第 2 步；那串 <code>ms-</code> 令牌只敲在命令行里，不会存进浏览器。<b>如果网站已经部署到 https</b>，第 2 步之后还要再开一个窗口跑 <code>cloudflared tunnel --url http://localhost:8787</code>，把打印出来的 https 地址加上 <code>/v1/chat/completions</code> 填进「接口地址」（因为 https 页面不能连 http 地址）。<br>不想碰命令行？改用「Puter.js」零配置通道，或直接在魔搭通道里填令牌，通常更省事。</div>
+        </div>
+        <div class="psub" style="line-height:1.85;margin-bottom:12px">
+          <b>下面是给想自己改代码的人看的原始脚本</b>（零基础用户照上面三步做即可，不用读它）。它只用 Python 标准库、无需 pip，给魔搭（或你自己的 Ollama）加一层 CORS 头，页面就能跨域调用；
+          <b>Token 放在本机环境变量里，不会出现在浏览器或 localStorage</b>。本机双击打开页面时用 <code>http://localhost:8787/v1/chat/completions</code>；
+          如果页面挂在 HTTPS 站点上、或想在手机上用，再用 <b>Cloudflare Quick Tunnel</b> 把 <code>8787</code> 映射成临时 https 地址，填进上面的「接口地址」即可。
+        </div>
+        <pre id="bridgeCode" class="bridge-code"># -*- coding: utf-8 -*-
+# 趣学益智馆 · 极简本地桥（仅标准库）
+# 1) MODELSCOPE_TOKEN=ms-你的令牌 python3 bridge.py
+#    （本机页面填 http://localhost:8787/v1/chat/completions）
+# 2) 想跨设备 / HTTPS 页面再开一条：
+#    cloudflared tunnel --url http://localhost:8787
+#    把打印出的 https://xxx.trycloudflare.com 加上 /v1/chat/completions 填进页面
+import os, json, urllib.request
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+# 也可改用本机 Ollama：UPSTREAM=http://localhost:11434/v1/chat/completions
+UPSTREAM = os.environ.get("UPSTREAM", "https://api-inference.modelscope.cn/v1/chat/completions")
+TOKEN = os.environ.get("MODELSCOPE_TOKEN", "")
+
+class H(BaseHTTPRequestHandler):
+    def cors(self):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+    def do_OPTIONS(self):
+        self.send_response(204); self.cors(); self.end_headers()
+    def do_POST(self):
+        body = self.rfile.read(int(self.headers.get("Content-Length", 0)))
+        headers = {"Content-Type": "application/json"}
+        if TOKEN: headers["Authorization"] = "Bearer " + TOKEN
+        req = urllib.request.Request(UPSTREAM, data=body, headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r: out, code = r.read(), 200
+        except Exception as e:
+            out, code = json.dumps({"error": str(e)}).encode(), 502
+        self.send_response(code); self.cors()
+        self.send_header("Content-Type", "application/json")
+        self.end_headers(); self.wfile.write(out)
+    def log_message(self, *a): pass
+
+print("bridge  ->  http://localhost:8787/v1/chat/completions")
+print("跨设备  ->  cloudflared tunnel --url http://localhost:8787")
+ThreadingHTTPServer(("127.0.0.1", 8787), H).serve_forever()</pre>
+        <div class="ai-btns" style="margin-top:12px">
+          <button class="btn btn-line" data-act="aiCopyBridge">📋 复制桥代码</button>
+          <button class="btn btn-line" data-act="aiDownloadBridge">⬇️ 下载 bridge.py</button>
+        </div>
+        <div class="ai-how" style="margin-top:12px">
+          <b>关于 Quick Tunnel（官方口径）：</b>它<b>不是 AI API</b>，只是把本机端口发布成一个随机的
+          <code>trycloudflare.com</code> HTTPS 地址；无需 Cloudflare 账号、无需域名、不收费。限制是：仅用于测试开发、无可用性保证、
+          单隧道最多 200 并发、不支持 SSE、每次创建域名都会变、进程退出即失效，且默认任何拿到链接的人都能访问（新版可用
+          <code>--allowed-mail</code> 加邮箱验证）。所以它只解决「HTTPS 页面 / 跨设备访问本机桥」，推理仍来自桥后面的魔搭或 Ollama。
+        </div>
+      </div>
+      <div class="panel">
+        <h3>📚 这轮查到的资料与方案取舍（截至 2026-11-07）</h3>
+        <div class="ai-research">
+          <div><b>魔搭 ModelScope API-Inference</b> · 官方免费、OpenAI 兼容 <code>api-inference.modelscope.cn/v1</code>；
+            前提是绑定阿里云账号并完成实名认证。额度按「魔粒」扣减（轻量 0.5 / 主流 1 / 旗舰 2 每次）且会按平台压力动态调整，
+            <b>官方未承诺固定每日次数</b>，网上流传的「2000 次/天」不是官方口径。社区有浏览器直连成功、服务端返回
+            <code>Access-Control-Allow-Origin: *</code> 的报告；本页开发环境出网被网关拦截、无法替你实测预检，请以「测试连接」为准。
+            → <b>采纳为默认通道</b>。</div>
+          <div><b>Cloudflare Quick Tunnels</b> · 免费、无需账号/域名，一条命令把本地服务映射成临时公网 URL；
+            无 SLA、200 并发上限、不支持 SSE、域名每次变、仅测试开发用途。<b>它不是 AI API、不提供任何模型推理</b>。
+            → <b>采纳为本地桥的跨设备/HTTPS 可选一步</b>，不作为推理来源。</div>
+          <div><b>Cloudflare Workers AI</b> · 免费层每天 10,000 Neurons、无需信用卡；但需 Cloudflare 账号 + Account ID +
+            带 Workers AI Read 权限的 Token，REST 端点要拼 account_id，且国内直连不稳。
+            → <b>不预置成通道</b>，需要时填进「自定义 OpenAI 兼容端点」。</div>
+          <div><b>Puter.js</b> · 一个 script 标签 + <code>puter.ai.chat()</code>，无需 Key、无需填地址，采用 User-Pays
+            （费用记在使用者自己的 Puter 账户，可能需要登录）。→ <b>采纳为「零配置」实验通道</b>，且只在选中并开启后才动态加载脚本，默认零联网。</div>
+          <div><b>Google Gemini 免费层</b> · 无需信用卡、CORS 预检允许浏览器直连，但国内网络通常不可达；
+            <b>智谱 GLM-4-Flash</b> 长期免费、国内直连较稳；<b>Pollinations</b> 免注册但匿名限流约 30 秒一次。
+            → 三条保留为备选，按你的网络环境挑。</div>
+          <div class="ar-foot">以上均为第三方服务，免费条款、模型 id 与限流随时会变，以其官网最新说明为准；本页不含任何密钥，也不替你保管额度。AI 只用于「帮想候选」和可选的释义补全，<b>判对错始终由本地规则完成</b>。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 结算 -->
+  <section id="result" class="view">
+    <div class="result-card">
+      <div class="ring" id="ring"><div><span id="ringNum">0</span><small>本轮得分</small></div></div>
+      <h2 id="rankTitle">脑力王者</h2>
+      <p class="rsub" id="rankSub"></p>
+      <div class="rstats">
+        <div><b id="rCorrect">0</b><span>答对 / 总题</span></div>
+        <div><b id="rRate">0%</b><span>正确率</span></div>
+        <div><b id="rCombo">0</b><span>最长连击</span></div>
+        <div><b id="rTime">0s</b><span>平均每题</span></div>
+      </div>
+      <div id="newBadges"></div>
+      <div class="rbtns">
+        <button class="btn btn-primary" data-act="again">再来一轮</button>
+        <button class="btn btn-line" data-act="profile">📒 错题回顾</button>
+        <button class="btn btn-line" data-act="home">换个关卡</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 我的战绩 -->
+  <section id="profile" class="view">
+    <div class="profile-wrap">
+      <div class="profile-head">
+        <button class="back" data-act="home">← 返回首页</button>
+        <h2>🏅 我的战绩</h2>
+        <div class="play-score" style="margin-left:auto"><div class="score-pill">累计 <b id="pfTotal">0</b> 分</div><div class="score-pill">已玩 <b id="pfPlays">0</b> 轮</div></div>
+      </div>
+      <div class="profile-grid">
+        <div class="panel">
+          <h3>🎖️ 成就徽章</h3>
+          <div class="psub">解锁条件写在徽章下方，达成后自动点亮</div>
+          <div class="badges" id="badgeWall"></div>
+        </div>
+        <div class="panel">
+          <h3>🏆 各关最佳分</h3>
+          <div class="psub">本机记录，按模块保留最高一轮</div>
+          <div id="leaderBoard"></div>
+        </div>
+        <div class="panel wide">
+          <h3>📒 错题本 <span id="wrongCount" style="font-size:12px;color:var(--muted);font-weight:600"></span></h3>
+          <div class="psub">答错会自动收进来，最多保留 40 条；看一遍解析比再刷十题更管用</div>
+          <div id="wrongList"></div>
+          <div class="panel-foot"><button class="btn btn-line" data-act="clearWrong" style="padding:9px 16px;font-size:13px">🗑 清空错题本</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>趣学益智馆 <b style="color:#e17055">v1</b> · 静态托管正式版 · 题库内置 · 成绩 / 错题 / 设置保存在本机浏览器 · 双击文件或部署到任意静态托管均可<br><span style="font-size:11px">若这里没显示「v1」，说明打开的是旧文件，请重新下载交付包后再试</span></footer>
+
+<script>
+/* =========================================================
+   一、题库数据
+   ========================================================= */
+const MODULES = [
+  {id:'idiom',   icon:'🀄', name:'成语接龙', color:'#e17055', soft:'#fff0eb', desc:'同字或同音都能接，看你能一口气接多长。考验词汇量与反应力。', tag:'793 条词库 · 词库外也认'},
+  {id:'xiehou',  icon:'🪭', name:'歇后语',   color:'#0984e3', soft:'#e8f4ff', desc:'前半句设谜，后半句揭底。谐音与典故里藏着中文的机灵。', tag:'46 条 · 每轮 10 题'},
+  {id:'poem',    icon:'📜', name:'古诗词',   color:'#00a884', soft:'#e6faf4', desc:'补全那些刻在记忆里的名句，顺便把作者与出处再认一遍。', tag:'42 句 · 每轮 10 题'},
+  {id:'english', icon:'🗣️', name:'地道口语', color:'#6c5ce7', soft:'#f0eeff', desc:'告别中式英语，选出母语者真会说的那一句，还能听发音。', tag:'28 场景 · 28 句影视台词'},
+  {id:'life',    icon:'🧪', name:'涨姿势',   color:'#0891b2', soft:'#e6f7fb', desc:'厨房、急救、用电、用药里的日常判断，都是真能用上的小常识。', tag:'26 题 · 每轮 10 题'},
+  {id:'history', icon:'🏛️', name:'历史知识', color:'#a16207', soft:'#fdf6e7', desc:'从秦汉到近代，把朝代、制度与人物串成一条清楚的线。', tag:'30 题 · 每轮 10 题'},
+  {id:'myth',    icon:'🕵️', name:'辟谣',     color:'#db2777', soft:'#fdeef5', desc:'食物相克、左右脑、拿破仑身高……把被说歪的知识掰回来。', tag:'34 题 · 每轮 10 题'}
+];
+
+/* 成语词库：词|简释，空格分隔。用于接龙校验与提示 */
+const IDIOM_RAW = `
+一心一意|心思专一 一马当先|领先一步 一目了然|一眼看清 一鸣惊人|一举成名 一帆风顺|顺利无阻 一诺千金|极守信用 一丝不苟|认真细致 一往无前|奋勇向前
+一石二鸟|一举两得 一箭双雕|一举两得 一败涂地|彻底失败 一本正经|态度庄重 一尘不染|非常洁净 一筹莫展|毫无办法 一蹴而就|一步成功 一鼓作气|趁势完成
+一举两得|一份两收获 一劳永逸|一次解决 一落千丈|急剧下降 一毛不拔|极其吝啬 一气呵成|连贯完成 一清二白|清白无瑕 一如既往|和从前一样 一事无成|毫无成就
+一视同仁|同等对待 一手遮天|独揽大权 一无所有|什么都没有 一泻千里|奔流直下 一言为定|说定不改 一意孤行|固执己见 一针见血|切中要害 一知半解|懂得不多
+心花怒放|极其高兴 心旷神怡|心情舒畅 心平气和|不急不躁 心安理得|问心无愧 心不在焉|注意力散 心驰神往|一心向往 心服口服|由衷信服 心甘情愿|完全自愿
+心灰意冷|意志消沉 心急如焚|焦急万分 心惊胆战|十分害怕 心口如一|说的想的相同 心领神会|不用明说就懂 心满意足|非常满足 心如止水|平静无波 心神不宁|心绪不安
+心无旁骛|专心致志 心有余悸|事后仍怕 心猿意马|心思不定 心悦诚服|真心佩服 心照不宣|彼此默契 心直口快|性子爽直 人山人海|人极多 人声鼎沸|喧闹嘈杂
+人才辈出|人才不断 人定胜天|人力可胜自然 人杰地灵|地灵人杰 人尽其才|各展所长 人满为患|人太多成患 人情世故|处世道理 人去楼空|故人已去 人生如梦|人生短暂
+人头攒动|人群拥挤 人微言轻|位卑言轻 人仰马翻|乱成一团 人云亦云|随声附和 人之常情|人之常理 天翻地覆|变化巨大 天高地厚|恩情深厚 天寒地冻|极冷
+天花乱坠|说得极动听 天经地义|理所当然 天罗地网|包围严密 天马行空|不受拘束 天南地北|相距遥远 天壤之别|差别极大 天长地久|时间久远 天衣无缝|毫无破绽
+天造地设|自然契合 天下无双|独一无二 天各一方|相隔很远 天伦之乐|家庭团聚之乐 大材小用|人才被埋没 大彻大悟|彻底明白 大刀阔斧|果断大干 大发雷霆|暴怒
+大公无私|毫无私心 大海捞针|极难找到 大惊小怪|过分惊讶 大快人心|坏人受罚称快 大浪淘沙|经考验筛选 大名鼎鼎|名气很大 大器晚成|大才晚显 大失所望|非常失望
+大势所趋|形势所向 大庭广众|公开场合 大同小异|大致相同 大显身手|充分展示本领 大相径庭|相差很远 大言不惭|说大话不脸红 大摇大摆|神气十足 大义凛然|正气凛然
+大有可为|很有前途 大智若愚|真智似愚 不卑不亢|态度得体 不耻下问|虚心求教 不动声色|不动声色 不共戴天|仇深似海 不寒而栗|非常恐惧 不欢而散|不愉快地分手
+不计其数|数量极多 不假思索|不用想就做 不胫而走|传播迅速 不拘小节|不计较细节 不堪回首|不忍回想 不可救药|无法挽救 不可理喻|无法讲理 不可一世|狂妄自大
+不劳而获|白得好处 不谋而合|意见暗合 不能自拔|陷进去出不来 不偏不倚|公正中立 不期而遇|意外相遇 不求甚解|不深究 不屈不挠|绝不屈服 不三不四|不正派
+不胜枚举|举不完 不速之客|不请自来 不闻不问|漠不关心 不务正业|不做正事 不相上下|水平相当 不屑一顾|看不上眼 不学无术|没学问没本事 不厌其烦|不怕麻烦
+不遗余力|使出全力 不以为然|不认为对 不约而同|行动一致 不知所措|不知怎么办 不足为奇|很平常 无边无际|没有边际 无病呻吟|无端感慨 无地自容|羞愧难当
+无动于衷|毫不关心 无独有偶|竟有配对 无恶不作|坏事做尽 无法无天|肆无忌惮 无稽之谈|毫无根据 无计可施|没办法 无济于事|于事无补 无价之宝|极珍贵
+无坚不摧|什么都能破 无拘无束|自由自在 无能为力|帮不上忙 无穷无尽|没有尽头 无声无息|悄无声息 无师自通|自己学会 无所事事|闲着没事 无所畏惧|什么都不怕
+无微不至|照顾极细 无懈可击|挑不出毛病 无影无踪|完全消失 无忧无虑|毫无烦恼 无与伦比|没有能比 无中生有|凭空捏造 无足轻重|不重要 有备无患|预先准备
+有板有眼|有条有理 有朝一日|将来某天 有目共睹|人人都看见 有口皆碑|人人称赞 有名无实|徒有虚名 有求必应|都答应 有声有色|做得精彩 有始有终|坚持到底
+有恃无恐|有靠山不怕 有条不紊|井井有条 有勇无谋|只凭胆子 有志竟成|立志终成 山清水秀|风景优美 山穷水尽|走投无路 山高水长|情谊深厚 山盟海誓|誓言坚定
+山珍海味|珍贵菜肴 山崩地裂|声势巨大 水到渠成|条件成熟自成 水滴石穿|坚持见效 水落石出|真相显露 水乳交融|关系极融洽 水泄不通|围得极紧 水涨船高|随之上升
+水中捞月|白费力气 水火不容|完全对立 风平浪静|平静无事 风起云涌|事物涌现 风驰电掣|速度极快 风吹草动|轻微动静 风花雪月|浪漫景致 风华正茂|青春正好
+风卷残云|一扫而空 风口浪尖|矛盾焦点 风靡一时|一时流行 风声鹤唳|惊恐自扰 风调雨顺|气候宜人 风雨同舟|共渡难关 风云变幻|局势多变 风烛残年|晚年将尽
+云开见日|阴霾散去 云淡风轻|天气晴好 云泥之别|高下悬殊 云消雾散|事情消散 日积月累|长期积累 日理万机|政务繁忙 日暮途穷|走投无路 日新月异|变化飞快
+日以继夜|日夜不停 日薄西山|将近衰亡 日久天长|时间长久 月白风清|夜色清幽 月下老人|媒人 月明星稀|月朗星少 明察秋毫|观察极细 明辨是非|分得清对错
+明目张胆|公然行事 明哲保身|避祸自保 明知故犯|明知错还做 明日黄花|过时事物 明镜高悬|执法公正 白手起家|从零创业 白头偕老|相伴到老 白日做梦|空想
+白驹过隙|时间飞逝 白纸黑字|写得明白 白璧无瑕|完美无缺 生龙活虎|活力十足 生机勃勃|充满生气 生不逢时|没赶上好时候 生财有道|会挣钱 生离死别|难以再聚
+生灵涂炭|百姓受苦 生气勃勃|朝气蓬勃 生搬硬套|机械照搬 生吞活剥|不加消化 开门见山|直入主题 开卷有益|读书有好处 开源节流|增收节支 开天辟地|前所未有
+开诚布公|坦诚相见 开怀大笑|尽情大笑 开宗明义|一开始讲明 开门揖盗|自招祸患 见多识广|阅历丰富 见风使舵|随风倒 见缝插针|抓紧空隙 见机行事|看情况办
+见义勇为|挺身助人 见异思迁|意志不专 见微知著|从小处看大 见贤思齐|向贤者看齐 花好月圆|美好圆满 花红柳绿|春景艳丽 花团锦簇|繁盛绚丽 花枝招展|打扮艳丽
+花前月下|幽会之地 花言巧语|动听的假话 花里胡哨|浮华不实 春暖花开|春景宜人 春风得意|顺心得意 春华秋实|先耕后收 春色满园|春意浓 春意盎然|春味十足
+春回大地|春天归来 春光明媚|春光美好 意气风发|精神振奋 意味深长|含意深远 意想不到|没料到 意犹未尽|还没尽兴 意在言外|话外有意 气宇轩昂|气度不凡
+气象万千|景象壮阔 气壮山河|气势豪迈 气喘吁吁|呼吸急促 气急败坏|又急又恼 气势磅礴|气势宏大 力争上游|努力争先 力挽狂澜|挽回危局 力不从心|想做做不到
+力所能及|能力范围内 力透纸背|笔力遒劲 行云流水|自然流畅 行之有效|方法管用 行尸走肉|没有灵魂 行侠仗义|替人出头 行色匆匆|赶路匆忙 口若悬河|能说会道
+口是心非|嘴上不一 口耳相传|口头流传 口诛笔伐|文字声讨 口出不逊|说话无礼 手忙脚乱|慌乱无序 手不释卷|勤读不倦 手到擒来|轻易办成 手足无措|慌得没主意
+手舞足蹈|高兴得动 手无寸铁|没有武器 头头是道|说得有条理 头重脚轻|根基不稳 头晕目眩|头晕眼花 头破血流|伤得很重 目不转睛|盯住不动 目瞪口呆|惊得发愣
+目空一切|谁都看不起 目不暇接|看不过来 目中无人|傲慢自大 光彩夺目|鲜艳耀眼 光怪陆离|奇形怪状 光明磊落|心地坦白 光阴似箭|时间飞快 光天化日|大白天
+前功尽弃|白费前功 前赴后继|接连上阵 前车之鉴|前人教训 前因后果|来龙去脉 前无古人|前所未有 后来居上|后辈超过前辈 后发制人|后动手取胜 后顾之忧|身后的牵挂
+后生可畏|年轻人可畏 后起之秀|新冒尖的人才 上行下效|上面带下面 上下一心|全体同心 上善若水|至善如水 上蹿下跳|到处活动 下笔成章|一写就成文 下不为例|只通融一次
+下车伊始|刚到任 中流砥柱|中坚力量 中庸之道|不偏不倚 来龙去脉|前因后果 来日方长|以后还长 来之不易|得来艰难 来者不拒|都接受 去粗取精|取精华
+去伪存真|辨真假 成千上万|数量极大 成家立业|立业成家 成竹在胸|心里有数 成群结队|结伙成群 成人之美|助人为善 功成名就|功业有成 功亏一篑|差一步失败
+功德无量|功劳极大 功败垂成|将成时失败 名不虚传|确实名副其实 名副其实|名声与实际相符 名列前茅|排名靠前 名落孙山|落榜 名正言顺|名义正当 名满天下|闻名全国
+事半功倍|省力见效大 事与愿违|结果相反 事在人为|靠人去做 事必躬亲|事事亲做 事出有因|有缘故 家喻户晓|人人皆知 家常便饭|平常事 家徒四壁|极贫穷
+家破人亡|家毁人亡 国泰民安|国家太平 国色天香|牡丹或美人 国计民生|经济民生 年富力强|年轻力壮 年深日久|年代久远 时不我待|时间不等人 时来运转|运气转好
+时过境迁|情况已变 道听途说|路上听来的话 道貌岸然|外表正经 道不拾遗|风气良好 理直气壮|有理有势 理所当然|理应如此 理屈词穷|没理可说 平心静气|冷静下来
+平易近人|好相处 平步青云|一步登天 平分秋色|各占一半 平白无故|毫无缘由 安居乐业|生活安定 安分守己|守本分 安然无恙|平安无事 安之若素|照常对待
+安邦定国|治理国家 全力以赴|使出全力 全神贯注|注意力集中 全心全意|一心一意 全军覆没|彻底失败 如鱼得水|十分适应 如虎添翼|更强了 如日中天|正兴盛
+如释重负|放下重担 如愿以偿|愿望实现 如数家珍|非常熟悉 如出一辙|一模一样 如坐针毡|坐立不安 得心应手|熟练顺手 得不偿失|划不来 得意洋洋|自得的样子
+得寸进尺|贪得无厌 得过且过|敷衍度日 以貌取人|凭外表判断 以逸待劳|以静制动 以卵击石|不自量力 以身作则|自己做榜样 以德报怨|用恩报仇 以理服人|讲道理服人
+为所欲为|想干啥干啥 为人师表|做表率 为非作歹|干坏事 自力更生|靠自己 自相矛盾|前后冲突 自食其力|自己养自己 自圆其说|把话说通 自强不息|不断上进
+自告奋勇|主动请缨 自不量力|高估自己 相辅相成|互相促成 相得益彰|互相增色 相形见绌|比出差距 相安无事|彼此无事 相提并论|放在一起比 可歌可泣|感人至深
+可圈可点|值得肯定 可想而知|一想便知 能屈能伸|进退自如 能工巧匠|手艺高超 能言善辩|很会说话 多才多艺|本领多 多此一举|多余的举动 多多益善|越多越好
+多愁善感|易感伤 少不更事|年轻没阅历 少见多怪|见识少 高瞻远瞩|眼光长远 高谈阔论|空泛大论 高枕无忧|放心无忧 高屋建瓴|居高临下 高朋满座|贵客满堂
+长驱直入|顺利推进 长年累月|长年不断 长篇大论|篇幅冗长 千军万马|声势浩大 千钧一发|万分危急 千变万化|变化极多 千锤百炼|反复磨炼 千载难逢|极难遇到
+千方百计|想尽办法 千辛万苦|非常辛苦 千篇一律|毫无变化 万紫千红|百花齐放 万无一失|绝对稳妥 万象更新|一切变新 万众一心|大家同心 万水千山|路途遥远
+万籁俱寂|极其安静 百发百中|每次都中 百折不挠|屡挫不折 百炼成钢|久炼成材 百无聊赖|闲得无聊 百尺竿头|已到高处 百感交集|感触纷杂 金玉满堂|财富极多
+金碧辉煌|华丽耀眼 金蝉脱壳|脱身之计 金戈铁马|征战气象 金科玉律|不可改的规矩 玉石俱焚|同归于尽 玉洁冰清|品格高洁 马到成功|一到就成 马不停蹄|不停赶路
+马革裹尸|战死沙场 马失前蹄|偶然失手 龙飞凤舞|笔势洒脱 龙争虎斗|激烈相争 龙潭虎穴|极险之地 龙马精神|精力旺盛 虎头蛇尾|有始无终 虎视眈眈|盯着不放
+虎口余生|险中逃生 鸟语花香|春景宜人 鸟尽弓藏|事成后抛弃 鱼目混珠|以假乱真 鱼贯而入|依次进入 鱼龙混杂|好坏混在一起 木已成舟|无法挽回 木本水源|根源
+林林总总|众多纷杂 火树银花|灯火灿烂 火上浇油|使矛盾更烈 火中取栗|替人冒险 土崩瓦解|彻底崩溃 土生土长|本地长成 学以致用|学了就用 学富五车|读书极多
+学而不厌|学习不倦 问心无愧|内心无愧 问长问短|仔细询问 书香门第|读书人家 画龙点睛|关键一笔 画蛇添足|多余一举 画饼充饥|空想安慰 诗情画意|意境优美
+酒囊饭袋|无能之辈 酒绿灯红|繁华夜景 茶余饭后|闲暇时候 衣冠楚楚|穿戴整齐 衣锦还乡|富贵归乡 衣不蔽体|衣衫破烂 食不果腹|吃不饱 食言而肥|不守信用
+发人深省|引人深思 发愤图强|下定决心 发扬光大|使之壮大 发号施令|下命令 红光满面|气色好 红白喜事|婚丧之事 前途无量|前景不可限量 前程似锦|未来十分美好
+前所未有|从来没有过 前仆后继|前倒下后跟上 前思后想|反复琢磨 前仰后合|笑得直不起腰 前倨后恭|态度前后反差 量力而行|按自身能力办事 量体裁衣|按实际情况办理 量入为出|按收入安排开支
+锦上添花|好上加好 锦绣河山|山河壮丽 锦囊妙计|预先备好的巧计 后继有人|事业有人接续 后会有期|以后再相见 想入非非|胡思乱想 想方设法|想尽各种办法 合情合理|合乎情理
+合二为一|合在一起 半途而废|中途放弃 半斤八两|彼此差不多 半信半疑|又信又疑 废寝忘食|专心到忘了吃睡 两全其美|双方都顾到 两袖清风|为官清廉 美中不足|虽好仍有缺憾
+美不胜收|美得看不过来 足智多谋|智谋很多 足不出户|一步不出门 谋事在人|成事还需天时 积少成多|慢慢累积 集思广益|汇集众人意见 记忆犹新|记得清清楚楚 既往不咎|不再追究旧事
+继往开来|承前启后 燃眉之急|事情非常急迫 扶摇直上|迅速上升 釜底抽薪|从根本上解决 赴汤蹈火|不避艰险 富丽堂皇|华丽气派 轻描淡写|一带而过 情不自禁|控制不住
+晴天霹雳|突发的打击 倾盆大雨|雨势极大 精益求精|好了还求更好 惊天动地|声势极大 井井有条|条理分明 静观其变|先看着再说 亡羊补牢|出问题后及时补救 网开一面|给人留余地
+望而却步|不敢上前 妄自菲薄|过分看轻自己 接踵而至|接连到来 截然不同|完全不一样 借题发挥|借由头另说 解囊相助|出钱帮人 源远流长|历史悠久 缘木求鱼|方向不对白费力
+远见卓识|眼光长远 出类拔萃|超出同类 出人头地|高人一等 出其不意|出乎意料 出神入化|技艺极精 出生入死|冒生命危险 助人为乐|帮人即快乐 珠联璧合|美好相配
+铸成大错|造成大错 滴水穿石|坚持见效 低声细语|小声说话 地大物博|疆域广物产多 崭露头角|初显才能 战无不胜|每战皆胜 瞻前顾后|顾虑太多 张灯结彩|喜庆布置
+掌上明珠|极珍爱的人 仗义执言|为公道说话 翻天覆地|变化巨大 反躬自省|回头反省自己 繁花似锦|景象繁盛 背道而驰|方向相反 悲欢离合|人生聚散 备而不用|备着暂不使用
+勇往直前|不畏向前 用之不竭|用不完 永垂不朽|长久流传 真知灼见|切实深刻的见解 振振有词|说得像很有理 针锋相对|针尖对麦芒 据理力争|依理力争 聚精会神|注意力集中
+举棋不定|拿不定主意 叶落归根|回归本源 夜以继日|日夜不停 业精于勤|学业靠勤奋 息事宁人|平息纷争 喜闻乐见|大家爱看 细水长流|平稳持久 屡见不鲜|常见不新奇
+履险如夷|遇险如平地 绿草如茵|草地如褥 博采众长|广取各家长处 波澜壮阔|声势宏大 拨云见日|疑团散去 小心翼翼|非常谨慎 笑逐颜开|笑得舒展 晓以大义|讲明道理
+待时而动|等时机再行动 代人受过|替人担责 待价而沽|等价而售 顺理成章|自然成立 瞬息万变|变化极快 言简意赅|话少意思全 严阵以待|做好迎战准备 眼疾手快|反应快
+悬而未决|一直没定 喧宾夺主|客占了主位 选贤任能|挑贤者任职 灵机一动|忽然想到 另辟蹊径|另找路子 令行禁止|令出必行 焕然一新|面貌全新 缓兵之计|暂缓之策
+患难与共|共渡难关 顾名思义|看名字就懂 固若金汤|防守极牢 古道热肠|待人热忱 空前绝后|前后都没有 空穴来风|事出有因 动人心弦|打动人心 洞若观火|看得极清楚
+别出心裁|构思独到 别有天地|另有一番境界 色厉内荏|外强中干 同舟共济|共渡难关 通宵达旦|整夜到天亮 痛定思痛|事后反思 融会贯通|彻底理解 容光焕发|气色很好
+川流不息|连续不断 传为佳话|被人称道 深入浅出|讲得易懂 深思熟虑|反复想透 身临其境|像在现场 论功行赏|按功奖赏 提纲挈领|抓住要点 体贴入微|照顾极细
+啼笑皆非|哭笑不得 穷则思变|处困思变 穷途末路|走投无路 穷困潦倒|生活困顿 琼浆玉液|美酒 厚积薄发|长期积累后爆发 厚此薄彼|待遇不公平 志同道合|志向一致 知难而进|迎着困难上 直言不讳|直说不忌讳 纸上谈兵|空谈不务实 先发制人|先动手占先 显而易见|一眼就明白 闲情逸致|悠闲的兴致 弦外之音|话里另有意思 定于一尊|标准归于一家 鼎力相助|大力帮忙 才思敏捷|思路快 财源广进|进财不断 思前想后|反复考虑 司空见惯|常见不奇 死里逃生|险中活下来 错落有致|参差却好看 措手不及|来不及应付 因材施教|按人施教 引经据典|引用经典 隐姓埋名|藏起姓名 修旧利废|把旧的修好 休戚与共|同甘共苦 秀外慧中|外美内慧 单刀直入|直奔主题 淡然处之|平静对待 胆大心细|敢做又细 老当益壮|年纪大志更盛 劳燕分飞|各自离散 流连忘返|舍不得走 六神无主|慌得没主意 柳暗花明|绝处转机 变本加厉|比原来更过 遍地开花|各处都兴起 鞭长莫及|够不着 拔苗助长|急于求成反坏 八面玲珑|各方都周全 携手并肩|一起干 邪不压正|正气终胜 谢天谢地|总算还好 防患未然|提前防着 方兴未艾|正旺未停 分秒必争|一点时间不浪费 奋起直追|赶上 纷至沓来|接连到来 回味无穷|越想越有味 悔之晚矣|后悔已迟 讳疾忌医|掩饰缺点不治 快马加鞭|再催快些 脍炙人口|人人称道 梦寐以求|一直盼着 蒙混过关|糊弄过去 乐此不疲|做着不腻 乐于助人|爱帮人 听天由命|交给天意 挺身而出|主动站出来 停滞不前|停住不动 拐弯抹角|绕着说 三思而行|想清楚再做 散兵游勇|零散人手 恼羞成怒|因羞变怒 左顾右盼|东看西看 作壁上观|袖手旁观 谈笑风生|聊得轻快 探囊取物|极容易 坦然自若|神色如常 摧枯拉朽|极易摧毁 纵横交错|交叉错杂 总而言之|一句话概括 比比皆是|到处都是 必由之路|绕不开的路 闭门造车|不调研自己闷做 车载斗量|数量极多 彻头彻尾|从头到尾 毛遂自荐|自己推荐自己 茅塞顿开|忽然想通 周而复始|循环往复 勤能补拙|勤补天分 秦晋之好|两家联姻 强词夺理|没理硬争 强人所难|逼人做难事 说一不二|说了不改 硕大无朋|大得无比 扬长避短|发挥长处 养精蓄锐|攒足精神 持之以恒|长期坚持 叱咤风云|声势极大 堂堂正正|光明正大 螳臂当车|不自量力 黄粱一梦|虚幻一场 恍然大悟|一下明白 面面相觑|互看无言 勉为其难|勉强去做 狗急跳墙|逼急乱来 雕虫小技|小本事 调虎离山|引开对方 冷眼旁观|不动手看着 宁死不屈|死也不屈 海阔天空|天地开阔 害群之马|拖累集体的一分子 追根究底|一直问到底 舍己为人|为别人牺牲 设身处地|替人着想 双管齐下|两路并进 杀鸡儆猴|儆戒旁人 参差不齐|高低不齐 残兵败将|溃败余部 慷慨激昂|情绪昂扬 所向披靡|无人能挡 走马观花|粗略看 摇摇欲坠|快要倒 耀武扬威|显摆威风 藕断丝连|没断干净 抱薪救火|方法反加剧 饱经风霜|经历很多苦
+`;
+const IDIOMS = IDIOM_RAW.trim().split(/\s+/).map(s=>{
+  const [word,mean] = s.split('|');
+  return {word, mean: mean || '常用成语'};
+});
+/* 首尾字拼音（不带声调），与 IDIOMS 同序，格式「首拼:尾拼」。用于谐音接龙 */
+const PY_RAW = "yi:yi,yi:xian,yi:ran,yi:ren,yi:shun,yi:jin,yi:gou,yi:qian,yi:niao,yi:diao,yi:di,yi:jing,yi:ran,yi:zhan,yi:jiu,yi:qi,yi:de,yi:yi,yi:zhang,yi:ba,yi:cheng,yi:bai,yi:wang,yi:cheng,yi:ren,yi:tian,yi:you,yi:li,yi:ding,yi:xing,yi:xie,yi:jie,xin:fang,xin:yi,xin:he,xin:de,xin:yan,xin:wang,xin:fu,xin:yuan,xin:leng,xin:fen,xin:zhan,xin:yi,xin:hui,xin:zu,xin:shui,xin:ning,xin:wu,xin:ji,xin:ma,xin:fu,xin:xuan,xin:kuai,ren:hai,ren:fei,ren:chu,ren:tian,ren:ling,ren:cai,ren:huan,ren:gu,ren:kong,ren:meng,ren:dong,ren:qing,ren:fan,ren:yun,ren:qing,tian:fu,tian:hou,tian:dong,tian:zhui,tian:yi,tian:wang,tian:kong,tian:bei,tian:bie,tian:jiu,tian:feng,tian:she,tian:shuang,tian:fang,tian:le,da:yong,da:wu,da:fu,da:ting,da:si,da:zhen,da:guai,da:xin,da:sha,da:ding,da:cheng,da:wang,da:qu,da:zhong,da:yi,da:shou,da:ting,da:can,da:bai,da:ran,da:wei,da:yu,bu:kang,bu:wen,bu:se,bu:tian,bu:li,bu:san,bu:shu,bu:suo,bu:zou,bu:jie,bu:shou,bu:yao,bu:yu,bu:shi,bu:huo,bu:he,bu:ba,bu:yi,bu:yu,bu:jie,bu:nao,bu:si,bu:ju,bu:ke,bu:wen,bu:ye,bu:xia,bu:gu,bu:shu,bu:fan,bu:li,bu:ran,bu:tong,bu:cuo,bu:qi,wu:ji,wu:yin,wu:rong,wu:zhong,wu:ou,wu:zuo,wu:tian,wu:tan,wu:shi,wu:shi,wu:bao,wu:cui,wu:shu,wu:li,wu:jin,wu:xi,wu:tong,wu:shi,wu:ju,wu:zhi,wu:ji,wu:zong,wu:lv,wu:bi,wu:you,wu:zhong,you:huan,you:yan,you:ri,you:du,you:bei,you:shi,you:ying,you:se,you:zhong,you:kong,you:wen,you:mou,you:cheng,shan:xiu,shan:jin,shan:chang,shan:shi,shan:wei,shan:lie,shui:cheng,shui:chuan,shui:chu,shui:rong,shui:tong,shui:gao,shui:yue,shui:rong,feng:jing,feng:yong,feng:che,feng:dong,feng:yue,feng:mao,feng:yun,feng:jian,feng:shi,feng:li,feng:shun,feng:zhou,feng:huan,feng:nian,yun:ri,yun:qing,yun:bie,yun:san,ri:lei,ri:ji,ri:qiong,ri:yi,ri:ye,ri:shan,ri:chang,yue:qing,yue:ren,yue:xi,ming:hao,ming:fei,ming:dan,ming:shen,ming:fan,ming:hua,ming:xuan,bai:jia,bai:lao,bai:meng,bai:xi,bai:zi,bai:xia,sheng:hu,sheng:bo,sheng:shi,sheng:dao,sheng:bie,sheng:tan,sheng:bo,sheng:tao,sheng:bo,kai:shan,kai:yi,kai:liu,kai:di,kai:gong,kai:xiao,kai:yi,kai:dao,jian:guang,jian:duo,jian:zhen,jian:shi,jian:wei,jian:qian,jian:zhu,jian:qi,hua:yuan,hua:lv,hua:cu,hua:zhan,hua:xia,hua:yu,hua:shao,chun:kai,chun:yi,chun:shi,chun:yuan,chun:ran,chun:di,chun:mei,yi:fa,yi:chang,yi:dao,yi:jin,yi:wai,qi:ang,qi:qian,qi:he,qi:xu,qi:huai,qi:bo,li:you,li:lan,li:xin,li:ji,li:bei,xing:shui,xing:xiao,xing:rou,xing:yi,xing:cong,kou:he,kou:fei,kou:chuan,kou:fa,kou:xun,shou:luan,shou:juan,shou:lai,shou:cuo,shou:dao,shou:tie,tou:dao,tou:qing,tou:xuan,tou:liu,mu:jing,mu:dai,mu:qie,mu:jie,mu:ren,guang:mu,guang:li,guang:luo,guang:jian,guang:ri,qian:qi,qian:ji,qian:jian,qian:guo,qian:ren,hou:shang,hou:ren,hou:you,hou:wei,hou:xiu,shang:xiao,shang:xin,shang:shui,shang:tiao,xia:zhang,xia:li,xia:shi,zhong:zhu,zhong:dao,lai:mai,lai:chang,lai:yi,lai:ju,qu:jing,qu:zhen,cheng:wan,cheng:ye,cheng:xiong,cheng:dui,cheng:mei,gong:jiu,gong:kui,gong:liang,gong:cheng,ming:chuan,ming:shi,ming:mao,ming:shan,ming:shun,ming:xia,shi:bei,shi:wei,shi:wei,shi:qin,shi:yin,jia:xiao,jia:fan,jia:bi,jia:wang,guo:an,guo:xiang,guo:sheng,nian:qiang,nian:jiu,shi:dai,shi:zhuan,shi:qian,dao:shuo,dao:ran,dao:yi,li:zhuang,li:ran,li:qiong,ping:qi,ping:ren,ping:yun,ping:se,ping:gu,an:ye,an:ji,an:yang,an:su,an:guo,quan:fu,quan:zhu,quan:yi,quan:mo,ru:shui,ru:yi,ru:tian,ru:fu,ru:chang,ru:zhen,ru:zhe,ru:zhan,de:shou,de:shi,de:yang,de:chi,de:guo,yi:ren,yi:lao,yi:shi,yi:ze,yi:yuan,yi:ren,wei:wei,wei:biao,wei:dai,zi:sheng,zi:dun,zi:li,zi:shuo,zi:xi,zi:yong,zi:li,xiang:cheng,xiang:zhang,xiang:chu,xiang:shi,xiang:lun,ke:qi,ke:dian,ke:zhi,neng:shen,neng:jiang,neng:bian,duo:yi,duo:ju,duo:shan,duo:gan,shao:shi,shao:guai,gao:zhu,gao:lun,gao:you,gao:ling,gao:zuo,chang:ru,chang:yue,chang:lun,qian:ma,qian:fa,qian:hua,qian:lian,qian:feng,qian:ji,qian:ku,qian:lv,wan:hong,wan:shi,wan:xin,wan:xin,wan:shan,wan:ji,bai:zhong,bai:nao,bai:gang,bai:lai,bai:tou,bai:ji,jin:tang,jin:huang,jin:qiao,jin:ma,jin:lv,yu:fen,yu:qing,ma:gong,ma:ti,ma:shi,ma:ti,long:wu,long:dou,long:xue,long:shen,hu:wei,hu:dan,hu:sheng,niao:xiang,niao:cang,yu:zhu,yu:ru,yu:za,mu:zhou,mu:yuan,lin:zong,huo:hua,huo:you,huo:li,tu:jie,tu:zhang,xue:yong,xue:che,xue:yan,wen:kui,wen:duan,shu:di,hua:jing,hua:zu,hua:ji,shi:yi,jiu:dai,jiu:hong,cha:hou,yi:chu,yi:xiang,yi:ti,shi:fu,shi:fei,fa:xing,fa:qiang,fa:da,fa:ling,hong:mian,hong:shi,qian:liang,qian:jin,qian:you,qian:ji,qian:xiang,qian:he,qian:gong,liang:xing,liang:yi,liang:chu,jin:hua,jin:shan,jin:ji,hou:ren,hou:qi,xiang:fei,xiang:fa,he:li,he:yi,ban:fei,ban:liang,ban:yi,fei:shi,liang:mei,liang:feng,mei:zu,mei:shou,zu:mou,zu:hu,mou:ren,ji:duo,ji:yi,ji:xin,ji:jiu,ji:lai,ran:ji,fu:shang,fu:xin,fu:huo,fu:huang,qing:xie,qing:jin,qing:li,qing:yu,jing:jing,jing:di,jing:tiao,jing:bian,wang:lao,wang:mian,wang:bu,wang:bo,jie:zhi,jie:tong,jie:hui,jie:zhu,yuan:chang,yuan:yu,yuan:shi,chu:cui,chu:di,chu:yi,chu:hua,chu:si,zhu:le,zhu:he,zhu:cuo,di:shi,di:yu,di:bo,zhan:jiao,zhan:sheng,zhan:hou,zhang:cai,zhang:zhu,zhang:yan,fan:di,fan:xing,fan:jin,bei:chi,bei:he,bei:yong,yong:qian,yong:jie,yong:xiu,zhen:jian,zhen:ci,zhen:dui,ju:zheng,ju:shen,ju:ding,ye:gen,ye:ri,ye:qin,xi:ren,xi:jian,xi:liu,lv:xian,lv:yi,lv:yin,bo:chang,bo:kuo,bo:ri,xiao:yi,xiao:kai,xiao:yi,dai:dong,dai:guo,dai:gu,shun:zhang,shun:bian,yan:gai,yan:dai,yan:kuai,xuan:jue,xuan:zhu,xuan:neng,ling:dong,ling:jing,ling:zhi,huan:xin,huan:ji,huan:gong,gu:yi,gu:tang,gu:chang,kong:hou,kong:feng,dong:xian,dong:huo,bie:cai,bie:di,se:ren,tong:ji,tong:dan,tong:tong,rong:tong,rong:fa,chuan:xi,chuan:hua,shen:chu,shen:lv,shen:jing,lun:shang,ti:ling,ti:wei,ti:fei,qiong:bian,qiong:lu,qiong:dao,qiong:ye,hou:fa,hou:bi,zhi:he,zhi:jin,zhi:hui,zhi:bing,xian:ren,xian:jian,xian:zhi,xian:yin,ding:zun,ding:zhu,cai:jie,cai:jin,si:hou,si:guan,si:sheng,cuo:zhi,cuo:ji,yin:jiao,yin:dian,yin:ming,xiu:fei,xiu:gong,xiu:zhong,dan:ru,dan:zhi,dan:xi,lao:zhuang,lao:fei,liu:fan,liu:zhu,liu:ming,bian:li,bian:hua,bian:ji,ba:zhang,ba:long,xie:jian,xie:zheng,xie:di,fang:ran,fang:ai,fen:zheng,fen:zhui,fen:lai,hui:qiong,hui:yi,hui:yi,kuai:bian,kuai:kou,meng:qiu,meng:guan,le:pi,le:ren,ting:ming,ting:chu,ting:qian,guai:jiao,san:xing,san:yong,nao:nu,zuo:pan,zuo:guan,tan:sheng,tan:wu,tan:ruo,cui:xiu,zong:cuo,zong:zhi,bi:shi,bi:lu,bi:che,che:liang,che:wei,mao:jian,mao:kai,zhou:shi,qin:zhuo,qin:hao,qiang:li,qiang:nan,shuo:er,shuo:peng,yang:duan,yang:rui,chi:heng,chi:yun,tang:zheng,tang:che,huang:meng,huang:wu,mian:qu,mian:nan,gou:qiang,diao:ji,diao:shan,leng:guan,ning:qu,hai:kong,hai:ma,zhui:di,she:ren,she:di,shuang:xia,sha:hou,cen:qi,can:jiang,kang:ang,suo:mi,zou:hua,yao:zhui,yao:wei,ou:lian,bao:huo,bao:shuang";
+const PY_LIST = PY_RAW.split(',');
+IDIOMS.forEach((o,i)=>{ const [h,t]=PY_LIST[i].split(':'); o.hp=h; o.tp=t; });
+const IDIOM_MAP = new Map(IDIOMS.map(o=>[o.word,o]));
+const BY_HEAD = {};
+IDIOMS.forEach(o=>{ const h=o.word[0]; (BY_HEAD[h] ||= []).push(o); });
+/* 谐音索引：尾字拼音相同即可接（同字必然同拼音），符合成语接龙的常见玩法 */
+const BY_PY = {};
+IDIOMS.forEach(o=>{ (BY_PY[o.hp] ||= []).push(o); });
+const successors = py => BY_PY[py] || [];
+/* 单字读音表：由词库首尾字反推，用于判断「词库外但合法」的成语 */
+const CHAR_PY = {};
+IDIOMS.forEach(o=>{ CHAR_PY[o.word[0]]=o.hp; CHAR_PY[o.word[3]]=o.tp; });
+
+/* 常用汉字无调音节表（GB2312 一级字库 3755 字，按音节分组）。
+   「忠 / 众 / 中 / 终」同属 zhong，所以「法不责众 → 忠心耿耿」应当算接上。
+   之前只用词库首尾字反推，覆盖太少，会把词库外的合法成语误判成「没接上」。 */
+const HOMOPHONE_RAW = "a:啊阿|ai:埃挨哎唉哀皑癌蔼矮艾碍爱隘|an:鞍氨安俺按暗岸胺案|ang:肮昂盎|ao:凹敖熬翱袄傲奥懊澳|ba:芭捌扒叭吧笆八疤巴拔跋靶把耙坝霸罢爸|bai:白柏百摆佰败拜稗|ban:斑班搬扳般颁板版扮拌伴瓣半办绊|bang:邦帮梆榜膀绑棒磅蚌镑傍谤|bao:苞胞包褒薄雹保堡饱宝抱报暴豹鲍爆|bei:杯碑悲卑北辈背贝钡倍狈备惫焙被|ben:奔苯本笨|beng:崩绷甭泵蹦迸|bi:逼鼻比鄙笔彼碧蓖蔽毕毙毖币庇痹闭敝弊必壁臂避陛|bian:鞭边编贬扁便变卞辨辩辫遍|biao:标彪膘表|bie:鳖憋别瘪|bin:彬斌濒滨宾摈|bing:兵冰柄丙秉饼炳病并|bo:剥玻菠播拨钵波博勃搏铂箔伯帛舶脖膊渤驳卜|bu:捕哺补埠不布步簿部怖|ca:擦|cai:猜裁材才财睬踩采彩菜蔡|can:餐参蚕残惭惨灿掺|cang:苍舱仓沧藏|cao:操糙槽曹草|ce:厕策侧册测|ceng:层蹭曾|cha:插叉茬茶查碴搽察岔差诧|chai:拆柴豺|chan:搀蝉馋谗缠铲产阐颤|chang:昌猖场尝常偿肠厂敞畅唱倡|chao:超抄钞朝嘲潮巢吵炒|che:车扯撤掣彻澈|chen:郴臣辰尘晨忱沉陈趁衬|cheng:撑称城橙成呈乘程惩澄诚承逞骋秤|chi:吃痴持池迟弛驰耻齿侈尺赤翅斥炽|chong:充冲虫崇宠|chou:抽酬畴踌稠愁筹仇绸瞅丑臭|chu:初出橱厨躇锄雏滁除楚础储矗搐触处畜|chuai:揣|chuan:川穿椽传船喘串|chuang:疮窗幢床闯创|chui:吹炊捶锤垂椎|chun:春椿醇唇淳纯蠢|chuo:戳绰|ci:疵茨磁雌辞慈瓷词此刺赐次伺|cong:聪葱囱匆从丛|cou:凑|cu:粗醋簇促|cuan:蹿篡窜|cui:摧崔催脆瘁粹淬翠|cun:村存寸|cuo:磋撮搓措挫错|da:搭达答瘩打大|dai:呆歹傣戴带殆代贷袋待逮怠|dan:耽担丹单郸掸胆旦氮但惮淡诞弹蛋|dang:当挡党荡档|dao:刀捣蹈倒岛祷导到稻悼道盗|de:德得的|deng:蹬灯登等瞪凳邓|di:堤低滴迪敌笛狄涤翟嫡抵底地蒂第帝弟递缔|dian:颠掂滇碘点典靛垫电佃甸店惦奠淀殿|diao:碉叼雕凋刁掉吊钓调|die:跌爹碟蝶迭谍叠|ding:丁盯叮钉顶鼎锭定订|diu:丢|dong:东冬董懂动栋侗恫冻洞|dou:兜抖斗陡豆逗痘都|du:督毒犊独读堵睹赌杜镀肚度渡妒|duan:端短锻段断缎|dui:堆兑队对|dun:墩吨蹲敦顿囤钝盾遁|duo:掇哆多夺垛躲朵跺舵剁惰堕|e:蛾峨鹅俄额讹娥恶厄扼遏鄂饿|en:恩|er:而儿耳尔饵洱二贰|fa:发罚筏伐乏阀法珐|fan:藩帆番翻樊矾钒繁凡烦反返范贩犯饭泛|fang:坊芳方肪房防妨仿访纺放|fei:菲非啡飞肥匪诽吠肺废沸费|fen:芬酚吩氛分纷坟焚汾粉奋份忿愤粪|feng:丰封枫蜂峰锋风疯烽逢冯缝讽奉凤|fou:否|fu:佛夫敷肤孵扶拂辐幅氟符伏俘服浮涪福袱弗甫抚辅俯釜斧腑府腐赴副覆赋复傅付阜父腹负富讣附妇缚咐|ga:噶嘎|gai:该改概钙盖溉|gan:干甘杆柑竿肝赶感秆敢赣|gang:冈刚钢缸肛纲岗港杠|gao:篙皋高膏羔糕搞镐稿告|ge:哥歌搁戈鸽胳疙割革葛格阁隔铬个各咯|gei:给|gen:根跟|geng:耕更庚羹埂耿梗|gong:工攻功恭龚供躬公宫弓巩汞拱贡共|gou:钩勾沟苟狗垢构购够|gu:辜菇咕箍估沽孤姑鼓古蛊骨谷股故顾固雇|gua:刮瓜剐寡挂褂|guai:乖拐怪|guan:棺关官冠观管馆罐惯灌贯|guang:光广逛|gui:瑰规圭硅归龟闺轨鬼诡癸桂柜跪贵刽傀炔|gun:辊滚棍|guo:锅郭国果裹过|ha:蛤哈|hai:骸孩海氦亥害骇还|han:酣憨邯韩含涵寒函喊罕翰撼捍旱憾悍焊汗汉|hang:夯杭航|hao:壕嚎豪毫郝好耗号浩貉|he:呵喝荷菏核禾和何合盒阂河涸赫褐鹤贺|hei:嘿黑|hen:痕很狠恨|heng:哼亨横衡恒|hong:轰哄烘虹鸿洪宏弘红|hou:喉侯猴吼厚候后|hu:呼乎忽瑚壶葫胡蝴狐糊湖弧虎唬护互沪户|hua:花哗华猾滑画划化话|huai:槐徊怀淮坏|huan:欢环桓缓换患唤痪豢焕涣宦幻|huang:荒慌黄磺蝗簧皇凰惶煌晃幌恍谎|hui:灰挥辉徽恢蛔回毁悔慧卉惠晦贿秽会烩汇讳诲绘|hun:荤昏婚魂浑混|huo:豁活伙火获或惑霍货祸|ji:击圾基机畸稽积箕肌饥迹激讥鸡姬绩缉吉极棘辑籍集及急疾汲即嫉级挤几脊己蓟技冀季伎祭剂悸济寄寂计记既忌际妓继纪藉|jia:嘉枷夹佳家加荚颊贾甲钾假稼价架驾嫁茄|jian:歼监坚尖笺间煎兼肩艰奸缄茧检柬碱硷拣捡简俭剪减荐鉴践贱见键箭件健舰剑饯渐溅涧建|jiang:僵姜将浆江疆蒋桨奖讲匠酱降|jiao:蕉椒礁焦胶交郊浇骄娇搅铰矫侥脚狡角饺缴绞剿教酵轿较叫窖|jie:揭接皆秸街阶截劫节杰捷睫竭洁结解姐戒芥界借介疥诫届|jin:巾筋斤金今津襟紧锦仅谨进靳晋禁近烬浸尽劲|jing:荆兢茎睛晶鲸京惊精粳经井警景颈静境敬镜径痉靖竟竞净|jiong:炯窘|jiu:揪究纠玖韭久灸九酒厩救旧臼舅咎就疚|ju:桔鞠拘狙疽居驹菊局咀矩举沮聚拒据巨具距踞锯俱句惧炬剧|juan:捐鹃娟倦眷卷绢|jue:嚼撅攫抉掘倔爵觉决诀绝|jun:均菌钧军君峻俊竣浚郡骏|ka:喀咖卡|kai:开揩楷凯慨|kan:槛刊堪勘坎砍看|kang:康慷糠扛抗亢炕|kao:考拷烤靠|ke:坷苛柯棵磕颗科壳咳可渴克刻客课|ken:肯啃垦恳|keng:坑吭|kong:空恐孔控|kou:抠口扣寇|ku:枯哭窟苦酷库裤|kua:夸垮挎跨胯|kuai:块筷侩快|kuan:宽款|kuang:匡筐狂框矿眶旷况|kui:亏盔岿窥葵奎魁馈愧溃|kun:坤昆捆困|kuo:括扩廓阔|la:垃拉喇蜡腊辣啦|lai:莱来赖|lan:蓝婪栏拦篮阑兰澜谰揽览懒缆烂滥|lang:琅榔狼廊郎朗浪|lao:捞劳牢老佬姥酪烙涝潦|le:乐肋了|lei:勒雷镭蕾磊累儡垒擂类泪|leng:棱楞冷|li:厘梨犁黎篱狸离漓理李里鲤礼莉荔吏栗丽厉励砾历利傈例俐痢立粒沥隶力璃哩|lia:俩|lian:联莲连镰廉怜涟帘敛脸链恋炼练|liang:粮凉梁粱良两辆量晾亮谅|liao:撩聊僚疗燎寥辽撂镣廖料|lie:列裂烈劣猎|lin:琳林磷霖临邻鳞淋凛赁吝拎|ling:玲菱零龄铃伶羚凌灵陵岭领另令|liu:溜琉榴硫馏留刘瘤流柳六|long:龙聋咙笼窿隆垄拢陇|lou:楼娄搂篓漏陋|lu:芦卢颅庐炉掳卤虏鲁麓碌露路赂鹿潞禄录陆戮|luan:峦挛孪滦卵乱|lun:抡轮伦仑沦纶论|luo:萝螺罗逻锣箩骡裸落洛骆络|lv:驴吕铝侣旅履屡缕虑氯律率滤绿|lve:掠略|ma:妈麻玛码蚂马骂嘛吗|mai:埋买麦卖迈脉|man:瞒馒蛮满蔓曼慢漫谩|mang:芒茫盲氓忙莽|mao:猫茅锚毛矛铆卯茂冒帽貌贸|me:么|mei:玫枚梅酶霉煤没眉媒镁每美昧寐妹媚|men:门闷们|meng:萌蒙檬盟锰猛梦孟|mi:眯醚靡糜迷谜弥米秘觅泌蜜密幂|mian:棉眠绵冕免勉娩缅面|miao:苗描瞄藐秒渺庙妙|mie:蔑灭|min:民抿皿敏悯闽|ming:明螟鸣铭名命|miu:谬|mo:摸摹蘑模膜磨摩魔抹末莫墨默沫漠寞陌|mou:谋牟某|mu:拇牡亩姆母墓暮幕募慕木目睦牧穆|na:拿哪呐钠那娜纳|nai:氖乃奶耐奈|nan:南男难|nang:囊|nao:挠脑恼闹淖|ne:呢|nei:馁内|nen:嫩|neng:能|ni:妮霓倪泥尼拟你匿腻逆溺|nian:蔫拈年碾撵捻念辗|niang:娘酿|niao:鸟尿|nie:捏聂孽啮镊镍涅|nin:您|ning:柠狞凝宁拧泞|niu:牛扭钮纽|nong:脓浓农弄|nu:奴努怒|nuan:暖|nuo:挪懦糯诺|nv:女|nve:虐疟|o:哦|ou:欧鸥殴藕呕偶沤|pa:啪趴爬帕怕琶|pai:拍排牌徘湃派|pan:攀潘盘磐盼畔判叛|pang:乓庞旁耪胖|pao:抛咆刨炮袍跑泡|pei:呸胚培裴赔陪配佩沛|pen:喷盆|peng:砰抨烹澎彭蓬棚硼篷膨朋鹏捧碰|pi:辟坯砒霹批披劈琵毗啤脾疲皮匹痞僻屁譬|pian:篇偏片骗|piao:飘漂瓢票|pie:撇瞥|pin:拼频贫品聘|ping:乒坪苹萍平凭瓶评屏|po:泊坡泼颇婆破魄迫粕|pou:剖|pu:脯扑铺仆莆葡菩蒲埔朴圃普浦谱曝瀑|qi:期欺栖戚妻七凄漆柒沏其棋奇歧畦崎脐齐旗祈祁骑起岂乞企启契砌器气迄弃汽泣讫|qia:掐恰洽|qian:牵扦钎铅千迁签仟谦乾黔钱钳前潜遣浅谴堑嵌欠歉|qiang:枪呛腔羌墙蔷强抢|qiao:橇锹敲悄桥瞧乔侨巧鞘撬翘峭俏窍|qie:切且怯窃|qin:钦侵亲秦琴勤芹擒禽寝沁|qing:青轻氢倾卿清擎晴氰情顷请庆|qiong:琼穷|qiu:秋丘邱球求囚酋泅|qu:趋区蛆曲躯屈驱渠取娶龋趣去|quan:圈颧权醛泉全痊拳犬券劝|que:缺瘸却鹊榷确雀|qun:裙群|ran:然燃冉染|rang:瓤壤攘嚷让|rao:饶扰绕|re:惹热|ren:壬仁人忍韧任认刃妊纫|reng:扔仍|ri:日|rong:戎茸蓉荣融熔溶容绒冗|rou:揉柔肉|ru:茹蠕儒孺如辱乳汝入褥|ruan:软阮|rui:蕊瑞锐|run:闰润|ruo:若弱|sa:撒洒萨|sai:腮鳃塞赛|san:三叁伞散|sang:桑嗓丧|sao:搔骚扫嫂|se:瑟色涩|sen:森|seng:僧|sha:莎砂杀刹沙纱傻啥煞厦|shai:筛晒|shan:珊苫杉山删煽衫闪陕擅赡膳善汕扇缮|shang:墒伤商赏晌上尚裳|shao:梢捎稍烧芍勺韶少哨邵绍|she:奢赊蛇舌舍赦摄射慑涉社设|shen:砷申呻伸身深娠绅神沈审婶甚肾慎渗什|sheng:声生甥牲升绳省盛剩胜圣|shi:匙师失狮施湿诗尸虱十石拾时食蚀实识史矢使屎驶始式示士世柿事拭誓逝势是嗜噬适仕侍释饰氏市恃室视试似|shou:收手首守寿授售受瘦兽|shu:蔬枢梳殊抒输叔舒淑疏书赎孰熟薯暑曙署蜀黍鼠属术述树束戍竖墅庶数漱恕|shua:刷耍|shuai:摔衰甩帅|shuan:栓拴|shuang:霜双爽|shui:谁水睡税|shun:吮瞬顺舜|shuo:说硕朔烁|si:斯撕嘶思私司丝死肆寺嗣四饲巳|song:松耸怂颂送宋讼诵|sou:搜艘擞嗽|su:苏酥俗素速粟僳塑溯宿诉肃|suan:酸蒜算|sui:虽隋随绥髓碎岁穗遂隧祟|sun:孙损笋|suo:蓑梭唆缩琐索锁所|ta:塌他它她塔獭挞蹋踏|tai:胎苔抬台泰酞太态汰|tan:坍摊贪瘫滩坛檀痰潭谭谈坦毯袒碳探叹炭|tang:汤塘搪堂棠膛唐糖倘躺淌趟烫|tao:掏涛滔绦萄桃逃淘陶讨套|te:特|teng:藤腾疼誊|ti:梯剔踢锑提题蹄啼体替嚏惕涕剃屉|tian:天添填田甜恬舔腆|tiao:挑条迢眺跳|tie:贴铁帖|ting:厅听烃汀廷停亭庭挺艇|tong:通桐酮瞳同铜彤童桶捅筒统痛|tou:偷投头透|tu:凸秃突图徒途涂屠土吐兔|tuan:湍团|tui:推颓腿蜕褪退|tun:吞屯臀|tuo:拖托脱鸵陀驮驼椭妥拓唾|wa:挖哇蛙洼娃瓦袜|wai:歪外|wan:豌弯湾玩顽丸烷完碗挽晚皖惋宛婉万腕|wang:汪王亡枉网往旺望忘妄|wei:威巍微危韦违桅围唯惟为潍维苇萎委伟伪尾纬未蔚味畏胃喂魏位渭谓尉慰卫|wen:瘟温蚊文闻纹吻稳紊问|weng:嗡翁瓮|wo:挝蜗涡窝我斡卧握沃|wu:巫呜钨乌污诬屋无芜梧吾吴毋武五捂午舞伍侮坞戊雾晤物勿务悟误|xi:昔熙析西硒矽晰嘻吸锡牺稀息希悉膝夕惜熄烯溪汐犀檄袭席习媳喜铣洗系隙戏细|xia:瞎虾匣霞辖暇峡侠狭下夏吓|xian:掀锨先仙鲜纤咸贤衔舷闲涎弦嫌显险现献县腺馅羡宪陷限线|xiang:相厢镶香箱襄湘乡翔祥详想响享项巷橡像向象|xiao:萧硝霄哮嚣销消宵淆晓小孝校肖啸笑效|xie:楔些歇蝎鞋协挟携邪斜胁谐写械卸蟹懈泄泻谢屑|xin:薪芯锌欣辛新忻心信衅|xing:星腥猩惺兴刑型形邢行醒幸杏性姓|xiong:兄凶胸匈汹雄熊|xiu:休修羞朽嗅锈秀袖绣|xu:墟戌需虚嘘须徐许蓄酗叙旭序恤絮婿绪续吁|xuan:轩喧宣悬旋玄选癣眩绚|xue:削靴薛学穴雪血|xun:勋熏循旬询寻驯巡殉汛训讯逊迅|ya:压押鸦鸭呀丫芽牙蚜崖衙涯雅哑亚讶轧|yan:焉咽阉烟淹盐严研蜒岩延言颜阎炎沿奄掩眼衍演艳堰燕厌砚雁唁彦焰宴谚验|yang:殃央鸯秧杨扬佯疡羊洋阳氧仰痒养样漾|yao:邀腰妖瑶摇尧遥窑谣姚咬舀药要耀钥|ye:椰噎耶爷野冶也页掖业叶曳腋夜液|yi:一壹医揖铱依伊衣颐夷遗移仪胰疑沂宜姨彝椅蚁倚已乙矣以艺抑易邑屹亿役臆逸肄疫亦裔意毅忆义益溢诣议谊译异翼翌绎|yin:茵荫因殷音阴姻吟银淫寅饮尹引隐印|ying:英樱婴鹰应缨莹萤营荧蝇迎赢盈影颖硬映|yo:哟|yong:拥佣臃痈庸雍踊蛹咏泳涌永恿勇用|you:幽优悠忧尤由邮铀犹油游酉有友右佑釉诱又幼|yu:迂淤于盂榆虞愚舆余俞逾鱼愉渝渔隅予娱雨与屿禹宇语羽玉域芋郁遇喻峪御愈欲狱育誉浴寓裕预豫驭|yuan:鸳渊冤元垣袁原援辕园员圆猿源缘远苑愿怨院|yue:曰约越跃岳粤月悦阅|yun:耘云郧匀陨允运蕴酝晕韵孕|za:匝砸杂咋|zai:栽哉灾宰载再在仔|zan:咱攒暂赞|zang:赃脏葬|zao:遭糟凿藻枣早澡蚤躁噪造皂灶燥|ze:责择则泽|zei:贼|zen:怎|zeng:增憎赠|zha:扎喳渣札铡闸眨栅榨乍炸诈柞|zhai:摘斋宅窄债寨|zhan:瞻毡詹粘沾盏斩崭展蘸栈占战站湛绽|zhang:长樟章彰漳张掌涨杖丈帐账仗胀瘴障|zhao:招昭找沼赵照罩兆肇召爪|zhe:遮折哲蛰辙者锗蔗这浙着|zhen:珍斟真甄砧臻贞针侦枕疹诊震振镇阵帧|zheng:蒸挣睁征狰争怔整拯正政症郑证|zhi:芝枝支吱蜘知肢脂汁之织职直植殖执值侄址指止趾只旨纸志挚掷至致置帜峙制智秩稚质炙痔滞治窒|zhong:中盅忠钟衷终种肿重仲众|zhou:舟周州洲诌粥轴肘帚咒皱宙昼骤|zhu:珠株蛛朱猪诸诛逐竹烛煮拄瞩嘱主著柱助蛀贮铸筑住注祝驻|zhua:抓|zhuai:拽|zhuan:专砖转撰赚篆|zhuang:桩庄装妆撞壮状|zhui:锥追赘坠缀|zhun:谆准|zhuo:捉拙卓桌茁酌啄灼浊|zi:兹咨资姿滋淄孜紫籽滓子自渍字|zong:鬃棕踪宗综总纵|zou:邹走奏揍|zu:租足卒族祖诅阻组|zuan:钻纂|zui:嘴醉最罪|zun:尊遵|zuo:琢昨左佐做作坐座";
+const ALL_PY = {};
+HOMOPHONE_RAW.split('|').forEach(g=>{
+  const i=g.indexOf(':'); if(i<0) return;
+  const py=g.slice(0,i);
+  for(const c of g.slice(i+1)) if(!ALL_PY[c]) ALL_PY[c]=py;
+});
+/* 词库外成语优先查通用字表；词库首尾字表作补充 */
+const pyOf = c => ALL_PY[c] || CHAR_PY[c] || '';
+
+/* 歇后语：前半|后半|解读 */
+const XIEHOU_RAW = `外甥打灯笼|照旧（舅）|借「舅」谐音「旧」，指一切照原来的样子。|流程改了一圈周一例会还是老样子，一句「外甥打灯笼」全场都懂，比说「没变化」俏皮。
+孔夫子搬家|净是输（书）|孔夫子书多，「书」谐音「输」，调侃总也赢不了。|连输三局牌，自嘲「今天孔夫子搬家」，输得不尴尬。
+小葱拌豆腐|一清（青）二白|葱青、豆腐白，谐音「清」，形容清楚明白、清白无瑕。|报销时把票据摊开：「这笔钱一清二白，谁都能查。」
+上鞋不用锥子|真（针）好|不用针就能上鞋，「针」谐音「真」，是句俏皮的夸赞。|夸同事方案漂亮，来一句「真（针）好」，比「很棒」多一点机灵。
+梁山泊的军师|无（吴）用|军师姓吴，谐音「无用」，说人或办法起不了作用。|上线两周没人用的功能，评审会上自嘲「纯属无（吴）用」，气氛反而松了。
+四月的冰河|开动（冻）了|冰河化冻，「冻」谐音「动」，指事情终于启动。|卡了三周的项目终于启动，群里发「四月的冰河——开动了」很应景。
+隔着门缝吹喇叭|名（鸣）声在外|喇叭鸣声传到门外，「鸣」谐音「名」，指名气传得远。|介绍同行大咖时说「这位可是名（鸣）声在外」，比堆一串头衔自然。
+猪八戒照镜子|里外不是人|镜里镜外都不像人，形容两头不讨好、怎么做都落埋怨。|两头劝和反而两头挨埋怨，用这句自嘲最贴切。
+芝麻开花|节节高|芝麻自下而上一节节开，比喻生活或职位步步向上。|给同事写升职贺词：「祝往后节节高」，稳妥又喜庆。
+十五个吊桶打水|七上八下|七只上来八只下去，写心神慌乱、拿不定主意。|等面试结果那半天，一句「十五个吊桶打水」把心慌写尽了。
+丈二和尚|摸不着头脑|和尚太高够不着头，比喻弄不清来龙去脉。|新系统文档缺了三页，同事问原理时可以说「我也摸不着头脑」。
+哑巴吃黄连|有苦说不出|黄连极苦却说不了话，指受了委屈难以诉苦。|替团队背了锅又不便解释，「哑巴吃黄连」比诉苦更克制。
+黄鼠狼给鸡拜年|没安好心|天敌来拜年，一眼看穿是另有所图。|竞争对手突然来谈合作，提醒一句「黄鼠狼给鸡拜年」就够了。
+泥菩萨过河|自身难保|泥像遇水就化，连自己都顾不上，更别提帮别人。|朋友找你帮忙而你自己也一堆事：「我这两天泥菩萨过河，缓两天行吗？」
+竹篮打水|一场空|篮子漏水，忙到最后什么也没得到。|忙了一整月方案被推翻，复盘时一句「竹篮打水」比长篇检讨更有力。
+画蛇添足|多此一举|蛇本无足，添上反而输了，指多余的举动坏了事。|评审时删掉那段没人看的花活：「别画蛇添足了，现在这样刚好。」
+王婆卖瓜|自卖自夸|自己夸自己的瓜，讽喻自我吹嘘。|甲方PPT里全是自夸，下来可以调侃「王婆卖瓜」，分寸刚好。
+打破砂锅|问（璺）到底|砂锅裂纹叫「璺」，谐音「问」，形容追问不休。|小孩追着问「为什么天是蓝的」，笑说「你这是打破砂锅」比敷衍可爱。
+兔子尾巴|长不了|尾巴天生短，比喻好景或势头维持不久。|劝人别把一时热度当长期趋势：「这波兔子尾巴，得看下半个月。」
+铁公鸡|一毛不拔|铁做的鸡拔不下毛，形容极其吝啬。|朋友聚餐永远不掏钱包，一句「铁公鸡」是熟人之间的玩笑，别对不熟的人用。
+肉包子打狗|有去无回|包子被狗叼走，比喻东西或人一去不返。|借出去的书半年没影儿，自嘲「肉包子打狗」比催讨体面。
+姜太公钓鱼|愿者上钩|直钩离水三尺，愿来的自己来，比喻心甘情愿上套。|招聘时说明「不劝、不强拉，愿者上钩」，用的就是这份从容。
+韩信点兵|多多益善|韩信自称带兵越多越好，后指越多越合用。|排班表想多排几个人手：「韩信点兵，多多益善」一句就能带过。
+包公断案|铁面无私|包拯不徇私情，形容公正严明。|夸负责审核的同事不讲情面：「包公断案，铁面无私」，是夸不是损。
+门缝里看人|把人看扁了|视野被压成一条缝，比喻小看别人。|新人被质疑「你行不行呀」，回一句「别门缝里看人」既不怂也不冲。
+八仙过海|各显神通|八位仙人各凭法宝渡海，比喻各人拿出自己的本事。|头脑风暴开场：「八仙过海，各显神通，先各写各的」，比喊「自由发挥」更清楚。
+瞎子点灯|白费蜡|点了灯自己也看不见，形容纯粹白费力气。|劝同事别做无效加班：「资料没齐就开工，瞎子点灯——白费蜡」。
+聋子的耳朵|摆设|耳朵听不见，只剩个样子，指形同虚设、起不了作用。|讲流程里那个没人填的字段：「这一栏现在是聋子的耳朵，摆设。」
+狗咬吕洞宾|不识好人心|神仙好心反被咬，比喻把别人的善意当成恶意。|好心提醒反被误会，私下嘀咕一句「狗咬吕洞宾」，比翻脸体面。
+关公面前耍大刀|自不量力|在使刀的行家跟前卖弄刀法，讽人不知深浅。|新人想在资深工程师面前炫技，老师傅笑一句「关公面前耍大刀」就够收场。
+刘备借荆州|有借无还|借了地盘就没打算还，成了「借了不还」的代名词。|借了充电宝三天没还，群里催：「刘备借荆州可不行啊」。
+周瑜打黄盖|一个愿打，一个愿挨|苦肉计是两人商量好的，比喻双方都自愿、旁人别拦。|两个部门主动加班配合，别去劝：「人家一个愿打一个愿挨」。
+徐庶进曹营|一言不发|徐庶被迫归曹却终身不献一策，指打定主意不表态。|会上有人明显不表态，事后别追问，一句「徐庶进曹营」点到为止。
+司马昭之心|路人皆知|野心明摆着，连路上行人都看得出来。|对手的意图全写在方案里了，私下说「司马昭之心」比列证据更利落。
+张飞穿针|粗中有细|猛将也有干细活的时候，形容人看着粗豪、其实心细。|看见粗线条的同事把差旅表做得一丝不苟：「真是张飞穿针，粗中有细」。
+曹操吃鸡肋|食之无味，弃之可惜|留着没滋味、扔了又心疼，写进退两难的犹豫。|纠结要不要砍掉鸡肋业务，用「食之无味，弃之可惜」一句就说清了难处。
+三个臭皮匠|顶个诸葛亮|普通人凑一起商量，也能抵得上一个智者。|拉三个人一起过方案：「三个臭皮匠，顶个诸葛亮」，比「集思广益」亲切。
+孙悟空大闹天宫|慌了神|天庭众神全被惊动，正好双关「慌了神」。|线上故障全员被叫醒，复盘标题可以写「孙悟空大闹天宫，慌了神」。
+唐僧念紧箍咒|痛苦在后（猴）头|「猴」谐音「后」，指难受的还在后面呢。|项目刚过一关又来三关，跟同事说「痛苦在后（猴）头」，苦中带笑。
+猪八戒吃人参果|全不知滋味|一口吞下去没尝出味，比喻囫囵吞枣、不加体会。|培训完什么都没记住，自嘲「猪八戒吃人参果」，比说「没听懂」生动。
+梁山好汉|不打不相识|多是交过手才结成兄弟，指冲突反倒促成了交情。|两个组吵完反而成了搭档：「不打不相识」，一句话把气氛翻过来。
+老鼠过街|人人喊打|惹人嫌的东西谁都要追着打，形容成了众矢之的。|说到人人喊打的做法，用「老鼠过街」比「引起公愤」更有画面。
+猫哭耗子|假慈悲|天敌掉眼泪，一眼看穿是装出来的善意。|竞争对手突然来慰问，心里有数就好：「猫哭耗子」，不必戳破。
+热锅上的蚂蚁|团团转|受热四处乱爬，写人急得坐立不安。|等出结果那十分钟在走廊来回走，写「热锅上的蚂蚁」谁都看得懂。
+井底之蛙|目光短浅|只看见井口那一小片天，比喻见识狭小。|劝人多出去看看：「别当井底之蛙」，比讲「视野很重要」轻得多。
+水中捞月|白忙一场|捞的只是倒影，折腾半天什么也没得到。|追了半个月的线索其实不存在，复盘一句「水中捞月」就收住了。
+`;
+const XIEHOU = XIEHOU_RAW.trim().split('\n').map(l=>{
+  const [front,back,note,use] = l.trim().split('|');
+  return {front,back,note,use:use||''};
+});
+
+/* 古诗词：上句|下句|诗题|作者|赏析 */
+const POEM_RAW = `床前明月光|疑是地上霜|静夜思|李白|月光洒在床前，恍惚间竟像一层白霜，一个「疑」字写尽客居的恍神。|异地出差深夜发动态，配「疑是地上霜」比写「想家了」更有余味。
+举头望明月|低头思故乡|静夜思|李白|一抬一低之间，望月与思乡被连成一个最朴素的条件反射。|中秋给家人发消息，接一句「低头思故乡」，不煽情却到位。
+春眠不觉晓|处处闻啼鸟|春晓|孟浩然|睡得沉，不知不觉天已亮，先叫醒诗人的不是光而是满耳鸟鸣。|周末睡到自然醒，朋友圈写「春眠不觉晓」，比「赖床了」雅一点。
+夜来风雨声|花落知多少|春晓|孟浩然|由昨夜风雨推想落花，惜春之情藏在一句轻轻的追问里。|一夜风雨后看落花，配「花落知多少」，惜春不用说破。
+白日依山尽|黄河入海流|登鹳雀楼|王之涣|上下、远近两两相对，十个字铺开一幅万里河山。|登高楼看城市天际线，这句十个字就能撑起一张照片的文案。
+欲穷千里目|更上一层楼|登鹳雀楼|王之涣|写景忽然转为说理：想看得更远，就得站得更高。|年终复盘给团队打气：「欲穷千里目，更上一层楼」，比喊口号耐听。
+锄禾日当午|汗滴禾下土|悯农|李绅|正午最毒的日头下，汗珠落进禾苗下的泥土，粒粒皆辛苦由此而来。|带孩子去田里看收割，讲这句比讲「珍惜粮食」更具体。
+谁知盘中餐|粒粒皆辛苦|悯农|李绅|一问一答，把碗里的饭和地里的汗直接扣在一起。|劝孩子别剩饭，「粒粒皆辛苦」是最短也最管用的一句。
+红豆生南国|春来发几枝|相思|王维|红豆又名相思子，问枝数其实是问故人消息。|给异地朋友寄小礼物，卡片上写「春来发几枝」，问的是近况。
+空山不见人|但闻人语响|鹿柴|王维|不见人而闻人声，以有声反衬空山更静。|徒步进山安静得只听见人声，「空山不见人」正好形容那一刻。
+独在异乡为异客|每逢佳节倍思亲|九月九日忆山东兄弟|王维|两个「异」字叠出孤零，佳节反而把思念放大一倍。|独自在外过节发消息，用「每逢佳节倍思亲」不必再解释。
+飞流直下三千尺|疑是银河落九天|望庐山瀑布|李白|把瀑布说成整条银河倾泻，夸张里是盛唐的气魄。|看瀑布或大雨后的檐水，这句夸张得理直气壮。
+两岸猿声啼不住|轻舟已过万重山|早发白帝城|李白|猿声还在耳畔，船已穿尽群山，写的是获赦后一身轻快。|熬完一个大项目坐车回家，「轻舟已过万重山」是最贴的收尾。
+桃花潭水深千尺|不及汪伦送我情|赠汪伦|李白|用可量的潭水，反衬不可量的情谊。|送别同事时写「不及汪伦送我情」，比「感谢一路同行」更有分量。
+两个黄鹂鸣翠柳|一行白鹭上青天|绝句|杜甫|黄、翠、白、青四色对仗，两句就是一幅窗框里的画。|春游拍到柳、鸟、蓝天，配这句四色对仗刚好。
+窗含西岭千秋雪|门泊东吴万里船|绝句|杜甫|一窗收千年雪，一门泊万里船，时空在小小草堂里打开。|在窗边看见远山与停着的船，才懂什么叫「窗含」「门泊」。
+春色满园关不住|一枝红杏出墙来|游园不值|叶绍翁|吃了一次闭门羹，却撞见关不住的春意，失落翻成惊喜。|吃了闭门羹却撞见意外收获，用「一枝红杏出墙来」自嘲很妙。
+等闲识得东风面|万紫千红总是春|春日|朱熹|东风一吹，万紫千红都是它的面目，写景里带着理趣。|春天团建合影，标题写「万紫千红总是春」不容易撞款。
+不知细叶谁裁出|二月春风似剪刀|咏柳|贺知章|把春风比作剪刀，一个「裁」字让整棵树有了手艺感。|带小孩看新芽时说「二月春风似剪刀」，比讲植物学更好记。
+接天莲叶无穷碧|映日荷花别样红|晓出净慈寺送林子方|杨万里|碧到天边、红被日头点透，西湖六月被写成两种极色。|夏天去荷塘拍照片，「接天」「映日」两句省掉一段滤镜说明。
+停车坐爱枫林晚|霜叶红于二月花|山行|杜牧|「坐」是因为；经霜的叶子竟比春花更红，秋气一扫悲凉。|秋天爬山看到红叶，用「霜叶红于二月花」把悲秋翻成爽朗。
+孤帆远影碧空尽|唯见长江天际流|黄鹤楼送孟浩然之广陵|李白|船影化进碧空，只剩江水，目送写成了久久不回的凝望。|码头送人站到船影没了，这句写的就是那份不肯转身。
+会当凌绝顶|一览众山小|望岳|杜甫|还没登顶就先立誓，青年杜甫的口气比泰山还高。|给刚立下目标的自己或团队配「一览众山小」，气势刚好。
+海内存知己|天涯若比邻|送杜少府之任蜀州|王勃|把离别的空间距离一笔抹平，是唐人送别里最开阔的一句。|同事外派送别卡上写「天涯若比邻」，不伤感也不敷衍。
+欲把西湖比西子|淡妆浓抹总相宜|饮湖上初晴后雨|苏轼|晴也好雨也好，像美人淡妆浓妆都好看，从此西湖有了「西子湖」。|雨天游西湖发照片，「淡妆浓抹总相宜」比「也挺好看」高明。
+不识庐山真面目|只缘身在此山中|题西林壁|苏轼|看不清，正因为自己就在山里；写景顺手讲透了当局者迷。|讨论问题时有人陷在细节里，一句「只缘身在此山中」能温和地拉出来。
+离离原上草|一岁一枯荣|赋得古原草送别|白居易|原野上的草岁岁枯了又荣，一开篇就把「时间」摆到眼前。|开春看草坪返青，写「一岁一枯荣」，时间感一下就有了。
+野火烧不尽|春风吹又生|赋得古原草送别|白居易|烧得掉地上的草，烧不掉地下的根，写生命力最硬的一笔。|项目被砍又自己长回来，复盘标题「春风吹又生」很提气。
+慈母手中线|游子身上衣|游子吟|孟郊|一针一线缝进衣里，母爱被写成看得见的动作。|母亲节配图不想煽情，「慈母手中线」一句就够。
+谁言寸草心|报得三春晖|游子吟|孟郊|小草似的儿女心，怎么报答得了春日般的母爱。|给父母发消息时接「报得三春晖」，比直接说谢谢更沉。
+秦时明月汉时关|万里长征人未还|出塞|王昌龄|明月与关塞跨了秦汉，一句里压着几百年的征戍。|看边塞题材纪录片，这句能一下把几百年压进十个字。
+但使龙城飞将在|不教胡马度阴山|出塞|王昌龄|只要有良将镇守，边患便过不了阴山，是唐人最硬的底气。|聊「底线守得住」的话题，用「不教胡马度阴山」比讲原则有劲。
+洛阳亲友如相问|一片冰心在玉壶|芙蓉楼送辛渐|王昌龄|不说思念只说心迹：澄澈如冰，盛在玉壶里。|被人误会时不必辩解，一句「一片冰心在玉壶」表心迹就够。
+劝君更尽一杯酒|西出阳关无故人|送元二使安西|王维|再喝一杯吧，出了阳关就再没熟人了，惜别全压在一个「更」字。|送朋友远行，酒桌上「西出阳关无故人」比「常联系」重得多。
+独怜幽草涧边生|上有黄鹂深树鸣|滁州西涧|韦应物|偏爱涧边幽草，头顶黄鹂在浓荫里叫，静里藏着声。|在溪边安静待一下午，这句写的是那种不热闹的好。
+春潮带雨晚来急|野渡无人舟自横|滁州西涧|韦应物|雨急潮涨、渡口没人，小船自己横着，写尽一份闲淡。|忙里偷闲看见无人看管的小船，「舟自横」三个字就是松弛感。
+月落乌啼霜满天|江枫渔火对愁眠|枫桥夜泊|张继|落月、啼乌、寒霜、渔火，四种意象把客愁铺满一夜。|夜里赶方案对着窗外那点灯，「江枫渔火对愁眠」写的就是半睡半醒那会儿。
+姑苏城外寒山寺|夜半钟声到客船|枫桥夜泊|张继|半夜钟声越过水面落到船上，声音成了全诗的主角。|夜宿水边听见远处钟声，才明白张继为什么写「到客船」。
+千山鸟飞绝|万径人踪灭|江雪|柳宗元|山山无鸟、路路无人，先把整个世界擦成一片空白。|写极简风文案或拍雪景空镜，「千山」「万径」两句是最好的留白。
+孤舟蓑笠翁|独钓寒江雪|江雪|柳宗元|空到极处只剩一个渔翁，孤傲被写得又冷又清楚。|一个人扛完全程时，用「独钓寒江雪」自况，孤但不丧。
+日出江花红胜火|春来江水绿如蓝|忆江南|白居易|红胜过火、绿胜过蓝，两种极色把江南春天钉进记忆里。|春天去江南，「红胜火」「绿如蓝」比一堆形容词都准。
+山重水复疑无路|柳暗花明又一村|游山西村|陆游|以为走投无路，转个弯却见村落，写景顺手成了人生哲理。|方案卡死又突然找到路，汇报里写「柳暗花明又一村」谁都懂。
+`;
+const POEMS = POEM_RAW.trim().split('\n').map(l=>{
+  const [line,answer,title,author,note,use] = l.trim().split('|');
+  return {line,answer,title,author,note,use:use||''};
+});
+
+/* 地道口语：场景 + 四选项（带逐项解析） */
+const ENGLISH = [
+  {scene:'同事聚餐结束，你想说「这顿我请」', tip:'同义还有 It\'s my treat. / I\'ll get this one.', options:[
+    {t:"It's on me.",ok:true,why:'on me = 由我买单，请客时最自然、最顺口的一句。'},
+    {t:'I pay the money.',ok:false,why:'语法没大错，但像在陈述「我付钱」这个动作，不像在请客。'},
+    {t:'This meal is my money.',ok:false,why:'典型逐字直译，母语者不会把「饭」和「我的钱」画等号。'},
+    {t:'Let me buy the bill.',ok:false,why:'账单用 pay，不说 buy；正确搭配是 pay the bill。'}]},
+  {scene:'聚会想先走，跟主人打声招呼', tip:'head out / take off / call it a night 都很地道。', options:[
+    {t:"I'm gonna head out.",ok:true,why:'head out = 动身离开，语气轻松，最适合告别场合。'},
+    {t:'I go first.',ok:false,why:'像在宣布比赛顺序，缺少「告辞」的语用含义。'},
+    {t:'I leave firstly.',ok:false,why:'firstly 用于列举论点，不用来描述「先走」。'},
+    {t:'I am going to go away first.',ok:false,why:'go away 带「走开、别烦我」的味道，且啰嗦。'}]},
+  {scene:'看到一件衣服挺喜欢，但觉得「有点贵」', tip:'pricey / a bit steep / not cheap 都是口语常用说法。', options:[
+    {t:"It's a bit pricey.",ok:true,why:'pricey 是口语里的「偏贵」，a bit 把语气放软，不显冒犯。'},
+    {t:'The price is a little expensive.',ok:false,why:'expensive 修饰东西，不修饰 price；这是最高频的中式错误之一。'},
+    {t:'It is very costly for money.',ok:false,why:'costly 已含「花钱多」，再加 for money 属冗余堆砌。'},
+    {t:'Its money is too much.',ok:false,why:'「钱太多」不等于「价格高」，属于字面直译。'}]},
+  {scene:'朋友约你周末出门，你想说「改天吧」', tip:'rain check 源自棒球赛因雨改期，后来专指「这次先欠着」。', options:[
+    {t:"Can I take a rain check?",ok:true,why:'固定说法：这次去不了，下次再约，委婉又不扫兴。'},
+    {t:'Let us change a day.',ok:false,why:'change a day 是「换掉某一天」，不是「改期再约」。'},
+    {t:'Another day let us.',ok:false,why:'语序错乱，且缺动词，母语者听不出完整意思。'},
+    {t:'I will change the time of us.',ok:false,why:'生硬直译「改变我们的时间」，日常不这么说。'}]},
+  {scene:'别人向你道谢，你想回一句「别客气 / 没事儿」', tip:'按正式程度：You\'re welcome → No worries → Anytime.', options:[
+    {t:'No worries.',ok:true,why:'轻松、高频，英式美式都通用，比教科书用语更活。'},
+    {t:"Don't be polite.",ok:false,why:'「别客气」直译，听起来像在叫对方不要讲礼貌。'},
+    {t:'No need thanks.',ok:false,why:'缺介词与主语，是把中文词序硬套进英文。'},
+    {t:'You are no need to thank.',ok:false,why:'need 的用法错，且语义变成了「你不必感谢」。'}]},
+  {scene:'手机快没电了，跟朋友解释一下', tip:'dead 形容电池耗尽；也可以说 My phone is about to die.', options:[
+    {t:'My phone died.',ok:true,why:'一个 died 就够，母语者天天这么说，简洁又生动。'},
+    {t:'My phone has no electricity.',ok:false,why:'electricity 指电力供应，不指设备电量，属于用词错位。'},
+    {t:'My phone is no power.',ok:false,why:'缺介词，正确说法是 out of power / out of battery。'},
+    {t:'My phone lost its electricity.',ok:false,why:'把电量当成「丢失的物品」，是典型直译。'}]},
+  {scene:'对方分析完一件事，你想说「你说得有道理」', tip:'想更肯定可以说 That\'s a good point. / Fair point.', options:[
+    {t:'You have a point.',ok:true,why:'固定表达：你这话有道理，承认对方但不必全盘同意。'},
+    {t:'You say is right.',ok:false,why:'一个句子里塞了两个谓语，缺 what / that 一类连接。'},
+    {t:'Your words are correct.',ok:false,why:'像在批改作业，评判「措辞对错」而非认同观点。'},
+    {t:'You speak very truth.',ok:false,why:'truth 是名词，不能这样被 very 修饰。'}]},
+  {scene:'对方说得太快，你没听清，想请他重说一遍', tip:'非正式场合 Come again? / Sorry? 都很自然。', options:[
+    {t:'Sorry, could you say that again?',ok:true,why:'礼貌、清楚、万能，正式非正式场合都稳妥。'},
+    {t:'Please speak one more time.',ok:false,why:'像命令对方「再讲一次」，少了「我没听清」的语境。'},
+    {t:"I didn't listen clearly, repeat.",ok:false,why:'listen 强调主动听，且 bare repeat 语气生硬。'},
+    {t:'Can you say it again again?',ok:false,why:'again 重复，属于口误式叠加。'}]},
+  {scene:'朋友要上台演讲，你想给他「加油」', tip:'You got this! / You\'ll crush it! / Break a leg! 看场合挑。', options:[
+    {t:"You got this!",ok:true,why:'= 你稳了、你能行，鼓励场景里最有画面感的一句。'},
+    {t:'Add oil!',ok:false,why:'虽已被部分词典收录，日常英语里仍会被当成中文直译。'},
+    {t:'Fighting!',ok:false,why:'来自韩语应援文化，英语母语者不这样给人打气。'},
+    {t:'Give you power!',ok:false,why:'「给你力量」直译，英文里没有这个搭配。'}]},
+  {scene:'别人替你张罗，你想说「不用麻烦了」', tip:'也可以说 Don\'t go to any trouble. / I\'m good, thanks.', options:[
+    {t:"Don't worry about it.",ok:true,why:'随和的「别费心啦」，既谢了对方也把事挡回去。'},
+    {t:'No need to trouble.',ok:false,why:'trouble 缺主语与宾语，是把「麻烦」当不及物动词用。'},
+    {t:"Please don't polite.",ok:false,why:'polite 是形容词，不能跟在 don\'t 后面。'},
+    {t:'You are too troublesome.',ok:false,why:'意思变成「你这人真麻烦」，相当失礼。'}]},
+  {scene:'计划临时取消，你想说「这事儿黄了」', tip:'fall through 专指计划、交易没能成。', options:[
+    {t:'It fell through.',ok:true,why:'固定短语，指安排泡汤、没谈成，语气中性。'},
+    {t:'It became yellow.',ok:false,why:'把中文颜色梗直接搬过去，英文里 yellow 没有这层意思。'},
+    {t:'This thing is broken.',ok:false,why:'broken 多指物品损坏，不用于计划告吹。'},
+    {t:'It is gone to nothing.',ok:false,why:'搭配不成立，正确是 come to nothing。'}]},
+  {scene:'进电梯 / 进门时，想请对方先走', tip:'Only after you 是更俏皮的加强版。', options:[
+    {t:'After you.',ok:true,why:'两三个词搞定，是英语里最标准的礼让用语。'},
+    {t:'You first go.',ok:false,why:'语序按中文铺排，英文应说 You go first。'},
+    {t:'Please before.',ok:false,why:'before 是介词/连词，不能单独当祈使句用。'},
+    {t:'You go in the front.',ok:false,why:'in the front 指「在前部位置」，不是「先走一步」。'}]},
+  {scene:'有人问你某件事，你一时「想不起来了」', tip:'slip one\'s mind 画面感很强：从脑子里滑走了。', options:[
+    {t:"It slipped my mind.",ok:true,why:'地道的「一时没想起来」，还自带一点不好意思的语气。'},
+    {t:'I forgot it in my brain.',ok:false,why:'forgot 不需要地点；「忘在脑子里」逻辑也反了。'},
+    {t:'My mind has no it.',ok:false,why:'逐字硬译，英文没有这种存在句。'},
+    {t:"I can't remember out.",ok:false,why:'remember 不加 out，属于多余的介词。'}]},
+  {scene:'赶时间，想跟对方说「我得赶紧走了」', tip:'in a rush / in a hurry / running late 各有细微差别。', options:[
+    {t:"I'm in a rush.",ok:true,why:'最口语的「我赶时间」，简短自然，不解释也懂。'},
+    {t:"I'm catching time.",ok:false,why:'catch 搭配的是 bus / train，不能「抓时间」。'},
+    {t:'My time is tight.',ok:false,why:'schedule is tight 才地道，time 一般不用 tight 形容。'},
+    {t:'I am hurry now.',ok:false,why:'hurry 是动词或名词，不能当形容词跟在 am 后。'}]},
+  {scene:'答应帮忙，你想说「我尽力」', tip:'想更实在可以说 I\'ll do what I can.', options:[
+    {t:"I'll do my best.",ok:true,why:'标准又真诚，留了余地但不含糊。'},
+    {t:'I will try my strength.',ok:false,why:'strength 是体力/力气，不是「努力」；try one\'s best 才是。'},
+    {t:'I use all my power to do.',ok:false,why:'power 指权力或功率，搭配与语气都不对。'},
+    {t:'I try hardly.',ok:false,why:'hardly 是「几乎不」，和 hard 只差一个字母，意思反了。'}]},
+  {scene:'砍价成功，你想说「这价格挺划算」', tip:'a steal / a bargain / good value 也都是常用说法。', options:[
+    {t:"That's a good deal.",ok:true,why:'deal 指这笔交易，good deal = 划算，买完最常说这句。'},
+    {t:'The price is very suitable.',ok:false,why:'suitable 是「合适、相配」，不表示便宜划算。'},
+    {t:'It is cheap and very good.',ok:false,why:'语法可以，但像生硬点评，少了「捡到便宜」的语感。'},
+    {t:'This price is worth.',ok:false,why:'worth 后面必须接宾语，句子悬空。'}]},
+  {scene:'聊到完全不懂的领域，想说「我一点都听不懂」', tip:'也可以说 I\'m completely lost. / It went over my head.', options:[
+    {t:"It's all Greek to me.",ok:true,why:'经典习语：对我而言像希腊文，幽默地表示完全看不懂。'},
+    {t:'I am completely not know.',ok:false,why:'am 和 know 两个谓语直接并列，语法不成立。'},
+    {t:'I have no understand.',ok:false,why:'no 后接名词，understand 是动词，应为 no understanding。'},
+    {t:'This is too difficult to my ears.',ok:false,why:'「对耳朵太难」是中文思路，英文一般说 hard to follow。'}]},
+  {scene:'店员迎上来问需要什么，你想说「我随便看看」', tip:'也可以说 Just looking, thanks. / I\'m just looking around.', options:[
+    {t:"I'm just browsing.",ok:true,why:'browse = 随意浏览，逛店时最标准的一句，礼貌又不麻烦店员。'},
+    {t:'I only look look.',ok:false,why:'动词叠用是中文习惯，英文没有「看看」这种重叠形式。'},
+    {t:'I look around casually.',ok:false,why:'语法成立但像在描述动作，听不出「不用招呼我」的语用意思。'},
+    {t:'No, I just see.',ok:false,why:'see 强调「看见」，逛店看商品该用 look / browse。'}]},
+  {scene:'朋友讲了件倒霉事，你想回一句「太糟了」', tip:'正式一点说 That\'s awful.；熟人之间 That sucks 也很常见。', options:[
+    {t:"That's rough.",ok:true,why:'rough 口语里指「难熬、够呛」，轻巧又带共情，不至于太重。'},
+    {t:'It is too bad to my heart.',ok:false,why:'「对我心很坏」是直译，英文里 heart 不这么搭配。'},
+    {t:'Very bad thing.',ok:false,why:'缺主语和谓语，只是把两个词堆在一起。'},
+    {t:'I feel very terrible for it.',ok:false,why:'feel terrible 指自己身体或心情不适，用错对象了。'}]},
+  {scene:'别人在等你，你想说「我马上就好」', tip:'Give me a sec. / Almost done. / I\'ll be right there. 看场合挑。', options:[
+    {t:"I'll be ready in a sec.",ok:true,why:'in a sec = 一秒后，口语里就是「马上」，简洁又自然。'},
+    {t:'I immediately good.',ok:false,why:'good 是形容词不能跟在副词后；「马上好」不能逐字翻。'},
+    {t:'I will soon finish it.',ok:false,why:'语法没错，但像汇报进度，少了「别催、就来」的语气。'},
+    {t:'Wait a moment I am OK.',ok:false,why:'两个句子硬拼在一起，且 am OK 表示「我没事」，语义跑偏。'}]},
+  {scene:'同事把项目收尾得很漂亮，你想夸一句「干得漂亮」', tip:'更强一点：You nailed it. / Great job on this.', options:[
+    {t:'Nice work!',ok:true,why:'两个词、万能场合，夸成果比夸人更得体。'},
+    {t:'You did very beautiful.',ok:false,why:'beautiful 形容外观；做事做得好要用 well / great，且 did 后缺宾语。'},
+    {t:'Your job is very good-looking.',ok:false,why:'good-looking 只形容人或物「好看」，不能评价工作质量。'},
+    {t:'You make it so nice.',ok:false,why:'make it 意为「成功做到」，和「做得漂亮」是两回事。'}]},
+  {scene:'对方一直催进度，你想说「这事儿不急」', tip:'也可以说 No hurry. / We\'ve got time.', options:[
+    {t:"There's no rush.",ok:true,why:'rush = 赶时间，There\'s no rush 是「不必赶」最自然的说法。'},
+    {t:'This thing is not hurry.',ok:false,why:'hurry 不作形容词；「不急」描述的是人，不是「事」。'},
+    {t:"It doesn't need quick.",ok:false,why:'need 后要接名词或 to do，quick 是形容词，结构不成立。'},
+    {t:'No need to be fast.',ok:false,why:'像在要求别人别动作快，而不是说「时间宽裕」。'}]},
+  {scene:'看朋友脸色不对，想问「怎么了 / 出什么事了」', tip:'更关切一点：Everything okay? / You good?', options:[
+    {t:"What's going on?",ok:true,why:'万能问句，既能问近况也能问突发状况，语气不冒犯。'},
+    {t:'You are what matter?',ok:false,why:'matter 是「要紧 / 事情」，这里词性与语序全乱了。'},
+    {t:'What happened to your face?',ok:false,why:'字面变成「你脸怎么了」，容易让人以为在说容貌。'},
+    {t:'Why you look so?',ok:false,why:'缺助动词，so 后面也缺形容词，应为 Why do you look so...?'}]},
+  {scene:'话被误会了，想澄清「我不是那个意思」', tip:'也可以说 I didn\'t mean it that way. / That came out wrong.', options:[
+    {t:"That's not what I meant.",ok:true,why:'用 what 从句把「我的本意」说清楚，是最稳妥的澄清句。'},
+    {t:"I don't have that meaning.",ok:false,why:'meaning 指词句的含义，不指说话人的意图，属于用词错位。'},
+    {t:'My meaning is not this.',ok:false,why:'中式直译，英文会说 what I meant，不说 my meaning。'},
+    {t:"I wasn't that idea.",ok:false,why:'人不能等同于 idea，且缺介词，句子不成立。'}]},
+  {scene:'大家在约周末活动，你想说「算我一个」', tip:'反过来不去就是 Count me out.', options:[
+    {t:'Count me in.',ok:true,why:'固定习语：把我算进去，干脆利落，比 I\'ll join 更有参与感。'},
+    {t:'Put me one.',ok:false,why:'put 需要地点或状态补语，不能「放我一个」。'},
+    {t:'I join into.',ok:false,why:'join 是及物动词，直接说 I\'ll join 即可，into 是多余的。'},
+    {t:'Add my name inside.',ok:false,why:'像在往名单里「塞名字」，口语里没人这么报名。'}]},
+  {scene:'两个方案你都行，想说「你说了算 / 我听你的」', tip:'更正式：The call is yours. / I\'ll defer to you.', options:[
+    {t:"I'll leave it up to you.",ok:true,why:'leave something up to someone = 把决定权交给对方，语气随和。'},
+    {t:'I listen yours.',ok:false,why:'listen 是不及物动词，且 yours 不能直接作宾语。'},
+    {t:'You say is OK.',ok:false,why:'缺连接词，两个谓语直接并列，语法不成立。'},
+    {t:'I obey your words.',ok:false,why:'obey 带上下级服从感，用在平辈商量里显得太重。'}]},
+  {scene:'被问起最近那堆麻烦事，想说「唉，别提了」', tip:'也可说 Long story. / Let\'s not go there.', options:[
+    {t:"Don't even get me started.",ok:true,why:'「一开口就收不住」的地道说法，自带又好气又好笑的语气。'},
+    {t:"Don't say it.",ok:false,why:'意思是「别说出口 / 别咒我」，像在阻止对方讲话。'},
+    {t:'No need to mention me.',ok:false,why:'变成「不用提到我这个人」，和吐槽近况完全无关。'},
+    {t:"It's not convenient to talk.",ok:false,why:'太正式，像在拒绝接受采访，少了熟人间的无奈感。'}]},
+  {scene:'会上有个点暂时谈不完，想说「先搁一下，回头再说」', tip:'邮件里常说 Let\'s circle back to this later.', options:[
+    {t:"Let's put a pin in it.",ok:true,why:'把议题像用图钉别住一样先固定，会议里极常用的地道表达。'},
+    {t:'Put it first.',ok:false,why:'意思变成「优先处理它」，和「暂时搁置」正好相反。'},
+    {t:'We say it later again.',ok:false,why:'later 与 again 语义重复，且 say 后面缺宾语。'},
+    {t:'Let it be here for a while.',ok:false,why:'像在说把某件物品摆在这儿，听不出「议题暂缓」。'}]}
+];
+
+/* 🎬 影视台词：与 28 个场景一一对应，答完揭晓，并可单独查「台词小抄」 */
+const ENGLISH_CLIPS = [
+ {
+  "line": "Keep the change, ya filthy animal.",
+  "from": "《小鬼当家》Home Alone（片中那部黑白匪帮片）",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "同样是付钱时把主动权揽过来的爽快劲儿；Kevin 用这句录音吓退来客，是影史最出名的「结账梗」之一。"
+ },
+ {
+  "line": "We'll always have Paris.",
+  "from": "《卡萨布兰卡》Casablanca",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "经典告别句。和「我先走啦」一样，重点是把离场说得体面，不给主人添挽留的压力。"
+ },
+ {
+  "line": "That's so fetch.",
+  "from": "《贱女孩》Mean Girls",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "聊衣服、聊潮流时最常被引用的一句；Gretchen 想让 fetch 流行起来，Regina 一句「Stop trying to make fetch happen」把它彻底钉成了梗。"
+ },
+ {
+  "line": "After all, tomorrow is another day!",
+  "from": "《乱世佳人》Gone with the Wind",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "斯嘉丽收尾那句，把「这次算了、改天再说」说得极有底气，比干巴巴一句「下次吧」耐听。"
+ },
+ {
+  "line": "I know.",
+  "from": "《星球大战：帝国反击战》Star Wars",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "莱娅说「I love you」，汉·索罗只回两个字。英文里接住对方好意时，短往往比长更自然。"
+ },
+ {
+  "line": "There's no place like home.",
+  "from": "《绿野仙踪》The Wizard of Oz",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "手机没电时的体面玩笑：既然联系不上了，那就正好回家。桃乐丝念了三遍这句就回去了。"
+ },
+ {
+  "line": "Yes, Minister.",
+  "from": "《是，大臣》Yes, Minister（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "Sir Humphrey 的口头禅。字面上全盘同意，实际留足了余地，是英式「先接住、不铺张」的教科书。"
+ },
+ {
+  "line": "Have you tried turning it off and on again?",
+  "from": "《IT 狂人》The IT Crowd（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "Roy 的万能开场白。对方讲不清、你也没听明白时，英式办公室最爱先甩出这句让人「再来一遍」。"
+ },
+ {
+  "line": "Carpe diem. Seize the day, boys.",
+  "from": "《死亡诗社》Dead Poets Society",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "基廷老师最著名的一句。给人上台前打气，比连说三遍「加油」更有画面。"
+ },
+ {
+  "line": "I have a cunning plan.",
+  "from": "《黑爵士》Blackadder（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "别人要替你张罗时，一句「我自有妙计」就能婉拒得既不生硬又好笑。"
+ },
+ {
+  "line": "Life was like a box of chocolates. You never know what you're gonna get.",
+  "from": "《阿甘正传》Forrest Gump",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "计划黄了之后的万能自嘲：本来就没法预知，何必把日程表攥那么紧。"
+ },
+ {
+  "line": "Allons-y!",
+  "from": "《神秘博士》Doctor Who（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "第十任博士的口头禅，一句「走吧／您先请」把礼让说得又轻又亮。"
+ },
+ {
+  "line": "Yada, yada, yada.",
+  "from": "《宋飞正传》Seinfeld（美剧）",
+  "kind": "美剧",
+  "lang": "en-US",
+  "note": "想不起细节时的经典糊弄语，把记不清的那段一带而过，对方居然也能懂。"
+ },
+ {
+  "line": "Suit up!",
+  "from": "《老爸老妈的浪漫史》How I Met Your Mother（美剧）",
+  "kind": "美剧",
+  "lang": "en-US",
+  "note": "Barney 催人出门的标志性两句之一，赶时间时喊出来，比「快点」有喜感得多。"
+ },
+ {
+  "line": "Just keep swimming.",
+  "from": "《海底总动员》Finding Nemo",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "Dory 的这句就是「我尽力、继续撑着」最可爱的版本，答应帮忙时说也不显得把话说满。"
+ },
+ {
+  "line": "Show me the money!",
+  "from": "《甜心先生》Jerry Maguire",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "谈价格、谈条件时最上头的一句；砍价成功想夸「这价真值」，语气可以借它。"
+ },
+ {
+  "line": "Bazinga!",
+  "from": "《生活大爆炸》The Big Bang Theory（美剧）",
+  "kind": "美剧",
+  "lang": "en-US",
+  "note": "Sheldon 讲完一堆别人听不懂的话再甩出这句。完全跟不上时，先认领这份懵反而更自然。"
+ },
+ {
+  "line": "Florals? For spring? Groundbreaking.",
+  "from": "《穿普拉达的女王》The Devil Wears Prada",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "Miranda 逛衣看款时的冷淡反讽，是聊衣服时被引用最多的一句。"
+ },
+ {
+  "line": "Winter is coming.",
+  "from": "《权力的游戏》Game of Thrones（美剧）",
+  "kind": "美剧",
+  "lang": "en-US",
+  "note": "史塔克家的族语。朋友讲完倒霉事，一句「凛冬将至」式的呼应，比干说「太糟了」更有共情感。"
+ },
+ {
+  "line": "I'll be back.",
+  "from": "《终结者》The Terminator",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "最短的「我马上就好／去去就回」，州长把它说成了影史最著名的五个词。"
+ },
+ {
+  "line": "Yeah, science!",
+  "from": "《绝命毒师》Breaking Bad（美剧）",
+  "kind": "美剧",
+  "lang": "en-US",
+  "note": "Jesse 看到事情成了就欢呼这句。同事把活儿收得漂亮，用它夸比「Nice work」更带劲。"
+ },
+ {
+  "line": "It'll pass.",
+  "from": "《伦敦生活》Fleabag（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "神父在第二季里轻轻一句「会过去的」。劝人别急、别把当下放大，没有比这更克制的了。"
+ },
+ {
+  "line": "The game is on.",
+  "from": "《神探夏洛克》Sherlock（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "夏洛克收到案子时发给华生的三个词。看人神色不对问一句「出事了？」，气质正对。"
+ },
+ {
+  "line": "We were on a break!",
+  "from": "《老友记》Friends（美剧）",
+  "kind": "美剧",
+  "lang": "en-US",
+  "note": "Ross 争辩了整整六季的一句。被误会时想撇清，重点其实和这句一样：先把「我不是那个意思」喊出来。"
+ },
+ {
+  "line": "What, like it's hard?",
+  "from": "《律政俏佳人》Legally Blonde",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "Elle 报名入局时的自信反问。大家约活动你举手「算我一个」，可以借这份轻快。"
+ },
+ {
+  "line": "I'm going to make him an offer he can't refuse.",
+  "from": "《教父》The Godfather",
+  "kind": "电影",
+  "lang": "en-US",
+  "note": "把决定权稳稳收在自己手里的经典说法；「你说了算」换成自己说了算，只差这一句。"
+ },
+ {
+  "line": "Don't mention the war!",
+  "from": "《弗尔蒂旅馆》Fawlty Towers（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "Basil 越强调别提、越把所有人都带回去提。想说「唉，别提了」，这句就是最英式的反面教材。"
+ },
+ {
+  "line": "And now for something completely different.",
+  "from": "《巨蟒剧团之飞翔的马戏团》Monty Python（英剧）",
+  "kind": "英剧",
+  "lang": "en-GB",
+  "note": "节目换段落的固定过场。会上要把议题先搁一搁，一句「来点完全不一样的」就把话头收住了。"
+ }
+];
+ENGLISH.forEach((q,i)=>Object.assign(q, ENGLISH_CLIPS[i]||{}));
+
+/* 通用题库构造器：正确项带完整解析，干扰项统一指向解析 */
+function mkQuiz(tag, scene, a, d, why, tip, use, prompt){
+  return {tag, scene, prompt:prompt||'下面哪种说法是对的？', tip, use,
+    options:[{t:a,ok:true,why}, ...d.map(t=>({t,ok:false,why:'这句流传很广，但并不准确；正确说法与原因见下方解析。'}))]};
+}
+
+/* 🧪 涨姿势 · 生活常识 */
+const LIFE = [
+ mkQuiz('厨房安全','微波炉里直接加热带壳鸡蛋，最可能发生什么？','内部蒸汽无处释放，取出或咬开时可能突然爆开',['蛋壳会挡住微波，鸡蛋根本热不了','蛋白会更嫩，营养保留得更好','只要转 10 秒以内就绝对安全'],
+  '微波让蛋内水分迅速汽化，蛋壳与蛋膜把蒸汽闷在里面，压力积累到一定程度就会炸开，还可能烫伤脸和手。想加热鸡蛋应先去壳、划开蛋黄，用适合微波的容器。',
+  '带壳的、带完整密封膜的食物（板栗、香肠、盒装牛奶）同理，加热前都要留出排气口。',
+  '同事热饭时顺口提醒一句「鸡蛋别带壳进微波炉」，比事后处理烫伤有用得多。'),
+ mkQuiz('急救常识','流鼻血时，更合适的做法是？','身体略前倾，捏住鼻翼软骨处压迫 10 分钟左右',['立刻仰头，让血别流出来','马上平躺，用纸巾塞满鼻腔','用力拍后颈，把血「震回去」'],
+  '仰头会把血咽进胃里，容易刺激呕吐，也让人误以为出血停了；前倾＋捏鼻翼才是常用的压迫止血法。若压迫后仍止不住、或反复出血，应及时就医。',
+  '压迫期间别反复松开看有没有停，时间要够；冰敷鼻梁可作辅助。',
+  '带孩子出游或班级活动，先把这条讲一遍，比现场慌张强。'),
+ mkQuiz('急救常识','轻微烫伤后，第一步应该怎么做？','用流动冷水持续冲 15～20 分钟',['马上抹牙膏或酱油降火','立刻挑破水泡把水放掉','先涂一层厚厚的油脂密封伤口'],
+  '冲冷水能带走皮肤深部余热、减轻疼痛与损伤；牙膏、酱油、香油既不无菌也会影响医生判断，水泡皮是天然敷料，不要自行挑破。后续再用干净敷料覆盖，严重或大面积烫伤要就医。',
+  '口诀常见说法是「冲、脱、泡、盖、送」，第一步永远是冲。',
+  '厨房贴一张小卡片，家里老人小孩都能照着做。'),
+ mkQuiz('饮食安全','鱼刺卡在喉咙里，哪种做法更妥当？','停止吞咽，能看见且位置浅可由他人用镊子取出，否则尽快就医',['大口吞饭团把刺带下去','连喝几口醋把刺泡软','用力咳嗽到咳出血就好了'],
+  '吞饭、喝醋都可能把刺推得更深，甚至刺伤食道；醋在咽喉停留时间极短，谈不上「泡软」。看不见、吞咽痛明显或胸痛，应去耳鼻喉科处理。',
+  '给小孩吃鱼前先挑刺，比任何「土方」都省事。',
+  '家庭聚餐上鱼时顺口提醒一句，比出事后再查资料从容。'),
+ mkQuiz('健康常识','普通感冒最主要的成因是？','病毒感染，受凉只是可能让人更容易中招的诱因之一',['衣服穿少了，冻出来的','出汗后吹风，风邪入体','吃太多上火食物积出来的'],
+  '感冒是鼻病毒等病原体引起的上呼吸道感染，需要接触病原才可能发生；低温、疲劳可能让局部抵抗力下降，但不是病因本身。所以「多穿点就不会感冒」并不成立，勤洗手、通风、少去人多密闭处更实在。',
+  '抗生素针对细菌，对病毒性感冒无效，是否用药应由医生判断。',
+  '换季时跟家里人解释「不是冻出来的」，能少吵好几回。'),
+ mkQuiz('用药常识','关于抗生素与感冒，哪种说法正确？','抗生素不治病毒性感冒，是否需要使用应由医生判断',['感冒一开始就吃，好得更快','上次剩下的消炎药，这次症状像就接着吃','输液用抗生素比口服见效快，感冒首选输液'],
+  '滥用抗生素会带来不良反应、过敏风险和耐药问题，剩药剂量与疗程也未必对症。普通感冒以休息、补液和对症处理为主，出现持续高热、呼吸困难等应及时就医。',
+  '「消炎药」是口语叫法，和抗生素不是一回事，别混着用。',
+  '家里药箱整理时把过期与剩余抗生素单独收好，是最实际的一步。'),
+ mkQuiz('健康常识','发烧时「捂汗」为什么通常不推荐？','捂盖不利散热，可能让体温升得更高，尤其小孩风险更大',['捂汗能把寒气逼出来，是老祖宗的智慧','只要盖到出汗，体温就一定会降','捂汗能直接杀死病毒'],
+  '发热时身体需要散热，厚被严裹反而阻碍散热；更合适的做法是适度减少盖被、补充水分、按说明使用退热药，并观察精神状态。持续高热、意识异常、婴幼儿发热应及时就医。',
+  '判断轻重看的常是精神状态与伴随症状，不只是体温数字。',
+  '家里老人坚持「捂一捂」时，用这条温和地解释比争执有效。'),
+ mkQuiz('饮食安全','隔夜菜能不能吃，关键看什么？','做好后及时分装冷藏、彻底加热，且别反复存放多顿',['只要放冰箱，放几天都没事','隔夜就一定亚硝酸盐超标，必须全倒掉','热过一次就永远不会坏'],
+  '风险主要来自存放温度与时长：室温久放会让微生物繁殖，冷藏只能减缓而非停止。建议做多了就趁热分装进干净盒、尽快冷藏，吃前彻底加热，叶菜类尽量当顿吃完。',
+  '「隔夜」不是时间点，真正的分界线是「在危险温度里待了多久」。',
+  '带饭上班的人按这条安排，既不浪费也不用天天纠结。'),
+ mkQuiz('饮食安全','土豆发了芽，更稳妥的处理是？','整颗丢掉，不要只挖掉芽眼就下锅',['把芽挖掉、削厚皮就完全没问题','多煮半小时，龙葵素就分解了','发芽的土豆更面，适合炖着吃'],
+  '发芽、变绿时龙葵素含量会升高，且可能已扩散到芽眼周围，家庭烹饪温度不足以可靠去除。皮发绿、发苦的土豆也建议不吃，别拿一盘菜去赌。',
+  '存放土豆避光、阴凉、别和洋葱放一起，能慢一点发芽。',
+  '买菜时顺手挑一遍，比做饭前才发现更省事。'),
+ mkQuiz('饮食安全','四季豆（豆角）没炒透为什么会出事？','含皂苷等天然成分，充分加热才能破坏',['没熟只是口感脆，不影响安全','是因为表面农药没洗净','加醋泡一泡就能直接凉拌'],
+  '未熟透的四季豆可能引起恶心、呕吐、腹痛等胃肠不适。稳妥做法是去掉两头与筋、焯水后再充分翻炒至完全失去生绿色与豆腥味，别贪「脆爽」。',
+  '集体食堂、大锅菜尤其要留心，量大时更容易受热不均。',
+  '家里第一次做豆角，把「宁可烂一点」当默认设置。'),
+ mkQuiz('饮食安全','木耳泡了一整夜还在常温水里，应该怎么办？','直接倒掉，别舍不得',['捞出来多洗几遍就能凉拌','焯水一分钟就安全了','闻着没味儿就说明没坏'],
+  '长时间常温泡发可能给致病菌繁殖机会，产生的毒素未必能被后续加热破坏，且往往没有异味可辨。建议冷水短时泡发、按需取量，泡多了就放冰箱并当天吃完。',
+  '银耳、粉丝等泡发类同理，别「泡着等明天」。',
+  '这条很适合发给爱提前备菜的长辈，成本只是一句提醒。'),
+ mkQuiz('消毒常识','日常皮肤或物体表面消毒，常用酒精浓度是？','约 70%～75%',['95% 以上，越浓越强','30% 左右，温和不刺激','任何浓度效果都一样'],
+  '这个区间兼顾了使蛋白质变性与渗透能力；浓度过高会让表层蛋白迅速凝固，反而影响深入作用，且挥发快、刺激大。使用时要远离明火，注意通风。',
+  '酒精不适合大面积喷洒、也不用于伤口深部，选对场景比选浓度更要紧。',
+  '办公室配消毒用品时，按这条采购不会买错。'),
+ mkQuiz('伤口处理','小擦伤后，用口水涂一涂「消毒」靠谱吗？','不靠谱，口腔并非无菌，反而可能带来细菌',['靠谱，唾液里有溶菌酶','只要没有蛀牙就完全干净','比清水好用，还能促进结痂'],
+  '唾液含多种口腔细菌，涂在破损皮肤上增加感染机会。一般小伤口用流动清水或生理盐水冲净、温和消毒、覆盖干净敷料即可；深、脏、动物咬伤或红肿渗液要及时就医并评估破伤风。',
+  '结痂不是「越干越好」，适度湿润的敷料反而更利于愈合。',
+  '小孩摔破膝盖时，先递清水而不是先「吹一吹」。'),
+ mkQuiz('身体常识','憋住喷嚏可能带来的问题主要是？','压力无处释放，可能冲击耳咽管、鼓膜等部位',['能把喷嚏「憋回去」，说明抵抗力变强','会让鼻腔彻底清洁一次','只是有点尴尬，没有任何影响'],
+  '喷嚏气流压力不小，硬憋可能让压力转向耳部或鼻窦，少数情况下出现耳痛、耳鸣甚至更麻烦的损伤。想打得得体，用纸巾或肘弯遮住口鼻就好，别捏紧口鼻硬憋。',
+  '同理，剧烈咳嗽也别硬压着，注意遮挡与通风。',
+  '开会时想忍一忍，改用「遮住、轻一点」比硬憋稳妥。'),
+ mkQuiz('数码常识','关于手机锂电池，哪种做法更友好？','尽量别长期满电又高温，浅充浅放更从容',['每次必须用到 0% 再充满，才能校准','整夜插着充到 100% 对电池最好','新手机要先连充 12 小时激活'],
+  '锂电池没有「记忆效应」，早期镍氢电池那套做法早已不适用；长期处在满电＋高温状态会加快老化。日常随用随充、避免暴晒和边快充边高负载游戏，比纠结「充到几点」更有用。',
+  '真正的电池杀手常是热：夏天别把手机留在暴晒的车里。',
+  '给家人换手机时顺手把「别用到关机」的习惯一起换掉。'),
+ mkQuiz('家居常识','冰箱是不是塞得越满越省电？','不是，要留出冷气循环空间',['是，食物越多越能「保冷」','是，只要门能关上就行','和摆放没关系，只看品牌'],
+  '冷气需要循环才能均匀降温，塞太满会挡住出风口、让压缩机更费劲；但过于空荡也容易频繁波动，一般七八分满、生熟分层、定期除霜比较合适。',
+  '热菜别直接进冰箱，先降到不烫手再放，既省电也不影响邻格温度。',
+  '周末整理冰箱时按「七分满」摆一遍，比调温度旋钮直观。'),
+ mkQuiz('家居常识','梅雨天想让房间舒服些，空调的哪个模式更对路？','除湿（干燥）模式，配合适度降温',['制热模式，把潮气烤干','只开送风，不开压缩机','温度调到最低、风速最大猛吹'],
+  '潮湿感主要来自空气湿度，除湿模式以较低风速让水汽凝结排出，体感更干爽；一味把温度压得很低不仅费电，也容易着凉。湿度很高时专用除湿机效率更高。',
+  '衣柜、浴室角落记得配合通风，否则角落还是会返潮。',
+  '南方回南天跟室友商量开哪个模式，用这条一句话说清。'),
+ mkQuiz('安全常识','使用灭火器扑救初期火情，应对准哪里？','火焰根部',['火焰最上面的火苗','火焰正中间','随便朝火的方向喷就行'],
+  '只有打到燃烧物根部才能隔断燃料与热，扫火苗几乎无效。常见口诀是「提、拔、握、压」，站在上风侧、保持安全距离；火势变大或烟很浓时先撤离再报警，别硬扛。',
+  '油锅起火别泼水，盖锅盖、关火源才是正解。',
+  '公司消防演练时，这一句比背一整页说明书管用。'),
+ mkQuiz('用电安全','把电暖器、电水壶等大功率电器都插在同一个排插上，风险是？','总电流可能超过排插与线路额定值，导致过热',['只是跳闸，没有任何危险','功率会互相抵消，反而更省电','只要排插有开关就绝对安全'],
+  '多个大功率设备叠加会拉高总电流，老旧排插、松动接触点尤其容易发热。应看清额定功率、分路使用，别串联排插，发现插头发烫或异味立即停用更换。',
+  '排插也有寿命，外壳发黄、插孔松了就该换。',
+  '冬天宿舍／办公室最常踩这条，贴个标签就能提醒到人。'),
+ mkQuiz('卫生常识','用流动水洗手，比较推荐的揉搓时长是？','约 20 秒，手心手背指缝都要洗到',['3 秒冲一下就行','必须洗满 3 分钟才有效','只要用热水，时间不重要'],
+  '关键在「搓」而不是「冲」：掌心、手背、指缝、指尖、拇指和手腕都要照顾到，再用流水冲净、擦干。唱两遍「生日快乐」差不多就是 20 秒，给小孩用这招最好记。',
+  '没水时可用含酒精的免洗洗手液应急，但手上有明显油污时还是水洗更靠谱。',
+  '教孩子洗手时把「两遍生日歌」当计时器，比盯秒表轻松。'),
+ mkQuiz('防晒常识','阴天或冬天还需要防晒吗？','需要，紫外线中的 UVA 仍可穿透云层与玻璃',['不需要，没太阳就没有紫外线','只有夏天海边才需要','阴天涂了反而伤皮肤'],
+  '让人晒黑、光老化的 UVA 受云层影响较小，冬天、阴天、靠窗坐着都可能累积暴露。日常可结合帽子、遮阳、防晒霜，按场景选择即可，不必过度焦虑。',
+  '「看不见太阳」和「没有紫外线」是两回事，雪地、水面反射还会加量。',
+  '通勤靠窗坐的人，把这条当成工位小常识最实用。'),
+ mkQuiz('厨房常识','保鲜膜能不能一起进微波炉？','只有明确标注「可微波」的才行，且别贴着食物',['所有保鲜膜都可以','只要扎几个孔就都能用','保鲜膜遇热一定无毒，随便用'],
+  '普通材质可能受热变形、析出或粘到食物上；即便标注可微波，也建议留排气口、避免直接接触高油高糖食物。更省心的做法是换成微波专用盖或陶瓷盘扣着。',
+  '高油食物局部温度可能远超 100℃，比「水开了」热得多。',
+  '热剩菜时顺手换一个盘子，比研究保鲜膜材质省时间。'),
+ mkQuiz('婴幼儿','为什么不建议给 1 岁以内的婴儿吃蜂蜜？','存在肉毒杆菌芽孢引起婴儿肉毒杆菌病的风险',['蜂蜜太甜，会蛀牙','婴儿消化不了果糖，必然过敏','蜂蜜性寒，会导致腹泻'],
+  '婴儿肠道菌群与胃酸屏障尚未成熟，对某些芽孢的抵抗力弱；成人吃通常没事。这条与「甜不甜」无关，是明确的年龄禁忌，1 岁后再按情况添加。',
+  '冲调奶粉、辅食里也别「加一点蜂蜜调味」，同样要避开。',
+  '长辈想给娃舔一口蜂蜜水时，用这条解释最不容易起争执。'),
+ mkQuiz('运动常识','刚崴了脚，急性期更常用的处理是？','休息、冰敷（隔布）、适度加压并抬高',['立刻用力揉开、活血','马上热敷或泡热水','忍痛走一走，把筋「走顺」'],
+  '急性期局部容易肿胀，冷敷与抬高有助于减轻不适；揉搓、热敷可能加重肿胀。一般 24～48 小时后再视情况改为温热。疼痛剧烈、不能承重、明显畸形要及时就医排除骨折。',
+  '冰袋别直接贴皮肤，隔一层毛巾、每次十几分钟即可。',
+  '球场边有人扭到脚，先把「别揉、先冷敷」喊出去。'),
+ mkQuiz('运动常识','吃完饭想运动，比较稳妥的安排是？','正餐后间隔一段时间，先做低强度活动',['放下碗立刻冲刺，消化更快','必须静坐两小时，动一下就胃下垂','只要不疼，吃多饱都能练'],
+  '饱餐后立刻高强度运动容易引起腹胀、反酸等不适，具体间隔因人而异，看进食量与运动强度调整即可；散步这类轻活动通常没问题。「饭后立刻运动一定得阑尾炎」之类说法并没有可靠依据。',
+  '赛前那顿饭怎么吃，比「饭后多久」更影响发挥。',
+  '约同事午饭后打球，用这条定个开打时间最自然。'),
+ mkQuiz('伤口处理','又深又脏的伤口，只贴一张创可贴就够了？','不够，应充分冲洗并尽快就医评估',['够，创可贴能隔绝一切细菌','够，贴得越紧好得越快','先撒点面粉止血再贴就行'],
+  '深、污染重或被动物咬伤的伤口，闭合环境反而不利于处理，还需要评估破伤风与感染风险。创可贴适合浅小、干净、边缘整齐的擦割伤，且要勤换、保持干燥。',
+  '别往伤口里撒粉状东西，会增加清创难度。',
+  '家庭药箱里把创可贴和「什么时候别用」写在同一张卡上。')
+];
+
+/* 🏛️ 历史知识 */
+const HISTORY = [
+ mkQuiz('朝代脉络','中国历史朝代的大致顺序，哪一组是对的？','夏商周 → 秦汉 → 三国两晋南北朝 → 隋唐 → 宋元明清',['夏商周 → 隋唐 → 秦汉 → 宋元明清','秦汉 → 夏商周 → 三国 → 唐 → 宋','唐 → 宋 → 汉 → 秦 → 明 → 清'],
+  '记脉络可以用「夏商周秦汉、三国两晋南北朝、隋唐五代十国、宋元明清」这条线。要注意三国之后不是直接到唐，中间还有两晋南北朝与隋。',
+  '「唐宋元明清」只是后半段的顺口溜，前面还有一大截。',
+  '给孩子讲历史或看古装剧理时间线时，先摆这条骨架最省事。'),
+ mkQuiz('秦朝','秦始皇统一后推行的措施是？','统一文字、货币、度量衡，并推行郡县制',['废掉文字，改用结绳记事','把全国分封给功臣，各自铸钱','废除一切法律，以德治国'],
+  '「书同文、车同轨、量同衡」让跨地区行政与贸易有了共同标准；郡县制由中央任免官吏，与分封制下诸侯世袭是两套逻辑。秦的严刑与徭役也常是讨论其速亡的切入点。',
+  '小篆是秦统一后的标准字体，但日常书写里隶书已开始流行。',
+  '聊「标准化」话题时，这是最古典也最好懂的一个例子。'),
+ mkQuiz('制度','郡县制与分封制最本质的区别是？','地方长官由中央任免、不世袭',['郡县的地盘更小','分封制不收税','郡县制只用在边境'],
+  '分封制下诸侯的封地可以世袭、容易坐大；郡县制的官员是「流官」，任期与去留由中央决定，是中央集权的关键一步。后世虽反复出现封王，但主流行政框架仍是郡县。',
+  '「封建」一词在中学课本与日常口语里含义不同，讨论时先对齐定义。',
+  '解释「为什么古代总怕地方坐大」，从这一条切入最清楚。'),
+ mkQuiz('西汉','汉武帝用来削弱诸侯王的办法是？','推恩令，让诸侯把封地分给所有子弟',['把诸侯全部迁到边疆','直接废掉所有王爵，一天完成','和亲换地盘'],
+  '推恩令要求诸侯把封地分给多个子弟，大国被越分越小，「不削而自弱」。配合酎金夺爵等手段，中央对地方的控制明显加强，是常被拿来讨论「制度设计」的案例。',
+  '主父偃是这一策略的重要提出者。',
+  '聊「不硬碰硬也能解决问题」时，这是很漂亮的古代案例。'),
+ mkQuiz('对外交流','与「凿空西域」、丝绸之路开通直接相关的人物是？','张骞',['郑和','玄奘','鉴真'],
+  '汉武帝时期张骞两次出使西域，打通了中原与中亚的往来通道，后世称为「凿空」。此后丝路不只是丝绸贸易，也是技术、宗教、作物交流的走廊。',
+  '玄奘西行是唐代求法，郑和下西洋是明代海路，别混成一条线。',
+  '讲「开放带来什么」时，张骞和郑和正好是一陆一海的两个例子。'),
+ mkQuiz('制度','科举制一般认为创立于哪个时期？','隋朝，唐代逐步完善',['汉朝','秦朝','明朝'],
+  '隋文帝开始分科考试选拔官员，隋炀帝设进士科被视为重要节点；唐代把它制度化，宋代扩大取士规模并完善糊名誊录，明清以八股取士，1905 年废止。',
+  '「糊名」相当于把考生姓名封起来，是防舞弊的老办法。',
+  '聊考试与选才制度时，这条能把时间轴一次拉直。'),
+ mkQuiz('唐朝','「贞观之治」对应的是哪位皇帝在位期间？','唐太宗李世民',['唐高祖李渊','唐玄宗李隆基','武则天'],
+  '贞观是唐太宗年号，以纳谏、轻徭薄赋、整治吏治著称。唐玄宗前期的「开元盛世」是另一个高峰，安史之乱后唐由盛转衰，三个节点常一起考。',
+  '魏征以直谏闻名，是贞观朝纳谏氛围的代表人物。',
+  '看唐剧分不清「贞观」和「开元」，记住两位皇帝就够了。'),
+ mkQuiz('唐朝','「开元盛世」出现在哪位皇帝前期？','唐玄宗',['唐太宗','唐高宗','唐宪宗'],
+  '开元是唐玄宗前期年号，社会经济与文化都相当繁荣；后期天宝年间爆发安史之乱，前后反差极大，所以「开元」和「天宝」常被对照着讲。',
+  '李白、杜甫主要活动在唐玄宗时期，读诗时顺手就能对上年代。',
+  '讲「盛极而衰」的历史叙事，这一段是最常用的样本。'),
+ mkQuiz('唐朝','被普遍视为唐朝由盛转衰转折点的事件是？','安史之乱',['玄武门之变','黄巢起义','甘露之变'],
+  '755—763 年的安史之乱重创北方经济与中央权威，藩镇割据、宦官专权等问题此后加剧。黄巢起义发生在唐末，属于另一个阶段。',
+  '「藩镇」是掌握兵权财权的地方军政势力，和郡县制的流官完全相反。',
+  '解释「为什么中晚唐总在收拾地方」，从这里讲最顺。'),
+ mkQuiz('北宋','王安石变法发生在哪位皇帝在位时？','宋神宗',['宋太祖','宋仁宗','宋徽宗'],
+  '熙宁年间宋神宗任用王安石推行青苗、募役、方田均税、保甲等法，意在富国强兵，因执行偏差与党争反复，后果评价历来分歧很大。',
+  '司马光是反对派的重要代表，两人之争也是北宋党争的缩影。',
+  '聊改革为什么难，这个案例几乎绕不开。'),
+ mkQuiz('宋辽','「澶渊之盟」是北宋与哪个政权订立的？','辽',['西夏','金','蒙古'],
+  '1005 年宋辽订盟，约为兄弟之国、宋给岁币，此后双方维持了较长时间的和平与榷场贸易。它不是「投降条约」，也不是和西夏签的。',
+  '后来金灭辽、又南下攻宋，才有靖康之变。',
+  '解释「用钱换和平到底划不划算」，这是最经典的讨论素材。'),
+ mkQuiz('两宋','导致北宋灭亡、徽钦二帝被掳的事件是？','靖康之变',['土木堡之变','陈桥兵变','靖难之役'],
+  '1127 年金军攻破汴京，北宋终结，赵构南渡建立南宋。「靖康」是钦宗年号，岳飞《满江红》里的「靖康耻」指的就是这件事。',
+  '陈桥兵变是赵匡胤建立北宋，靖难之役是明成祖夺位，名字像但差着朝代。',
+  '读《满江红》或看宋剧时，这条能把背景补上。'),
+ mkQuiz('南宋','岳飞主要抗击的是哪个政权？','金',['辽','西夏','蒙古'],
+  '岳飞是南宋抗金名将，郾城、颍昌等战事与「岳家军」相关，最终以「莫须有」遇害。南宋后来与蒙古联合灭金，再被元所灭。',
+  '「精忠报国」是后世流传的形象概括，讨论时留意文学与史料的区分。',
+  '参观杭州岳王庙前先理清宋辽金关系，看展体验会好很多。'),
+ mkQuiz('元朝','统一蒙古各部、被尊为成吉思汗的是？','铁木真',['忽必烈','窝阔台','拖雷'],
+  '1206 年铁木真统一蒙古各部，被尊为成吉思汗；其孙忽必烈后来建立元朝、灭南宋并定都大都。祖孙两人常被混淆。',
+  '「元」这个国号取自《易经》「大哉乾元」，是忽必烈时期定的。',
+  '看元史题材时，先分清「建国」与「灭宋」是两代人。'),
+ mkQuiz('明朝','郑和下西洋主要发生在哪位皇帝在位期间？','明成祖永乐帝',['明太祖朱元璋','明神宗万历','崇祯帝'],
+  '1405 年起郑和七次远航，最远抵达东非、红海一带，规模与时间都早于欧洲大航海的高峰。永乐帝还主持迁都北京、编《永乐大典》。',
+  '下西洋的「西洋」指当时以婆罗洲／文莱以西的海域，不是今天的大西洋。',
+  '聊古代远洋能力时，这是最常被引用的一组数字。'),
+ mkQuiz('明朝','明朝把都城从南京迁到北京的是？','明成祖朱棣',['明太祖朱元璋','建文帝','明宣宗'],
+  '永乐年间营建北京宫殿并正式迁都，形成「天子守国门」的格局；南京仍保留一套陪都机构。此前朱元璋定都应天（南京）。',
+  '北京故宫的营建与这次迁都直接相关。',
+  '逛故宫时把「谁迁的都」对上，展签就没那么难读了。'),
+ mkQuiz('明朝','明英宗在「土木堡之变」中发生了什么？','亲征瓦剌兵败被俘',['在南京被篡位','御驾亲征日本获胜','迁都西安途中病逝'],
+  '1449 年英宗在宦官王振怂恿下亲征瓦剌，于土木堡溃败被俘，北京保卫战由于谦等人主持守住。这是明代前期由攻转守的重要节点。',
+  '于谦的《石灰吟》常和这段历史一起被提起。',
+  '讲「决策被身边人带偏」的代价，这段几乎是最直白的例子。'),
+ mkQuiz('明朝','张居正改革中，把赋役合并、折银征收的办法叫？','一条鞭法',['推恩令','均田制','租庸调制'],
+  '一条鞭法把田赋、徭役、杂税合并，多数折成银两征收，简化了征收环节，也与明代白银货币化相互呼应。均田制、租庸调制属唐代及以前，推恩令是西汉。',
+  '「折银」意味着赋税从实物／力役转向货币，是很大的变化。',
+  '讲税制演变时，从租庸调 → 两税法 → 一条鞭法串一条线很清楚。'),
+ mkQuiz('清朝','「康乾盛世」一般指的是哪几位皇帝在位时期？','康熙、雍正、乾隆',['顺治、康熙、雍正','康熙、乾隆、嘉庆','乾隆、嘉庆、道光'],
+  '通常把康熙到乾隆这一百余年合称，雍正虽常被口头略过，却是承上启下、整顿财政与吏治的关键。乾隆后期由盛转衰的迹象已很明显。',
+  '「盛世」是后人的概括，讨论时也要看到人口压力与边疆治理的代价。',
+  '看清宫剧分不清辈分，记「康—雍—乾」这个顺序就行。'),
+ mkQuiz('近代','鸦片战争爆发于哪一年？','1840 年',['1894 年','1911 年','1900 年'],
+  '1840 年英国发动鸦片战争，1842 年签订《南京条约》，通常被视为中国近代史的开端。1894 是甲午战争，1900 是八国联军，1911 是辛亥革命。',
+  '「近代史开端」是史学分期的一种常见划法，不是唯一标准。',
+  '看近代题材作品时，这几个年份是最基本的坐标。'),
+ mkQuiz('近代','辛亥革命发生在哪一年，其最直接的政治成果是？','1911 年，推翻清帝、结束帝制',['1919 年，废除科举','1898 年，实行君主立宪','1912 年，签订共和条约'],
+  '1911 年武昌起义后各省响应，1912 年清帝退位、中华民国成立，两千多年的君主专制制度终结。1898 是戊戌变法，1919 是五四运动。',
+  '「辛亥革命」因 1911 年为辛亥年得名，不是指某一次单一战斗。',
+  '把 1911 与 1919 分清楚，近代史时间线就顺了一半。'),
+ mkQuiz('近代','五四运动爆发于哪一年？','1919 年',['1911 年','1921 年','1937 年'],
+  '1919 年因巴黎和会外交受挫引发，从北京学生运动扩展到多地各界参与，也是新文化运动与思想启蒙的重要节点。1921 是中国共产党成立，1937 是全面抗战爆发。',
+  '「德先生」「赛先生」的说法出自新文化运动语境。',
+  '串近代史大事件时，1911—1919—1921—1937 是一条好用的短轴。'),
+ mkQuiz('史籍','《史记》的作者与体例是？','司马迁，纪传体通史',['司马光，编年体通史','班固，纪传体断代史','司马光，纪传体断代史'],
+  '《史记》起于黄帝、止于汉武帝，以本纪、世家、列传、表、书构成，被称「史家之绝唱」。班固《汉书》是纪传体断代史，司马光《资治通鉴》是编年体。',
+  '「通史」跨朝代，「断代史」只写一个朝代，这是最容易混的一点。',
+  '逛书店挑历史入门书，先分清这三种体例不会买错。'),
+ mkQuiz('史籍','《资治通鉴》的主编与体例是？','司马光，编年体',['司马迁，纪传体','班固，断代史','欧阳修，纪事本末体'],
+  '《资治通鉴》按年月记事，上起战国、下迄五代，取名「鉴于往事，有资于治道」，是给治国者看的参考书。和《史记》按人物立传的写法正好相对。',
+  '「编年体」读起来时间感强，「纪传体」人物感强，各有各的好。',
+  '写材料要按时间线梳理事件时，编年体的思路最顺手。'),
+ mkQuiz('文字','甲骨文主要是哪个朝代的文字遗存？','商代',['夏代','秦代','汉代'],
+  '甲骨文刻在龟甲兽骨上，内容多与占卜相关，出土于殷墟，是目前所见成体系的早期汉字材料。金文盛行于商周青铜器，小篆是秦统一后的标准字体。',
+  '「目前所见」很重要：更早的文字材料仍在考古研究中。',
+  '给孩子讲「汉字从哪儿来」，从甲骨片讲到小篆很有画面感。'),
+ mkQuiz('科技','活字印刷术的早期记载与谁相关？','北宋毕昇',['东汉蔡伦','唐代僧一行','明代宋应星'],
+  '沈括《梦溪笔谈》记载了北宋毕昇发明泥活字；蔡伦改进造纸术，僧一行是唐代天文学家，宋应星著《天工开物》。雕版印刷在隋唐已流行，活字是另一条技术线。',
+  '活字在中国古代未完全取代雕版，与汉字数量、排版成本都有关系。',
+  '讲「发明」与「大规模应用」的差别，这是很好的例子。'),
+ mkQuiz('经济','世界上较早出现的纸币「交子」，出现在？','北宋四川地区',['唐代长安','南宋临安','元代大都'],
+  '北宋四川因铁钱笨重不便贸易，民间先出现交子，后由官府设交子务管理。元代「中统钞」等则是更成体系的纸币发行。',
+  '「纸币」能成立，背后是信用与兑现制度，不只是印刷技术。',
+  '聊「钱为什么能只是一张纸」，从交子讲起最不抽象。'),
+ mkQuiz('工程','大运河的大规模贯通与哪位皇帝关系最密切？','隋炀帝',['秦始皇','汉武帝','明成祖'],
+  '隋代以洛阳为中心，连通海河、黄河、淮河、长江、钱塘江五大水系，后世元明又改道裁弯取直形成京杭大运河。它对南北粮运与物资流通影响极深。',
+  '「隋朝修、后世改」，别把今天地图上那条线全算到隋代。',
+  '坐船走江南段时，顺手就能讲一段「为什么运河要拐弯」。'),
+ mkQuiz('考古','秦始皇兵马俑位于今天的哪个省？','陕西（西安临潼）',['河南洛阳','甘肃敦煌','山西大同'],
+  '兵马俑是秦始皇陵的陪葬坑，1974 年被发现，陶俑的服饰、发髻、兵种各不一样，是研究秦代军制与工艺的一手材料。',
+  '「俑」是替代人殉的随葬品，这一点本身也反映制度变化。',
+  '去西安前先看一眼坑位分布，现场不会只顾着拍照。'),
+ mkQuiz('科技','通常所说的「四大发明」是？','造纸术、印刷术、火药、指南针',['造纸术、地动仪、浑天仪、算盘','印刷术、瓷器、丝绸、茶叶','火药、指南针、针灸、农历'],
+  '这一说法经近代学者提炼并广泛传播，四项技术对世界范围内的知识传播、航海与军事形态都有影响。地动仪、浑天仪是张衡等人的重要发明，但不在这四项里。',
+  '「四大」是后世概括，中国古代技术成就远不止这四项。',
+  '做科普展板或给孩子出连线题，先对齐这四项最稳。')
+];
+
+/* 🕵️ 辟谣 · 经常被用错 / 误解的知识 */
+const MYTH = [
+ mkQuiz('饮食谣言','关于「食物相克」，更准确的说法是？','健康人正常搭配一般无需忌口，所谓相克多缺乏可靠证据',['菠菜和豆腐同吃必然得结石','虾和维生素 C 同吃等于吃砒霜','蟹和柿子同吃一定中毒'],
+  '这些组合的「有毒」推论常把体外化学反应或极端剂量直接套到人体上。正常饮食量下，均衡多样比背禁忌表更重要；个别食物确实有过敏、药物相互作用等真实风险，但那不是「相克」。',
+  '真正要留意的是：过敏原、酒精与药物、特殊疾病医嘱、以及食材本身不新鲜。',
+  '家族群里又转「相克表」时，用这条温和地回一句就够。'),
+ mkQuiz('饮食谣言','关于味精（谷氨酸钠），哪种说法更站得住？','是常见调味品，正常用量下无需过度担心',['加热到 100℃ 会变成致癌物','任何剂量都伤脑神经','鸡精比味精「纯天然」，可以随便放'],
+  '谷氨酸钠是谷氨酸的钠盐，日常烹饪温度下性质相对稳定；「焦谷氨酸钠致癌」的说法缺乏可靠依据。真正值得注意的反倒是钠摄入总量——味精和盐都含钠，菜够咸就少放。',
+  '鸡精的主要成分通常也含谷氨酸钠，并不比味精「更天然」。',
+  '跟长辈聊少盐时，把味精和盐放一起算，比争「有没有毒」有用。'),
+ mkQuiz('辐射谣言','微波炉加热的食物会「带辐射 / 致癌」吗？','不会，微波是非电离辐射，断电后不残留',['会，食物会带上放射性','会，微波把分子结构改成了致癌物','只要开门立刻取出就没事，放一会儿就有辐射'],
+  '微波频段能量不足以打断化学键或让物质带放射性，它主要让水分子等偶极分子运动生热；停止加热后场就不存在了。真正要注意的是容器是否适用、加热是否均匀、以及烫口。',
+  '「电离 / 非电离」是分界线：X 射线、γ 射线属前者，微波、可见光、无线电属后者。',
+  '办公室有人不敢用微波炉热饭，用这一句解释最省事。'),
+ mkQuiz('大脑谣言','「人类只开发了 10% 的大脑」可信吗？','不可信，脑成像显示多数区域在不同任务中都会被激活',['可信，剩下 90% 靠开发潜能唤醒','可信，爱因斯坦就是开发到 100%','可信，但只有儿童能全部用上'],
+  '这个说法常被用来卖「潜能课程」，但脑损伤研究与功能成像都不支持「大片脑区闲置」。大脑确实有可塑性，靠的是学习、练习与睡眠，不是解锁某个隐藏开关。',
+  '「左右脑分工」「学习风格」也常被过度简化，别当成定论。',
+  '看到「三天激活 90% 大脑」的广告，基本可以直接划走。'),
+ mkQuiz('大脑谣言','「左脑理性、右脑感性，人分左右脑型」准确吗？','过度简化，复杂任务通常由两侧网络协同完成',['完全准确，测一下就知道自己是哪种','准确，左脑人不适合作画','准确，右脑人不用学逻辑'],
+  '语言偏侧化等现象确实存在，但把它扩大成「人格类型」是流行心理学的简化。没有任何可靠测评能据此把人分成两类并给出职业建议。',
+  '「左脑／右脑」在神经科学里是描述偏侧化的术语，不是性格标签。',
+  '团建做「左右脑测试」当娱乐可以，别拿来给人贴标签。'),
+ mkQuiz('血型谣言','血型决定性格，这种说法？','没有可靠证据支持，更多是文化流行与 巴纳姆效应',['有科学依据，A 型都谨慎','已被日本学界证实','只在 O 型人身上成立'],
+  '把连续多样的性格压缩成四个格子，加上描述足够模糊，谁都容易觉得「说得挺准」，这叫巴纳姆效应。血型真正的医学意义在输血与新生儿溶血等场景。',
+  '「巴纳姆效应」也解释了为什么星座描述常让人觉得准。',
+  '面试或带团队时别拿血型筛人，既没依据也不公平。'),
+ mkQuiz('营养谣言','想补钙，喝浓骨头汤的效果如何？','很有限，汤里钙少而脂肪、嘌呤偏多',['最好，白汤越浓钙越多','加醋熬就能把钙全熬出来','比牛奶补钙效率高出十倍'],
+  '骨头里的钙以难溶形式存在，家常熬煮溶出量很低；汤发白主要来自乳化脂肪。补钙更实在的是奶制品、豆制品、深绿叶菜与必要时的补充剂，同时关注维生素 D 与运动。',
+  '「以形补形」是取象思维，不是营养学结论。',
+  '给术后家人备餐时，别把一大锅浓汤当成补钙主力。'),
+ mkQuiz('营养谣言','关于「红枣、红糖补血」，更准确的是？','含铁量有限且为非血红素铁，不能替代规范处理贫血',['颜色红就说明铁多，效果最好','红糖比白糖多一种「补血因子」','每天三颗红枣就能治好贫血'],
+  '缺铁性贫血需要评估原因并按医嘱补充铁剂、调整饮食；动物肝脏、红肉中的血红素铁吸收率更高，维生素 C 有助非血红素铁吸收。食物颜色与含铁量没有必然关系。',
+  '「贫血」原因很多，先查清是缺铁、还是其他类型，别自行长期补铁。',
+  '长辈让「多喝红糖水」时，先问一句有没有查过血常规更实际。'),
+ mkQuiz('血管谣言','「每天喝醋能软化血管」靠谱吗？','不靠谱，血液酸碱度被身体严格调节，醋也溶不掉斑块',['靠谱，醋能把血管里的油化开','靠谱，坚持一年斑块就消失','只在中老年人身上有效'],
+  '醋酸进入胃肠后被稀释、代谢，血液 pH 由肺肾稳定在很窄范围，不会被食物显著改变；动脉粥样硬化斑块也不是「水垢」。真正有帮助的是控血压血脂、戒烟、运动与遵医嘱用药。',
+  '直接喝浓醋还可能刺激胃黏膜、损伤牙釉质。',
+  '体检报告出来后，把讨论从「喝点什么」拉回指标管理，更有价值。'),
+ mkQuiz('体质谣言','「酸性体质致病，要吃碱性食物」的说法？','伪概念，人体不同部位酸碱度本就不同且被精密调控',['有道理，测尿液 pH 就能判断体质','是中医里的经典分类','已被写进膳食指南'],
+  '胃里强酸、血液弱碱、尿液随饮食波动，各有各的正常范围；「体质酸碱」把不同 部位 混成一个指标。所谓「碱性食物」多是蔬菜水果，本身值得多吃，但理由不是改体质。',
+  '宣传这类说法的常顺势卖水杯、试纸或保健品，警惕「先造概念再卖货」。',
+  '看到「pH 试纸测体质」的短视频，可以直接当广告看。'),
+ mkQuiz('排毒谣言','「宿便」「淋巴排毒」这类项目，问题主要在哪？','概念本身缺乏医学定义，商业项目常偷换概念',['确实能排出多年积存的毒素','只要按摩到位就能替代体检','仪器照出来的深色就是毒素'],
+  '肠道内容物本就在正常推进，「宿便」不是诊断名词；淋巴系统是免疫与组织液回流结构，也不靠按摩「排毒」。真正该关注的是排便习惯明显改变、便血、体重骤降等信号，及时就医。',
+  '「排毒」若指肝肾代谢功能，那也不需要外力按摩来完成。',
+  '美容院推「排毒套餐」时，先问一句对应哪个诊断名词。'),
+ mkQuiz('月子谣言','「坐月子绝对不能洗头洗澡」正确吗？','不正确，注意保暖、及时擦干、避免受凉即可',['正确，碰水会落下终身病根','正确，必须满 42 天才能洗','正确，只能用酒精擦身'],
+  '产后更需要注意清洁，汗液、恶露与伤口护理反而要求卫生；旧俗形成于取暖与热水条件有限的年代。具体方式应结合分娩方式、伤口情况与医生建议，别一刀切。',
+  '产后真正要警惕的是发热、异常出血、伤口红肿与情绪问题。',
+  '和长辈沟通时把「保暖清洁」一起说，比争「能不能洗」更容易达成一致。'),
+ mkQuiz('昆虫谣言','蚊子更偏爱 O 型血的人，这种说法？','证据不足，二氧化碳、体味、体温与出汗影响更明确',['确凿，O 型必被叮','确凿，B 型完全不招蚊子','确凿，吃碱性食物就能防蚊'],
+  '有些小规模研究观察到血型差异，但结论并不一致，远不如呼出的二氧化碳、皮肤挥发性物质、体温和深色衣物等因素稳定。防蚊更靠纱窗、驱蚊剂与清除积水。',
+  '「被叮是因为血甜」同样没有依据。',
+  '夏天群里比谁更招蚊子时，把话题转到清积水最有用。'),
+ mkQuiz('动物谣言','「鲨鱼从不患癌」是真的吗？','不是，已有鲨鱼肿瘤的可靠记录',['真的，所以鲨鱼软骨能治癌','真的，软骨里含抗癌物质','真的，但只限深海种类'],
+  '这一说法随「鲨鱼软骨保健品」流行开来，但鲨鱼同样会得肿瘤，软骨补充剂也没有被可靠证实的抗癌效果，还曾因需求影响鲨鱼种群。',
+  '把「某动物不得某病」当卖点的保健品，基本都值得多查一步。',
+  '家里长辈买过这类胶囊的话，用这条解释比直接否定更缓和。'),
+ mkQuiz('动物谣言','变色龙变色主要是为了？','交流、情绪与体温调节，伪装只是其中一部分',['纯粹为了和背景一模一样','跟着心情换着玩，没有功能','为了吓退天敌才变'],
+  '变色靠皮肤里纳米级鸟嘌呤晶体的排列变化，常用来传递状态、求偶、调节吸热，也会受环境影响；「放到格纹布上就变格纹」是经典夸张说法。',
+  '章鱼、乌贼的色素细胞变色机制又是另一套，别混着讲。',
+  '给孩子讲动物纪录片时，这个反差最容易记住。'),
+ mkQuiz('动物谣言','「金鱼记忆只有 7 秒」可信吗？','不可信，金鱼能形成并保持较长时间的学习记忆',['可信，所以小缸也不无聊','可信，绕一圈就忘了刚吃过','可信，已被写进教材'],
+  '实验里金鱼能学会分辨颜色、按杠杆取食，记忆可保持数周甚至更久。这个说法多半来自为「小缸无害」找借口的都市传说，饲养仍需足够空间与水质管理。',
+  '「记忆短」常被拿来替不合适的饲养条件开脱，逻辑要反过来。',
+  '挑鱼缸时按体型与水质需求选，别信「反正它记不住」。'),
+ mkQuiz('动物谣言','鸵鸟遇到危险会把头埋进沙子里吗？','不会，那是低头觅食或伏地隐蔽造成的视觉误会',['会，它以为看不见就安全','会，沙子能帮它听地面震动','会，且一埋就是半小时'],
+  '鸵鸟常把头贴近地面啄食、翻蛋或压低身形，远处看像「插进沙里」；真遇到威胁它更可能靠奔跑或踢击。把头埋沙反而无法呼吸，也不符合行为观察。',
+  '「鸵鸟心态」作为比喻没问题，但别当动物学事实。',
+  '用「别学鸵鸟」劝人面对问题时，顺手澄清一下更有意思。'),
+ mkQuiz('动物谣言','「蝙蝠是瞎子，全靠回声定位」准确吗？','不准确，蝙蝠有眼睛能视物，很多种类视力并不差',['准确，蝙蝠没有眼球','准确，白天完全看不见','准确，只有回声定位一种感官'],
+  '大蝙蝠科（狐蝠等）主要靠视觉与嗅觉找果子，小蝙蝠多用回声定位捕虫，但也不是「瞎」。回声定位是补充甚至主导的感知通道，不等于视觉缺失。',
+  '「瞎得像蝙蝠」和「鸵鸟埋头」一样，都是语言留下的误会。',
+  '夜里看见蝙蝠掠过，讲这一条比讲「瞎」有趣得多。'),
+ mkQuiz('地理谣言','关于企鹅与北极熊的分布，正确的是？','企鹅主要在南半球，北极熊只在北极',['企鹅和北极熊住在极地，常碰面','北极熊在南极，企鹅在北极','两者都分布在南北两极'],
+  '野生北极熊分布于北极圈周边海冰区；企鹅主要分布于南半球，北极没有野生企鹅（历史上北极曾有类似生态位的大海雀，已灭绝）。所以「北极熊吃企鹅」只可能出现在动画里。',
+  '南极是大陆被海包围，北极是海洋被大陆包围，地形也决定了生态差异。',
+  '看极地纪录片时，这个冷知识很适合当场抛出来。'),
+ mkQuiz('航天谣言','「长城是太空中肉眼唯一可见的人造建筑」？','不准确，肉眼分辨长城很困难，也远非唯一',['准确，宇航员都这么拍','准确，唯一且从月球也看得见','准确，因为长城最宽'],
+  '长城宽度远低于人眼在近地轨道的分辨能力，且与周边山体色差不大；杨利伟等航天员也表示未肉眼看到。在合适条件与辅助设备下，城市灯光、机场、大坝等反而更容易辨识。',
+  '「从月球看长城」更是把距离尺度又放大了上千倍。',
+  '给孩子讲航天时，用这条顺带说说「眼见」与「分辨率」。'),
+ mkQuiz('历史谣言','「哥伦布出海是为了证明地球是圆的」？','不准确，当时欧洲 有学识的阶层已知地圆，争议在地球大小',['准确，中世纪人都以为地球是平的','准确，他靠这次航行首次证明','准确，教会因此审判他'],
+  '地圆说自古希腊以来在有学识的人群中并不陌生；哥伦布的问题是把地球周长估小了，以为向西能很快到亚洲，结果撞上另一块大陆。把「中世纪普遍地平说」当成史实，本身就是后来的误传。',
+  '真正的新认知是「中间还有一整片大陆」，不是「地球原来是圆的」。',
+  '讲「常识也会被后人改写」时，这个例子比争航海史更有意思。'),
+ mkQuiz('历史谣言','拿破仑其实很矮，这个印象主要来自？','英法单位换算差异与英国宣传漫画',['他确实只有一米五','宫廷画像故意画高','他常年穿增高鞋'],
+  '法尺与英尺不同，当时记录的身高换算过来约一米七上下，在同期并不算矮；「小个子拿破仑」的形象很大程度由英国 讽刺漫画 塑造，后来变成流行梗。',
+  '「拿破仑情结」这类心理学俗称，也借的是这个被放大的形象。',
+  '聊「标签怎么被造出来」，这个案例比讲身高数字更好玩。'),
+ mkQuiz('人物谣言','「爱因斯坦小时候数学不及格」是真的吗？','不是，他少年时数学就相当出色',['真的，后来靠努力逆袭','真的，曾被学校劝退','真的，但只在几何上'],
+  '这个传说多半来自评分制度被误读（有的学校 1 分是最高分）以及「晚说话＝学习差」的想象。他确实反感刻板的填鸭式教学，但那和「数学差」是两回事。',
+  '「偏科天才」的叙事好听，却常把履历压扁成一个反转桥段。',
+  '鼓励孩子时别拿这条当「差生也能逆袭」的证据，换个真实故事更稳。'),
+ mkQuiz('科学史','「牛顿被苹果砸中头才发现万有引力」？','苹果落地的观察有记载，但「砸中头」是后世加的戏剧细节',['确凿，苹果砸出包之后他立刻写出公式','确凿，有当时的病历为证','确凿，那棵树至今还挂着牌子'],
+  '斯图克利等后人回忆牛顿自己说「看到苹果落下」引发思考，从「为什么总是垂直落地」延伸到引力；「砸头」在流传中被加了上去。理论成型靠的是长期数学与观测工作，不是一瞬间。',
+  '胡克、开普勒等人的工作也是这条链条上的重要环节。',
+  '讲「灵感叙事」为什么会流行，这个苹果是最好用的例子。'),
+ mkQuiz('发明史','「爱迪生发明了电灯」更准确的说法是？','他改进并推动了可实用、可商业推广的白炽灯系统',['他从零发明了第一盏电灯','他发明了电本身','他一个人完成了发电到灯泡的全部专利'],
+  '在爱迪生之前已有多人做出电弧灯与早期白炽灯；他的关键贡献在于长寿命灯丝、配套供电与开关网络，让照明变成可规模化的服务。「发明」常是接力，不是单点。',
+  '「门洛帕克」实验室本身就是团队作战的早期样本。',
+  '聊创新时把「点子」与「系统」分开，这个案例很顺手。'),
+ mkQuiz('历史谣言','维京战士打仗时戴有角的头盔吗？','基本没有，角盔形象主要来自 19 世纪歌剧舞美',['戴，角越大地位越高','戴，考古挖出很多','戴，但只在祭祀时戴'],
+  '目前没有可靠考古证据显示维京战士使用角盔；那种造型多被认为与瓦格纳歌剧的舞台服装及后来的插画有关。日常更常见的是简单的圆顶或锥形头盔，甚至不戴。',
+  '「角」在北欧仪式器物里可能出现，但和实战头盔不是一回事。',
+  '看北欧题材剧时，顺手指出这一处穿帮挺有乐趣。'),
+ mkQuiz('历史谣言','「中世纪欧洲人普遍相信地球是平的」？','是后世误传，当时有学识者多接受地圆说',['是史实，因此没人敢航海','是史实，教会定为正统教义','是史实，直到哥伦布才改变'],
+  '中世纪学者如托马斯·阿奎那、罗杰·培根等的著作里，地圆是常识性前提；「中世纪＝愚昧地平说」很大程度是 19 世纪为突出「科学 vs 宗教」而塑造的叙事。大众认知当然参差，但不是普遍教条。',
+  '把「某个时代的人都怎么想」一句话概括，通常都值得先打个问号。',
+  '聊「我们怎么误读过去」，这条比背年代更有启发。'),
+ mkQuiz('建筑史','「金字塔是奴隶建造的」这一说法？','已被修正，考古更支持有组织、有报酬的劳工与季节性 劳动力',['确凿，希罗多德的记载无可辩驳','确凿，鞭子痕迹留在石块上','确凿，全部由战俘完成'],
+  '近几十年对吉萨附近工匠村落、墓葬与面包坊、啤酒坊遗存的发掘，显示建造者是有组织、有给养甚至有医疗照护的队伍，可能含农闲征调的劳力。把宏大工程一律归给「奴隶」是现代想象。',
+  '「谁建的」和「为什么愿意建」是两问，后者更涉及国家组织能力。',
+  '看纪录片时听到「十万奴隶」，现在可以多留一个心眼。'),
+ mkQuiz('身体谣言','「吃木瓜能丰胸」有依据吗？','没有可靠依据，乳房大小主要受遗传、激素与体脂影响',['有，木瓜酵素能直接刺激乳腺','有，坚持吃三个月就明显','有，但只有青木瓜有效'],
+  '木瓜蛋白酶在胃肠里会被消化，谈不上定向作用于乳腺；把「以形补形」或「酵素」套到第二性征上，缺少生理机制支持。真正影响外观的是遗传、激素状态、体脂与胸肌，以及合适的内衣。',
+  '类似逻辑还有「吃核桃补脑」「吃黑色食物黑发」，多是取象联想。',
+  '转发这类「食疗」内容前，先问一句机制是什么，多半就停手了。'),
+ mkQuiz('护眼谣言','「把电脑桌面调成绿色就能护眼」？','作用有限，关键在用眼距离、时长与休息',['有效，绿色光波能修复视力','有效，越深越好','有效，可替代户外活动'],
+  '看远处、规律休息（如 20-20-20 思路）、合适亮度与字号、减少长时间近距离用眼，比换壁纸更实在；绿色让人舒服主要是心理感受。真出现视物模糊、眼痛，应去检查而不是换颜色。',
+  '近视与眼轴、遗传和近距离用眼时长相关，桌面颜色不在关键因素里。',
+  '给同事调工位时，把提醒从「换个壁纸」改成「起来走两步」。'),
+ mkQuiz('护眼谣言','「眼药水能治好近视」这种说法？','不正确，真性近视不能靠滴眼液逆转',['正确，坚持滴就能降度数','正确，只能青少年用','正确，含叶黄素的才行'],
+  '真性近视多与眼轴变长有关，滴眼液最多缓解干涩疲劳，部分处方药用于延缓进展也需医生评估与随访，不是「治好」。可靠手段是光学矫正、户外活动与规范的近视管理。',
+  '「缓解疲劳」和「降低度数」是两个完全不同的宣称。',
+  '看到「一滴恢复 5.0」的广告，基本可以按虚假宣传处理。'),
+ mkQuiz('饮食谣言','「吃甜食会直接导致近视」？','过于绝对，更明确的是长时间近距离用眼与户外活动不足',['确凿，糖是近视唯一原因','确凿，戒糖就能恢复视力','确凿，只在中学生身上成立'],
+  '近视是遗传与环境共同作用，近距离用眼时长、户外光照时间证据更稳定；饮食与整体健康有关，但把近视归咎于「一块蛋糕」是过度简化。少糖对牙齿与代谢仍有好处，只是理由不同。',
+  '「相关」不等于「因果」，这是读健康新闻最常用的一把尺子。',
+  '家长群争论「是不是糖吃多了」时，把重点拉回户外时间更实际。'),
+ mkQuiz('辐射谣言','「香蕉辐射大，吃多了危险」？','不必担心，天然钾带来的剂量极低，远低于日常本底',['确实，吃两根相当于拍一次 X 光','确实，机场安检会报警','确实，运动员禁止食用'],
+  '香蕉含钾，其中极微量是天然放射性同位素钾-40，所以被拿来做「香蕉等效剂量」的科普类比；但人体本身也含钾，正常饮食带来的增量微乎其微，不会构成健康风险。',
+  '「检出」和「有害」之间隔着剂量，这是辐射话题最常踩的坑。',
+  '看到「辐射食物排行榜」，先找剂量单位再看结论。'),
+ mkQuiz('植物谣言','「仙人掌放在电脑旁能吸收辐射」？','不能，显示器基本不产生需要「吸」的电离辐射',['能，吸满之后要换一盆','能，夜间效果加倍','能，已被写入办公规范'],
+  '现代液晶显示器的电磁场水平很低，所谓的「防辐射」更多是商家话术；植物也不会把周围电磁波定向吸走。想缓解久坐不适，不如调整屏幕高度、亮度与起身频率。',
+  '桌面放绿植能让人心情好，这个理由就足够，不必借辐射。',
+  '给工位添盆植物时，按「好看、好养」来挑就行。')
+];
+
+const GEN_IDS = ['english','life','history','myth'];
+const GEN_BANK = {english:ENGLISH, life:LIFE, history:HISTORY, myth:MYTH};
+
+/* ---------- 应用场景示例 ---------- */
+const IDIOM_USE = {
+ '一心一意':'跟新人聊成长时可以说：「先把一件事一心一意做完，比同时开五个头有效。」',
+ '一鸣惊人':'复盘会上夸同事：「憋了两个月，这回真是一鸣惊人。」',
+ '一丝不苟':'交接工作时交代：「这份表他做得一丝不苟，直接沿用就行。」',
+ '一帆风顺':'给朋友送祝福别只说顺利：「祝新岗位一帆风顺，也祝偶尔有风也不慌。」',
+ '一举两得':'说服排期时：「把培训挪到周五，一举两得，省一次会也省一趟差。」',
+ '一劳永逸':'讨论技术方案时提醒：「别指望一劳永逸，先把可回滚做好。」',
+ '一鼓作气':'团队攻坚到八成时打气：「趁手感还在，一鼓作气收个尾。」',
+ '循序渐进':'带新人时最常用：「别急，循序渐进，先把第一条链路跑通。」',
+ '心平气和':'群里起了争执，可以打圆场：「咱们心平气和把事实摆一摆。」',
+ '心有余悸':'复盘事故时写：「现在回想还心有余悸，所以加了这道校验。」',
+ '胸有成竹':'汇报前被问「有把握吗」，一句「胸有成竹」比列十条担保利落。',
+ '人山人海':'节假日出游发动态，「人山人海」四个字比一串感叹号有画面。',
+ '天衣无缝':'夸流程设计：「这版衔接得几乎天衣无缝」，比「挺顺」更具体。',
+ '大器晚成':'安慰转行或慢热的朋友：「大器晚成，节奏不用跟别人对齐。」',
+ '不耻下问':'鼓励提问时说：「不懂就不耻下问，别自己憋三天。」',
+ '不谋而合':'两个组方案撞了，会议开场一句「不谋而合」能把气氛放松。',
+ '水到渠成':'劝人别硬推：「前期铺垫够了，签约是水到渠成的事。」',
+ '水滴石穿':'打卡群里鼓励：「每天二十分钟，水滴石穿，别看单日。」',
+ '风调雨顺':'春耕或年景话题里，「风调雨顺」是最不费力的祝词。',
+ '日新月异':'聊行业变化：「这行日新月异，去年的经验得重新验一遍。」',
+ '见微知著':'复盘时夸一句：「从一条日志就定位到根因，真是见微知著。」',
+ '事半功倍':'推工具时最好用：「先把模板搭好，后面事半功倍。」',
+ '有条不紊':'形容靠谱的同事：「交付节奏有条不紊」，比「很稳」更可感。',
+ '举一反三':'带教时说：「这个case弄懂了，后面能举一反三。」',
+ '名副其实':'写推荐语：「说他是团队的定海神针，名副其实。」',
+ '相得益彰':'聊搭配：「图表配短文案，两者相得益彰。」',
+ '如鱼得水':'聊岗位匹配：「他去了那边如鱼得水」，比「挺合适」生动。',
+ '自力更生':'新人独立接下项目，可以夸一句「已经能自力更生了」。',
+ '量力而行':'劝人别硬扛：「这次量力而行，先把范围收住。」',
+ '锦上添花':'排优先级时区分：「这个是锦上添花，先做主链路。」',
+ '废寝忘食':'写项目回顾：「那两天几乎废寝忘食」，但别拿来鼓励加班。',
+ '半途而废':'立目标时提醒：「宁可把目标定小，也别半途而废。」',
+ '前车之鉴':'复盘开头一句「前车之鉴」，比「上次踩过坑」正式一点。',
+ '后来居上':'夸年轻同事：「这版后来居上，比我们最初那版干净。」',
+ '脚踏实地':'给建议收尾：「想法挺好，接下来脚踏实地跑数据。」',
+ '画龙点睛':'评审时说「最后这句是画龙点睛」，具体又不夸张。',
+ '画蛇添足':'砍需求时：「这段删掉，别画蛇添足。」',
+ '亡羊补牢':'出事后定改进项：「亡羊补牢，先把监控补上。」',
+ '守株待兔':'讨论增长时提醒：「别守株待兔，得主动去找样本。」',
+};
+function useForIdiom(info){
+  if(info.custom) return `聊天或写作里照用「${info.word}」即可；它不在内置词库，但首字读音对得上，所以这轮接龙照样认。`;
+  if(IDIOM_USE[info.word]) return IDIOM_USE[info.word];
+  const m=info.mean||'常用成语';
+  const tpl=[
+    `写材料或聊天时可以带一句：「说他是『${info.word}』一点不夸张——${m}。」`,
+    `举例说明时很好用：「所谓『${info.word}』，讲的就是${m}这种情况。」`,
+    `复盘时可以说：「这回能做到${info.word}，靠的就是${m}。」`
+  ];
+  return tpl[info.word.charCodeAt(0)%tpl.length];
+}
+function useForEnglish(q){
+  const right=q.options.find(o=>o.ok);
+  return `真实对话里可以这么接：${q.scene}——直接回一句「${right.t}」就很自然。`;
+}
+
+/* =========================================================
+   二、工具与状态
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const shuffle = arr => { const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const pick = (arr,n) => shuffle(arr).slice(0,n);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mod = id => MODULES.find(m=>m.id===id);
+
+const DEF_STATS = {total:0, best:{idiom:0,xiehou:0,poem:0,english:0}, plays:0,
+                   records:[], wrongs:[], badges:[], modules:[]};
+let STATS = {...DEF_STATS, best:{...DEF_STATS.best}, records:[], wrongs:[], badges:[], modules:[]};
+try{
+  const s=JSON.parse(localStorage.getItem('quiz_stats')||'null');
+  if(s&&typeof s==='object'){
+    STATS={...STATS,...s, best:{...DEF_STATS.best,...(s.best||{})},
+      records:Array.isArray(s.records)?s.records:[], wrongs:Array.isArray(s.wrongs)?s.wrongs:[],
+      badges:Array.isArray(s.badges)?s.badges:[], modules:Array.isArray(s.modules)?s.modules:[]};
+  }
+}catch(e){}
+function saveStats(){ try{ localStorage.setItem('quiz_stats',JSON.stringify(STATS)); }catch(e){} }
+
+/* 设置：主题与音效 */
+let SETTINGS={dark:false, sound:true};
+try{ const t=JSON.parse(localStorage.getItem('quiz_settings')||'null'); if(t&&typeof t==='object') SETTINGS={...SETTINGS,...t}; }catch(e){}
+function saveSettings(){ try{ localStorage.setItem('quiz_settings',JSON.stringify(SETTINGS)); }catch(e){} }
+
+/* ------------------------------------------------------------
+   🤖 可选 AI 增强（默认关闭，关闭时整页完全离线可玩）
+   ------------------------------------------------------------
+   只走 OpenAI 兼容的 /chat/completions，Key 只存在本机 localStorage，
+   不经过任何我方服务器。免费通道均为第三方公共服务，条款/可用性随时会变；
+   请求失败、超时、跨域被拦都会静默回退到本地逻辑，绝不影响游戏。 */
+/* 魔搭推荐模型：2026-11-07 核对（官方文档 + 第三方 2026-09 逐个实测 + 2026-10 社区清单）。
+   只收「实测能返回内容 + 听话不啰嗦」的：页面只抓回答里前 4 个汉字当成语，
+   带思考过程或爱加客套话的模型反而会抓错。免费池会轮换，点「测试连接」最准。 */
+const AI_PRESETS = [
+  {id:'Qwen/Qwen3.8-27B',              tag:'⭐ 默认 · 清单可查',
+   note:'在魔搭公开 /v1/models 清单与官方 curl 示例里都出现，第三方实测也可用。当前最稳。'},
+  {id:'Qwen/Qwen3.5-35B-A3B',         tag:'官方示例 · 中文强',
+   note:'魔搭《API推理介绍》官方示例用的就是这个 id；MoE 35B 总参只激活约 3B。'},
+  {id:'deepseek-ai/DeepSeek-V4-Flash-0731', tag:'备选 · 通用稳',
+   note:'在公开 /v1/models 清单里，第三方实测「综合向底仓、能跑通」。Qwen 排队时换它。'},
+  {id:'Qwen/Qwen3.8-Flash-Next',      tag:'极速档',
+   note:'上一版默认，第三方实测可用。速度快，可作替换。'},
+  {id:'Qwen/Qwen3.5-27B',             tag:'上一轮推荐 · 备选',
+   note:'仅见于第三方清单，没有官方示例佐证。若报 400/404「模型不存在」，换上面几个或点「查当前可用模型」。'}
+];
+const AI_PRESET_BAD = '不建议选：DeepSeek-V4-Pro（含 -0813）、GLM-5.2、Step-3.7-Flash、MiniMax-M3 在 2026-09 第三方逐个实测里返回空内容，且空响应照样扣魔粒；旗舰 Qwen3.5-397B-A17B 能用但 2 魔粒/次、慢、爱啰嗦，属于杀鸡用牛刀。';
+const MS_MODELS_URL = 'https://api-inference.modelscope.cn/v1/models';   // 公开只读，无需 Token
+const OLD_DEFAULTS = ['Qwen/Qwen3.8-Flash-Next','Qwen/Qwen3.5-27B'];  // 老配置平滑升级用
+
+const AI_PROVIDERS = {
+  modelscope:{group:'① 填一个免费 Token（推荐）', kind:'openai',
+    label:'魔搭 ModelScope · 国内直连 / 官方免费',
+    url:'https://api-inference.modelscope.cn/v1/chat/completions',
+    model:'Qwen/Qwen3.8-27B', needKey:true,
+    how:'官方对注册用户免费提供 OpenAI 兼容推理；前提是账号绑定阿里云并完成实名认证。到 modelscope.cn/my/myaccesstoken 复制完整 ms- 开头的访问令牌，模型 id 以模型详情页「API-Inference」标签为准（报 404 就换一个）。社区反馈该端点允许浏览器跨域直连，但本页无法替你保证，点「测试连接」最准。额度按魔粒 / 动态限流，官方未承诺固定次数。下方「⭐ 推荐模型」可一键填入，模型下架时换一个点即可。'},
+  zhipu:{group:'① 填一个免费 Token（推荐）', kind:'openai',
+    label:'智谱 GLM-4-Flash · 国内直连 / 长期免费',
+    url:'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+    model:'glm-4-flash', needKey:true,
+    how:'open.bigmodel.cn 注册后在「API 密钥」创建 Key，Flash 档长期免费、不用绑卡。跨域是否放行取决于服务端，测试不通就换魔搭或走下面的本地桥。'},
+  gemini:{group:'① 填一个免费 Token（推荐）', kind:'openai',
+    label:'Google Gemini · 免费层（国内多半连不上）',
+    url:'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+    model:'gemini-2.5-flash', needKey:true,
+    how:'aistudio.google.com/app/apikey 免费创建、无需信用卡，CORS 预检允许浏览器直连；但国内网络通常无法访问该域名，连不上属正常。'},
+  puter:{group:'② 零配置（不用 Key、不用填地址）', kind:'puter',
+    label:'Puter.js · User-Pays，一行脚本就能用（实验）',
+    url:'', model:'deepseek/deepseek-v4.1-flash', needKey:false,
+    how:'不用注册、不用 Key、不用填地址：只有选中并开启后，页面才按需动态加载 js.puter.com/v2 并调用 puter.ai.chat。费用由使用者自己的 Puter 账户承担（User-Pays），可能需要登录；国内可访问性不保证。加载失败会静默回退本地。'},
+  pollinations:{group:'② 零配置（不用 Key、不用填地址）', kind:'openai',
+    label:'Pollinations · 免注册免 Key（限流紧）',
+    url:'https://text.pollinations.ai/openai',
+    model:'openai-fast', needKey:false,
+    how:'完全不用注册。但匿名文本通道一次一个、间隔约 30 秒，超限返回 402，且官方明确无可用性保证。适合偶尔点一下，不适合连续用。'},
+  bridge:{group:'③ 本机零费用（可配 Quick Tunnel）', kind:'openai',
+    label:'本地桥 / Cloudflare Quick Tunnel · Key 不进浏览器',
+    url:'http://localhost:8787/v1/chat/completions',
+    model:'Qwen/Qwen3.8-27B', needKey:false,
+    how:'在本机跑下面那段极简 Python 桥（仅标准库），由桥转发到魔搭或本机 Ollama，Token 留在环境变量里、不进浏览器。本机打开的页面填 http://localhost:8787/v1/chat/completions 即可；若页面部署在 HTTPS 上或想在手机上用，再跑一条 cloudflared 命令把桥映射成临时 https 地址。Quick Tunnel 本身不提供任何 AI 能力，只是把本地端口变成公网 URL。'},
+  custom:{group:'③ 本机零费用（可配 Quick Tunnel）', kind:'openai',
+    label:'自定义 OpenAI 兼容端点',
+    url:'', model:'', needKey:true,
+    how:'任意兼容 /chat/completions 的地址。也可填 Cloudflare Workers AI 的 REST 端点（免费 10,000 Neurons/天，但需 Cloudflare 账号、Account ID 与带 Workers AI Read 权限的 Token，且国内直连不稳）。'}
+};
+
+/* Puter.js：仅选中该通道并开启时才动态加载外部脚本，默认完全不联网 */
+function loadPuter(){
+  if(window.puter && window.puter.ai && window.puter.ai.chat) return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://js.puter.com/v2/'; s.async=true;
+    const ms=(Number(AI_CFG.timeout)||12)*1000;
+    const t=setTimeout(()=>{ s.remove(); reject(new Error('load timeout')); }, ms);
+    s.onload=()=>{ clearTimeout(t); (window.puter&&window.puter.ai)?resolve():reject(new Error('no puter')); };
+    s.onerror=()=>{ clearTimeout(t); reject(new Error('load failed')); };
+    document.head.appendChild(s);
+  });
+}
+async function aiPuter(prompt, model){
+  try{
+    await loadPuter();
+    const ms=(Number(AI_CFG.timeout)||12)*1000;
+    const r=await Promise.race([
+      window.puter.ai.chat(prompt,{model:model||'deepseek/deepseek-v4.1-flash'}),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))
+    ]);
+    const t = typeof r==='string' ? r
+            : ((r && r.message && r.message.content) || (r && r.text) || null);
+    return typeof t==='string' ? t.trim() : null;
+  }catch(e){ return null; }
+}
+let AI_CFG = {enabled:false, provider:'modelscope', apiKey:'', baseUrl:'', model:'', timeout:12, enrich:false};
+try{ const a=JSON.parse(localStorage.getItem('quiz_ai')||'null'); if(a&&typeof a==='object') AI_CFG={...AI_CFG,...a}; }catch(e){}
+function saveAI(){ try{ localStorage.setItem('quiz_ai',JSON.stringify(AI_CFG)); }catch(e){} }
+function aiActive(){
+  const pv=AI_PROVIDERS[AI_CFG.provider]||AI_PROVIDERS.custom;
+  if(!AI_CFG.enabled) return false;
+  if(pv.kind==='puter') return true;   // 零配置：不需要 URL / Key
+  const url=(AI_CFG.baseUrl||pv.url||'').trim(), model=(AI_CFG.model||pv.model||'').trim();
+  if(!url||!model) return false;
+  if(pv.needKey && !(AI_CFG.apiKey||'').trim()) return false;
+  return true;
+}
+/* 把各种 OpenAI 兼容返回形状统一成一段文本；兼容思考型模型把正文放 reasoning_content 的情况 */
+function pickAIText(j){
+  if(!j) return '';
+  const c = j.choices && j.choices[0];
+  let t = c && ((c.message && (c.message.content || c.message.reasoning_content)) || c.text);
+  if(!t) t = j.output && (j.output.text || j.output.content);
+  if(!t) t = j.content;
+  if(Array.isArray(t)) t = t.map(x=>(x && (x.text || x.content)) || '').join('');
+  if(t && typeof t==='object') t = t.text || t.content || '';
+  return typeof t==='string' ? t.trim() : '';
+}
+/* 从错误响应里抠出服务端原话，便于按 401/403/404/429 定位 */
+function errText(raw){
+  try{
+    const j=JSON.parse(raw);
+    const m = j.message || j.detail || (j.error && (j.error.message || j.error.code)) || j.msg || j.code;
+    return (typeof m==='string' ? m : (m?JSON.stringify(m):raw)).slice(0,220);
+  }catch(e){ return (raw||'').slice(0,220); }
+}
+/* 底层请求：答题时静默降级，测试连接时拿完整诊断 */
+async function aiRequest(prompt){
+  if(!aiActive()) return {ok:false, kind:'unused', detail:'AI 未开启或没配好（地址 / 模型 / Key 有缺）'};
+  const pv=AI_PROVIDERS[AI_CFG.provider]||AI_PROVIDERS.custom;
+  const model=(AI_CFG.model||pv.model||'').trim();
+  const url=(AI_CFG.baseUrl||pv.url||'').trim();
+  if(pv.kind==='puter'){
+    try{
+      const t=await aiPuter(prompt,model);
+      return t ? {ok:true,text:t,url:'(Puter.js)',model} : {ok:false,kind:'network',detail:'js.puter.com 未能加载、或需要登录 Puter 账户',url:'(Puter.js)',model};
+    }catch(e){ return {ok:false,kind:'network',detail:String(e.message||e),url:'(Puter.js)',model}; }
+  }
+  const headers={'Content-Type':'application/json'};
+  const key=(AI_CFG.apiKey||'').trim();
+  if(key) headers['Authorization']='Bearer '+key;
+  const secs=Number(AI_CFG.timeout)||12;
+  const ctrl=new AbortController();
+  let timedOut=false;
+  const timer=setTimeout(()=>{ timedOut=true; try{ctrl.abort();}catch(e){} }, secs*1000);
+  try{
+    const r=await fetch(url,{method:'POST',headers,signal:ctrl.signal,
+      body:JSON.stringify({model, messages:[{role:'user',content:prompt}], temperature:0.3})});
+    if(!r.ok){
+      let raw=''; try{ raw=await r.text(); }catch(e){}
+      return {ok:false, kind:'http', status:r.status, detail:errText(raw), url, model};
+    }
+    let j=null; try{ j=await r.json(); }catch(e){ return {ok:false,kind:'empty',status:r.status,detail:'返回不是合法 JSON',url,model}; }
+    const t=pickAIText(j);
+    if(!t) return {ok:false,kind:'empty',status:r.status,detail:'HTTP 200 但 choices 里没有文本（挂牌模型 / 思考型模型只给了 reasoning）',url,model};
+    return {ok:true,text:t,status:r.status,url,model};
+  }catch(e){
+    const msg=String(e && e.message || e);
+    return {ok:false, kind: timedOut?'timeout':'network', status:0,
+      detail: timedOut?('请求超过 '+secs+' 秒未完成'):(msg+'(多为浏览器跨域预检被拦 / 网络不通 / 混合内容)'), url, model};
+  }finally{ clearTimeout(timer); }
+}
+/* 答题用：任何异常都返回 null，由调用方静默降级，不打断游戏 */
+async function aiChat(prompt){
+  const r=await aiRequest(prompt);
+  return r.ok ? r.text : null;
+}
+/* 查公开模型清单：不带 Key，既能确认模型名，也能判定「地址 + 浏览器跨域」是否通 */
+async function aiFetchModels(){
+  const secs=Number(AI_CFG.timeout)||12;
+  const ctrl=new AbortController(); let timedOut=false;
+  const timer=setTimeout(()=>{ timedOut=true; try{ctrl.abort();}catch(e){} }, secs*1000);
+  try{
+    const r=await fetch(MS_MODELS_URL,{method:'GET',signal:ctrl.signal});
+    if(!r.ok){ let raw=''; try{raw=await r.text();}catch(e){}
+      return {ok:false,status:r.status,detail:errText(raw)}; }
+    const j=await r.json();
+    const list=(j && (j.data||j.models)||[]).map(x=>typeof x==='string'?x:(x&&x.id)).filter(Boolean);
+    return {ok:true,list};
+  }catch(e){
+    return {ok:false,status:0,detail:timedOut?'查询超时':(String(e&&e.message||e)+'(跨域 / 网络被拦)')};
+  }finally{ clearTimeout(timer); }
+}
+/* 按状态码给一句能直接照做的建议 */
+function aiAdvice(r){
+  if(r.kind==='unused') return '先勾「开启 AI 增强」，确认地址、模型名、API Key 都填好了。';
+  if(r.kind==='network'||r.kind==='timeout') return '浏览器没能拿到响应，多半是跨域预检被拦或网络不通。先点「🔎 查当前可用模型」：那个地址公开、不需要 Token，能拉到清单就说明网络没问题、问题在 Token/账号；拉不到就走下面的「本地桥」。';
+  if(r.kind==='empty') return '服务器返回 200 但没给内容，可能是挂牌模型或思考型模型。点「⭐ 推荐模型」换一个，再测一次。';
+  const d=(r.detail||'').toLowerCase(), s=r.status;
+  if(s===401 && /bind|alibaba|aliyun/.test(d)) return '魔搭账号还没绑定阿里云（或未完成实名认证）。去 modelscope.cn 账号设置绑定并实名，等 1~3 分钟，必要时重新生成 Token 再测。';
+  if(s===401) return 'Token 不对：回 modelscope.cn/my/myaccesstoken 重新复制完整的一串（要含 ms- 前缀、别漏字符），确认建令牌时勾了相应权限、没过期。';
+  /* 403 有三种完全不同的成因，必须按服务端原文区分。
+     注意 "verified accounts" 出现在「邮箱未验证」的提示里，不能拿它判断实名，
+     否则已实名的用户会看到一条完全错误的建议。 */
+  if(s===403 && /email verification|verify your email|complete your profile|magicube|verified accounts|verified account/.test(d))
+    return '这不是实名问题（你的阿里云账号可能已实名）。魔搭要求「邮箱验证通过」才开放魔粒 / API-Inference：到 modelscope.cn/my/settings/account 点「验证邮箱」，去邮箱（含垃圾箱）点验证链接，回来确认状态已变成已验证；顺手把「身份」下拉也选一下并点保存。一般不用换 Token，若仍 403 再重新生成一个。';
+  if(s===403 && /real.?name|aliyun account is|实名/.test(d))
+    return '阿里云账号未完成实名认证。完成实名后等几分钟，用同一个 Token 重试；若仍失败再重新生成 Token。';
+  if(s===403) return '权限不足：检查账号是否绑定阿里云、邮箱是否已验证、令牌权限是否够、账号资料是否完善。看上面的「服务端原文」通常写明了具体缺哪一项。';
+  if(s===400||s===404) return '模型 id 不被接受：点「🔎 查当前可用模型」拉官方清单，从里面挑一个点填入；或点「⭐ 推荐模型」换一个。注意别填成 SDK 的 base_url，本页要完整路径。';
+  if(s===429) return '触发限流或今天魔粒用完了。等一会儿 / 明天再试，或换一个轻量模型。';
+  if(s>=500) return '魔搭服务端临时故障，稍后重试即可，不是你的配置问题。';
+  return '按上面的服务端原文对照下面的「常见报错对照」处理。';
+}
+function applyAI(){
+  const b=$('aiBtn'); if(!b) return;
+  b.classList.toggle('on', aiActive());
+  b.title = aiActive() ? 'AI 增强已开启（点此设置）' : 'AI 增强已关闭 · 点此开启（可选、免费）';
+}
+function applyTheme(){
+  document.documentElement.dataset.theme = SETTINGS.dark ? 'dark' : 'light';
+  const b=$('themeBtn'); if(b){ b.textContent=SETTINGS.dark?'☀️':'🌙'; b.title=SETTINGS.dark?'切回浅色':'切换深色'; }
+}
+function applySound(){
+  const b=$('soundBtn'); if(b){ b.textContent=SETTINGS.sound?'🔊':'🔇'; b.classList.toggle('off',!SETTINGS.sound); b.title=SETTINGS.sound?'关闭音效':'打开音效'; }
+}
+
+/* 音效：Web Audio 实时合成，不依赖任何外部音频文件 */
+let AC=null;
+function tone(freq,dur,type,gain,delay){
+  if(!SETTINGS.sound) return;
+  try{
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return;
+    AC = AC || new Ctx();
+    if(AC.state==='suspended' && AC.resume) AC.resume();
+    const t0=AC.currentTime+(delay||0), osc=AC.createOscillator(), g=AC.createGain();
+    osc.type=type||'sine'; osc.frequency.setValueAtTime(freq,t0);
+    g.gain.setValueAtTime(.0001,t0);
+    g.gain.linearRampToValueAtTime(gain||.05,t0+.012);
+    g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+    osc.connect(g); g.connect(AC.destination); osc.start(t0); osc.stop(t0+dur+.02);
+  }catch(e){}
+}
+const SFX={
+  ok(){ tone(660,.14,'sine',.05,0); tone(880,.18,'sine',.04,.09); },
+  no(){ tone(240,.16,'triangle',.045,0); tone(180,.18,'triangle',.035,.1); },
+  combo(){ [523,659,784].forEach((f,i)=>tone(f,.13,'sine',.045,i*.07)); },
+  finish(){ [523,659,784,1047].forEach((f,i)=>tone(f,.22,'sine',.05,i*.1)); },
+  badge(){ [784,1047,1319].forEach((f,i)=>tone(f,.2,'triangle',.04,i*.09)); }
+};
+
+/* 成就徽章 */
+const BADGES=[
+  {id:'first',   icon:'🌱', name:'开张大吉', desc:'完成第一轮挑战',        test:s=>s.plays>=1},
+  {id:'perfect', icon:'💯', name:'满轮全对', desc:'单轮正确率 100%',       test:(s,c)=>c.rate>=100},
+  {id:'combo5',  icon:'🔥', name:'连击好手', desc:'单轮最长连击 ≥ 5',      test:(s,c)=>c.combo>=5},
+  {id:'all4',    icon:'🧭', name:'全关打卡', desc:'七个关卡各玩过一轮',    test:s=>(s.modules||[]).length>=MODULES.length},
+  {id:'score500',icon:'⭐', name:'积分达人', desc:'累计积分 ≥ 500',         test:s=>s.total>=500},
+  {id:'scholar', icon:'📚', name:'错题研究员',desc:'错题本累计收满 10 条',  test:s=>(s.wrongs||[]).length>=10}
+];
+const stamp = () => { const d=new Date(); const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+function addWrong(item){
+  STATS.wrongs.unshift({...item, at:stamp()});
+  STATS.wrongs = STATS.wrongs.slice(0,40);
+  saveStats();
+}
+
+const ROUND = 10;
+let S = null;   // 当前一轮状态
+
+function newState(id){
+  return {
+    id, mod: mod(id),
+    score:0, combo:0, bestCombo:0, correct:0, total:0, elapsed:0, qStart:0,
+    answered:false, finished:false, queue:[], qIndex:0, current:null, shuffled:null,
+    // 成语专用
+    chain:[], used:new Set(), tail:'', tailPy:'', chance:3, hintUsed:false,
+    idiomOpts:[], needSwitch:false, switchReason:'start'
+  };
+}
+
+/* =========================================================
+   三、首页
+   ========================================================= */
+function renderHome(){
+  $('totalScore').textContent = STATS.total;
+  $('moduleGrid').innerHTML = MODULES.map(m=>`
+    <article class="mcard" style="--c:${m.color};--soft:${m.soft}">
+      <div class="mcard-top">
+        <div class="micon">${m.icon}</div>
+        <div><h2>${m.name}</h2><div class="desc">${m.desc}</div></div>
+      </div>
+      <div class="mmeta"><span class="tag">${m.tag}</span><span class="best">最佳 ${STATS.best[m.id]||0} 分</span></div>
+      <button class="mbtn" data-act="start" data-id="${m.id}">开始挑战 →</button>
+    </article>`).join('');
+  renderProfile();
+}
+function renderProfile(){
+  $('pfTotal').textContent = STATS.total;
+  $('pfPlays').textContent = STATS.plays;
+  $('badgeWall').innerHTML = BADGES.map(b=>{
+    const on = STATS.badges.includes(b.id);
+    return `<div class="badge ${on?'':'locked'}"><span class="bi">${b.icon}</span><div><b>${b.name}</b><span>${b.desc}</span></div></div>`;
+  }).join('');
+  $('leaderBoard').innerHTML = MODULES.map(m=>{
+    const rec = STATS.records.filter(r=>r.m===m.id).sort((a,b)=>b.score-a.score)[0];
+    return `<div class="lb-row"><span class="rank">${m.icon}</span><span class="who">${m.name}</span>
+      <span class="val">${rec?rec.score:0} 分</span><span class="when">${rec?rec.at:'未挑战'}</span></div>`;
+  }).join('') + `<div class="psub" style="margin:12px 0 0">共记录 ${STATS.records.length} 轮（最多保留 30 轮）</div>`;
+  $('wrongCount').textContent = STATS.wrongs.length ? `共 ${STATS.wrongs.length} 条` : '';
+  $('wrongList').innerHTML = STATS.wrongs.length ? STATS.wrongs.map(w=>{
+    const m = mod(w.m) || {icon:'❓',name:'其他'};
+    return `<div class="wrong-item">
+      <div class="wi-top"><span class="wi-tag">${m.icon} ${m.name}</span><span class="wi-date">${esc(w.at)}</span></div>
+      <div class="wi-q">${esc(w.q)}</div>
+      <div>正确答案：<span class="wi-a">${esc(w.a)}</span> <span style="color:var(--muted)">· 当时选了「${esc(w.mine||'—')}」</span></div>
+      <div class="wi-note">${esc(w.note)}</div>
+    </div>`;
+  }).join('') : '<div class="empty">✨ 错题本还是空的，干净得很。继续保持！</div>';
+}
+function renderClips(){
+  const groups=[['英剧','🇬🇧'],['美剧','🇺🇸'],['电影','🎞️']];
+  $('clipWall').innerHTML = groups.map(([k,icon])=>{
+    const list=ENGLISH.filter(q=>q.kind===k);
+    if(!list.length) return '';
+    return `<div class="panel" style="margin-bottom:16px">
+      <h3>${icon} ${k} <span style="font-size:12px;color:var(--muted);font-weight:600">${list.length} 句</span></h3>
+      <div class="psub">${k==='英剧'?'英式节奏与冷幽默，朗读为 en-GB':k==='美剧'?'美式日常与梗，朗读为 en-US':'影史里最常被引用的一批短句'}</div>
+      ${list.map(q=>`<div class="clip-row">
+        <div class="clip-q">“${esc(q.line)}”</div>
+        <div class="clip-src">— ${esc(q.from)}</div>
+        <div class="clip-note">${esc(q.note)}</div>
+        <div class="clip-where">对应场景：${esc(q.scene)}</div>
+        <button class="speak" data-act="speakClip" data-ci="${ENGLISH.indexOf(q)}">🔊 跟读</button>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+/* ---- AI 设置页 ---- */
+function renderAI(){
+  const sel=$('aiProvider');
+  const groups={};
+  Object.entries(AI_PROVIDERS).forEach(([k,v])=>{ (groups[v.group]||(groups[v.group]=[])).push([k,v]); });
+  sel.innerHTML=Object.entries(groups).map(([g,list])=>
+    `<optgroup label="${esc(g)}">${list.map(([k,v])=>
+      `<option value="${k}" ${AI_CFG.provider===k?'selected':''}>${esc(v.label)}</option>`).join('')}</optgroup>`).join('');
+  $('aiEnabled').checked=!!AI_CFG.enabled;
+  $('aiEnrich').checked=!!AI_CFG.enrich;
+  $('aiKey').value=AI_CFG.apiKey||'';
+  $('aiBase').value=AI_CFG.baseUrl||'';
+  $('aiModel').value=AI_CFG.model||'';
+  $('aiTimeout').value=AI_CFG.timeout||12;
+  // 老配置里存的是上一版默认模型：平滑升级到新默认（用户自己填的其它值不动）
+  if(OLD_DEFAULTS.includes($('aiModel').value.trim())) $('aiModel').value='';
+  aiFillDefaults(false);
+  renderAIPresets();
+  $('aiStatePill').textContent=aiActive()?'已开启 · 可用':'未开启 / 未配好';
+  $('aiTestResult').className='ai-test'; $('aiTestResult').innerHTML='';
+}
+function renderAIPresets(){
+  const box=$('aiPresetList'); if(!box) return;
+  const cur=($('aiModel').value||'').trim();
+  box.innerHTML=AI_PRESETS.map(o=>
+    `<button type="button" class="ap-btn${o.id===cur?' cur':''}" data-act="aiPreset" data-model="${esc(o.id)}" title="${esc(o.note)}">
+       <b>${esc(o.tag)}</b><span>${esc(o.id)}</span><small>${esc(o.note)}</small>
+     </button>`).join('');
+  const n=$('aiPresetNote'); if(n) n.innerHTML='<b>别踩坑：</b>'+esc(AI_PRESET_BAD);
+}
+function aiFillDefaults(resetValues){
+  const pv=AI_PROVIDERS[$('aiProvider').value]||AI_PROVIDERS.custom;
+  const isPuter=pv.kind==='puter';
+  if(resetValues || !$('aiBase').value.trim()) $('aiBase').value=pv.url||'';
+  if(resetValues || !$('aiModel').value.trim()) $('aiModel').value=pv.model||'';
+  if(resetValues && !pv.needKey) $('aiKey').value='';
+  $('aiBase').disabled=isPuter;
+  $('aiBase').placeholder=isPuter?'该通道按需加载 Puter.js，无需填写地址':'切换通道会自动填入，也可手动改';
+  $('aiModel').placeholder=isPuter?'Puter 模型名（可改）':'切换通道会自动填入';
+  $('aiHow').innerHTML='<b>怎么拿：</b>'+esc(pv.how);
+  $('aiKeyHint').textContent=isPuter?'（该通道无需 Key）':pv.needKey?'（该通道需要，留空则不启用）':'（该通道无需 Key，可留空）';
+  $('aiKey').disabled=!pv.needKey;
+  $('aiKey').style.opacity=pv.needKey?'1':'.5';
+  aiKeyCheck();
+  renderAIPresets();
+}
+function collectAIForm(){
+  AI_CFG.enabled=$('aiEnabled').checked;
+  AI_CFG.enrich=$('aiEnrich').checked;
+  AI_CFG.provider=$('aiProvider').value;
+  AI_CFG.apiKey=$('aiKey').value.trim();
+  AI_CFG.baseUrl=$('aiBase').value.trim();
+  AI_CFG.model=$('aiModel').value.trim();
+  AI_CFG.timeout=Math.max(3,Math.min(60,Number($('aiTimeout').value)||12));
+  saveAI(); applyAI();
+  $('aiStatePill').textContent=aiActive()?'已开启 · 可用':'未开启 / 未配好';
+}
+async function aiTest(){
+  collectAIForm();
+  const box=$('aiTestResult');
+  if(!aiActive()){ box.className='ai-test bad'; box.innerHTML='❌ 还没配好：请确认已勾选「开启」、接口地址与模型名不为空，且需要 Key 的通道已填入 Key。'; return; }
+  box.className='ai-test'; box.innerHTML='⏳ 正在测试（最多等 '+AI_CFG.timeout+' 秒）…';
+  const r=await aiRequest('只回复两个大写字母 OK，不要其它内容。');
+  const esc2=s=>esc(String(s==null?'':s));
+  if(r.ok && /OK/i.test(r.text)){
+    box.className='ai-test good';
+    box.innerHTML='✅ <b>通了！</b>AI 增强已可用。<br><span class="ai-diag">模型 '+esc2(r.model)+' · HTTP '+(r.status||200)+' · 返回「'+esc2(r.text.slice(0,40))+'」</span><br>之后本地想不出候选时，点「让 AI 帮我想一个」即可。';
+    return;
+  }
+  if(r.ok){
+    box.className='ai-test good';
+    box.innerHTML='✅ <b>链路是通的</b>（HTTP '+(r.status||200)+'，模型 '+esc2(r.model)+'），只是这次没按指令回「OK」：返回「'+esc2(r.text.slice(0,60))+'」。<br>说明地址、Token、模型都正常，可以直接去玩；页面取回答里前 4 个汉字，若这个模型爱加客套话，建议点「⭐ 推荐模型」换一个更听话的。';
+    return;
+  }
+  const head = r.kind==='http' ? ('HTTP '+r.status) : r.kind==='timeout' ? '超时' : r.kind==='empty' ? ('HTTP '+(r.status||200)+' 但无内容') : '网络 / 跨域';
+  box.className='ai-test bad';
+  box.innerHTML='⚠️ <b>没通 · '+esc2(head)+'</b>'
+    + '<div class="ai-diag"><b>请求地址：</b>'+esc2(r.url||'(未发出)')+'<br>'
+    + '<b>模型名：</b>'+esc2(r.model||'-')+'<br>'
+    + '<b>服务端原文：</b>'+esc2(r.detail||'(无)')+'</div>'
+    + '<div class="ai-do">👉 '+esc2(aiAdvice(r))+'</div>'
+    + '<div>不影响游戏——本地玩法完全正常。改完再点一次「🧪 测试连接」即可。</div>';
+}
+/* 一键查公开模型清单 */
+async function aiCheckModels(){
+  const box=$('aiModelsBox');
+  if(box) box.innerHTML='<div class="ai-loading">⏳ 正在拉取魔搭公开模型清单（不需要 Token，最多等 '+(Number(AI_CFG.timeout)||12)+' 秒）…</div>';
+  const r=await aiFetchModels();
+  if(!box) return;
+  if(r.ok && r.list.length){
+    const cur=($('aiModel').value||'').trim();
+    box.className='ai-models';
+    box.innerHTML='<div class="am-head">✅ 拉到 '+r.list.length+' 个模型 · <b>说明地址和浏览器跨域都是通的</b>，问题只会在 Token / 账号绑定 / 模型名上。点任意一行填入「模型名」↓</div>'
+      + '<div class="am-list">'+r.list.map(id=>
+          `<button type="button" class="am-item${id===cur?' cur':''}" data-act="aiPickModel" data-model="${esc(id)}">${esc(id)}${id===cur?' ✓当前':''}</button>`).join('')+'</div>';
+  }else if(r.ok){
+    box.className='ai-models'; box.innerHTML='⚠️ 清单返回成功但是空的，稍后再试，或直接用「⭐ 推荐模型」里的按钮。';
+  }else{
+    box.className='ai-models';
+    box.innerHTML='⚠️ <b>公开清单也没拉到</b>（'+(r.status?('HTTP '+r.status):'网络')+'：'+esc(r.detail||'')+'）。'
+      + '<div class="ai-do">这说明<b>不是 Token 的问题，而是浏览器到魔搭的网络 / 跨域被拦</b>。先确认能正常打开 modelscope.cn；仍不行就走下面的「本地桥」'
+      + (location.protocol==='https:'?'（你这个页面是 https，桥还要配 Quick Tunnel 换成 https 地址）':'（本机页面直接填 localhost:8787 即可）')+'。</div>'
+      + '<div>也可以直接点「⭐ 推荐模型」里的按钮换一个 id 再测。</div>';
+  }
+}
+/* Token 格式自检：只看前缀和长度，不显示内容 */
+function aiKeyCheck(){
+  const el=$('aiKeyHint'); if(!el) return;
+  const pv=AI_PROVIDERS[AI_CFG.provider]||AI_PROVIDERS.custom;
+  if(pv.kind==='puter'){ el.textContent='（该通道无需 Key）'; el.className='ai-opt'; return; }
+  const k=($('aiKey').value||'').trim();
+  if(!k){ el.textContent=pv.needKey?'（该通道需要，留空则不启用）':'（该通道无需 Key，可留空）'; el.className='ai-opt'; return; }
+  if(AI_CFG.provider==='modelscope'){
+    if(!/^ms-/.test(k)){ el.textContent='⚠️ 不像魔搭令牌：正常是 ms- 开头，请回访问令牌页重新复制'; el.className='ai-opt warn'; return; }
+    if(k.length<30){ el.textContent='⚠️ 长度偏短（'+k.length+' 字符），可能没复制全'; el.className='ai-opt warn'; return; }
+    el.textContent='✅ 格式看起来正常（ms- 开头，'+k.length+' 字符）'; el.className='ai-opt ok'; return;
+  }
+  el.textContent='（已填 '+k.length+' 字符）'; el.className='ai-opt';
+}
+function fallbackCopy(text, done){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done();
+  }catch(e){}
+}
+function show(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $(view).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================
+   四、开局
+   ========================================================= */
+function start(id){
+  S = newState(id);
+  const p = $('play');
+  p.style.setProperty('--theme', S.mod.color);
+  p.style.setProperty('--theme-soft', S.mod.soft);
+  $('playTitle').innerHTML = `${S.mod.icon} ${S.mod.name} <small>${S.mod.tag}</small>`;
+  $('chancePill').style.display = id==='idiom' ? '' : 'none';
+  $('feedback').className = 'feedback';
+  $('feedback').innerHTML = '';
+
+  if(id==='xiehou') S.queue = pick(XIEHOU,ROUND);
+  if(id==='poem')   S.queue = pick(POEMS,ROUND);
+  if(GEN_IDS.includes(id)) S.queue = pick(GEN_BANK[id],ROUND);
+  if(id==='idiom')  startChain('start', false);
+
+  show('play');
+  syncHead();
+  renderStage();
+}
+
+function syncHead(){
+  $('curScore').textContent = S.score;
+  $('curCombo').textContent = S.combo;
+  $('curChance').textContent = S.chance;
+  const done = S.id==='idiom' ? S.correct : S.qIndex + (S.answered?1:0);
+  $('progressBar').style.width = Math.min(100, done/ROUND*100) + '%';
+}
+
+/* 成语：挑一个「尾字还有谐音后继」的成语，开启新的一段链。
+   keep=true 时保留前面已接的成语，只追加一条分段标记，不让玩家觉得「白接了、从头开始」。 */
+function startChain(reason, keep){
+  const pool = IDIOMS.filter(o=>successors(o.tp).some(x=>!S.used.has(x.word)));
+  const candidates = pool.filter(o=>!S.used.has(o.word));
+  const o = pick(candidates.length?candidates:pool,1)[0] || pick(IDIOMS,1)[0];
+  if(keep){
+    S.chain.push({sep:true, label: reason==='auto'
+      ? '这个读音接不下去啦，自动续个新起点（不扣机会）'
+      : '主动换了个起点，接着往下接'});
+  }else{
+    S.chain = [];
+  }
+  S.chain.push(o.word);
+  S.used.add(o.word);
+  S.tail = o.word[3]; S.tailPy = o.tp;
+  S.switchReason = reason;   // start | auto | skip
+  return o;
+}
+
+/* 反馈节点必须待在题卡内部，否则题卡满屏时反馈会落到屏幕外，看起来像「点了没反应」。
+   重建题卡前先摘回宿主，重建后再挂进题卡末尾的插槽。 */
+function unmountFeedback(){
+  const f=$('feedback'), host=$('playWrap');
+  if(f && host && f.parentNode!==host) host.appendChild(f);
+}
+function mountFeedback(){
+  const f=$('feedback'), slot=$('fbSlot');
+  if(f && slot) slot.appendChild(f);
+}
+
+/* =========================================================
+   五、渲染题目
+   ========================================================= */
+function renderStage(){
+  const st = $('stage');
+  unmountFeedback();
+  syncHead();
+  S.qStart = Date.now();
+  if(S.id==='idiom') return renderIdiom(st);
+
+  const q = S.queue[S.qIndex];
+  S.current = q;
+  let opts=[];
+  if(S.id==='xiehou'){
+    const wrong = pick(XIEHOU.filter(x=>x.back!==q.back),3).map(x=>x.back);
+    opts = shuffle([{t:q.back,ok:true},...wrong.map(t=>({t,ok:false}))]);
+  }else if(S.id==='poem'){
+    const wrong = pick(POEMS.filter(p=>p.answer!==q.answer),3).map(p=>p.answer);
+    opts = shuffle([{t:q.answer,ok:true},...wrong.map(t=>({t,ok:false}))]);
+  }else{
+    opts = shuffle(q.options.slice());
+  }
+  S.shuffled = opts;
+
+  let meta='', scene='', text='', hint='', clipTeaser='';
+  if(S.id==='xiehou'){
+    meta='<span class="qbadge">猜后半句</span>';
+    text = `${esc(q.front)} <span class="blank">—— ？</span>`;
+    hint='下面哪一句才是它的「底」？';
+  }else if(S.id==='poem'){
+    meta='<span class="qbadge">补全名句</span>';
+    text = `${esc(q.line)} <span class="blank">，＿＿＿＿</span>`;
+    hint='选出下一句，答完会告诉你出处与赏析。';
+  }else{
+    const isEn = S.id==='english';
+    meta = `<span class="qbadge">${isEn ? '选出最地道的一句' : (q.tag ? esc(q.tag)+' · 四选一' : '四选一')}</span>`;
+    scene = `<div class="qscene">💬 ${isEn?'场景：':''}${esc(q.scene)}</div>`;
+    text = q.prompt || '哪一句，母语者真的会这么说？';
+    hint = isEn ? '其余三项都是常见的中式英语或搭配错误。'
+                : '另外三项都是流传较广但不准确的说法；答完会给出解析与应用场景。';
+    if(isEn && q.line){
+      clipTeaser = `<div class="clip-teaser">🎬 本关附一句 <b>${esc(q.kind)}</b> 台词 · 答完揭晓，可点 🔊 跟读</div>`;
+    }
+  }
+  const letters='ABCD';
+  st.innerHTML = `<div class="qcard">
+    <div class="qmeta">${meta}<span class="qcount">第 ${S.qIndex+1} / ${ROUND} 题</span></div>
+    ${scene}${clipTeaser}
+    <div class="qtext">${text}</div>
+    <div class="qhint">${hint}</div>
+    <div class="options">${opts.map((o,i)=>
+      `<button class="opt" data-act="opt" data-i="${i}" ${S.answered?'disabled':''}>
+         <span class="letter">${letters[i]}</span><span class="${S.id==='english'?'en':''}">${esc(o.t)}</span>
+       </button>`).join('')}</div>
+    <div id="fbSlot"></div>
+  </div>`;
+  mountFeedback();
+}
+
+/* 生成 4 个候选：1 个真能接上（优先挑「接完还能继续」的），3 个首字读音对不上的干扰项 */
+function idiomOptions(){
+  const right = successors(S.tailPy).filter(o=>!S.used.has(o.word));
+  if(!right.length) return null;
+  const scored = right.map(o=>({o, k:successors(o.tp).filter(x=>!S.used.has(x.word) && x.word!==o.word).length}))
+                      .sort((a,b)=>b.k-a.k);
+  const best = scored.filter(v=>v.k===scored[0].k).map(v=>v.o);
+  const correct = pick(best,1)[0];
+  const wrong = pick(IDIOMS.filter(o=>o.hp!==S.tailPy && !S.used.has(o.word)),3);
+  return shuffle([{t:correct.word, ok:true}, ...wrong.map(o=>({t:o.word, ok:false}))]);
+}
+
+/* 候选区（含本地无后继时的引导与 AI 帮想） */
+function sameSoundChars(py){
+  try{ return Object.keys(ALL_PY).filter(c=>ALL_PY[c]===py).slice(0,16).join(' '); }catch(e){ return ''; }
+}
+function candidateHTML(){
+  const py=S.tailPy, opts=S.idiomOpts||[];
+  if(!opts.length){
+    const chars=sameSoundChars(py);
+    return `<div class="no-local">
+      <div class="nl-title">🔍 本地词库里没有以「${esc(py||'这个读音')}」开头的成语了</div>
+      <div class="nl-body"><b>但接龙没有断</b>：你仍可以自己输入任意合法的四字成语，词库外的也认、照样 +10 分，链会继续往下接。
+        ${chars?`<div class="nl-chars">同音字提示：<b>${esc(chars)}</b><br><span>想想以这些字开头的成语，例如「${esc(S.tail)}」本身开头也行。</span></div>`:''}
+      </div>
+      <div class="nl-actions">
+        <button class="speak" data-act="aiSuggest">🤖 ${aiActive()?'让 AI 帮我想一个':'开启 AI 帮想'}</button>
+        <button class="speak" data-act="skip">↻ 我主动换个起点</button>
+      </div>
+      <div id="aiSuggestBox" class="ai-box"></div>
+    </div>`;
+  }
+  const letters='ABCD';
+  const aiBar = aiActive() ? `<div class="nl-actions">
+        <button class="speak" data-act="aiSuggest">🤖 这几个都不想选？让 AI 另想一个</button>
+      </div><div id="aiSuggestBox" class="ai-box"></div>` : '';
+  return `<div class="candidate-label">从候选里挑一个能接上的 👇（点候选 +5 分）</div>
+    <div class="options compact">${opts.map((o,i)=>
+      `<button class="opt" data-act="iopt" data-i="${i}" ${S.answered?'disabled':''}>
+         <span class="letter">${letters[i]}</span><span>${esc(o.t)}</span>${o.ai?'<span class="ai-tag">AI</span>':''}
+       </button>`).join('')}</div>${aiBar}`;
+}
+
+/* AI 帮想：只在本地无候选时按需调用，一次只求 1 个成语，失败自动回退 */
+async function aiSuggest(){
+  if(!S || S.id!=='idiom' || S.answered) return;
+  const box=$('aiSuggestBox');
+  if(!aiActive()){ renderAI(); show('ai'); return; }
+  const secs=Number(AI_CFG.timeout)||12;
+  if(box) box.innerHTML=`<div class="ai-loading">⏳ 正在问免费 AI，最多等 ${secs} 秒…（不通会自动回退，不影响你继续玩）</div>`;
+  const used=[...S.used].slice(-20).join('、');
+  const prompt=`成语接龙，谐音规则：下一个成语的首字要与「${S.tail}」（拼音 ${S.tailPy}）同字或同音。请给出 1 个真实存在的四字成语，首字读音为 ${S.tailPy}，且不要是这些：${used}。只输出那 4 个汉字，不要解释、不要标点、不要引号。`;
+  const t=await aiChat(prompt);
+  const w=(t||'').replace(/[^\u4e00-\u9fa5]/g,'').slice(0,4);
+  if(w.length===4 && !S.used.has(w) && (w[0]===S.tail || pyOf(w[0])===S.tailPy)){
+    const wrong=pick(IDIOMS.filter(o=>o.hp!==S.tailPy && !S.used.has(o.word)),3);
+    S.idiomOpts=shuffle([{t:w,ok:true,ai:true}, ...wrong.map(o=>({t:o.word,ok:false}))]);
+    const cb=$('candidateBox'); if(cb) cb.innerHTML=candidateHTML();
+    const nb=$('aiSuggestBox');
+    if(nb) nb.innerHTML='';
+  }else if(box){
+    box.innerHTML='<div class="ai-fallback">⚠️ AI 这次没给出可用成语（免费通道限流 / 网络不通 / 跨域被拦都常见）。已自动回退本地：你仍可自己输入任意合法四字成语，词库外也认，接龙不会断。</div>';
+  }
+}
+
+function renderIdiom(st){
+  const tail = S.tail;
+  let prevWasSep = false;
+  const realWords = S.chain.filter(x=>!(x && x.sep));
+  const lastWord = realWords.length ? realWords[realWords.length-1] : null;
+  const words = S.chain.map((item,i)=>{
+    if(item && item.sep){ prevWasSep=true; return `<span class="chain-sep">↻ ${esc(item.label)}</span>`; }
+    const arrow = (i===0 || prevWasSep) ? '' : '<span class="arrow">→</span>';
+    prevWasSep = false;
+    return `<span class="cw">${arrow}<span class="w ${item===lastWord?'last':''}">${esc(item)}</span></span>`;
+  }).join('');
+  const reasonTip = {
+    start:'同字或同音都算接上，接满 10 个通关',
+    auto:'<span style="color:#e17055">上一段接完啦，已续新起点（前面接的都留着，不扣机会）</span>',
+    skip:'已换一个好接的起点，继续来 💪'
+  }[S.switchReason] || '同字或同音都算接上';
+  const opts = idiomOptions() || [];
+  S.idiomOpts = opts;
+  st.innerHTML = `<div class="qcard">
+    <div class="qmeta"><span class="qbadge">接龙中</span><span class="qcount">本轮已接 ${S.correct} / ${ROUND}</span></div>
+    <div class="chain-box">
+      <div class="chain-label">当前成语链（从最后一个往下接）</div>
+      <div class="chain-words">${words}</div>
+      <div class="chain-tip">下一个成语，首字要与 <b>${esc(tail)}</b>（拼音 <b>${esc(S.tailPy)}</b>）<b>同字或同音</b> · ${reasonTip}</div>
+    </div>
+    <div class="qtext" style="font-size:20px">轮到你了 🀄</div>
+    <div class="qhint">自己想一个成语接上去（+10 分，连击有加成）：首字同字或同音即可，<b>内置词库外的常见成语也认</b>。想不出来再点提示看候选（+5 分）。同一个成语本轮不能重复用。</div>
+    <div class="input-row" id="idiomRow">
+      <input id="idiomInput" maxlength="4" placeholder="输入四字成语" autocomplete="off" autofocus>
+      <button class="btn btn-primary" type="button" data-act="submitIdiom">接上去 →</button>
+    </div>
+    <div id="inlineTip" class="inline-tip"></div>
+    <div class="hint-panel" id="hintPanel" hidden>
+      <div id="candidateBox">${candidateHTML()}</div>
+    </div>
+    <div class="tool-row">
+      <button class="btn btn-soft" data-act="hint">💡 给我提示 / 看候选</button>
+      <button class="btn btn-line" data-act="skip">⏭ 换个起点（耗 1 次机会）</button>
+      <button class="btn btn-line" data-act="finish">🏁 结束本轮</button>
+    </div>
+    <div id="fbSlot"></div>
+  </div>`;
+  mountFeedback();
+  const inp = $('idiomInput'); if(inp) inp.focus();
+}
+
+/* =========================================================
+   六、反馈与判题
+   ========================================================= */
+function clearInline(){
+  const t=$('inlineTip'), inp=$('idiomInput');
+  if(t){ t.className='inline-tip'; t.innerHTML=''; t.removeAttribute('style'); }
+  if(inp) inp.classList.remove('bad');
+}
+function fb(kind,title,body,extra='',opts={}){
+  if(kind==='no') SFX.no();
+  const f=$('feedback'), inline=$('inlineTip');
+  const icon = kind==='ok'?'✅':kind==='no'?'❌':'💡';
+  const html = `<div class="fb-title">${icon} ${title}</div><div class="fb-body">${body}${extra}</div>`;
+  // 抽纯文本给内联红条用：去掉按钮整段，避免把按钮文案也抄进去
+  const plain=(body+extra)
+    .replace(/<button[\s\S]*?<\/button>/g,' ')
+    .replace(/<[^>]*>/g,' ')
+    .replace(/\s+/g,' ').trim();
+
+  if(opts.hideCard && inline){
+    // 成语自输入判错：只在输入框下方显示一条红条，底部不再重复同一段话
+    f.className='feedback'; f.innerHTML='';
+  }else{
+    f.className='feedback show '+kind;
+    f.innerHTML=html;
+    if(typeof f.scrollIntoView==='function'){
+      try{ f.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+    }
+  }
+  if(inline){
+    inline.removeAttribute('style');
+    if(kind==='no'){
+      inline.className='inline-tip show bad';
+      inline.innerHTML=`❌ <b>${esc(title)}</b> · ${esc(plain.slice(0,110))}${plain.length>110?'…':''}
+        ${S && S.id==='idiom' && !S.answered ? '<button class="fill-btn" data-act="showHint">看提示 ✨</button>' : ''}`;
+      const inp=$('idiomInput');
+      if(inp){ inp.classList.remove('bad'); void inp.offsetWidth; inp.classList.add('bad'); }
+    }else{
+      inline.className='inline-tip'; inline.innerHTML='';
+      const inp=$('idiomInput'); if(inp) inp.classList.remove('bad');
+    }
+  }
+}
+
+function award(base){
+  S.combo++;
+  S.bestCombo = Math.max(S.bestCombo,S.combo);
+  const bonus = S.combo>=3 ? 5 : 0;
+  S.score += base + bonus;
+  return bonus;
+}
+function breakCombo(){ S.combo=0; }
+
+function afterAnswer(extraBtn=''){
+  S.answered = true;
+  S.elapsed += Math.max(0, Date.now() - S.qStart);
+  const f=$('feedback');
+  const b=document.createElement('div');
+  b.className='fb-actions';
+  b.innerHTML = `${extraBtn}<button class="next" data-act="next">${S.id==='idiom'?'继续接龙':'下一题 →'}</button>`;
+  f.appendChild(b);
+  syncHead();
+}
+
+/* --- 选择题 --- */
+/* 🎬 影视台词卡：答完揭晓，含出处与「和本题有什么关系」 */
+function clipLine(q){
+  if(!q || !q.line) return '';
+  return `<div class="clip-card">
+    <div class="clip-top">🎬 <b>${esc(q.kind)}台词</b> · ${esc(q.from)}</div>
+    <div class="clip-quote">“${esc(q.line)}”</div>
+    <div class="clip-note">${esc(q.note)}</div>
+  </div>`;
+}
+
+function answerOption(i){
+  if(S.answered) return;
+  const o = S.shuffled[i];
+  S.total++;
+  document.querySelectorAll('.opt').forEach((el,k)=>{
+    el.disabled=true;
+    if(S.shuffled[k].ok) el.classList.add('correct');
+    else if(k===i) el.classList.add('wrong');
+  });
+  const q=S.current;
+  const use = S.id==='xiehou' ? q.use
+            : S.id==='poem'   ? q.use
+            : (q.use || (S.id==='english' ? useForEnglish(q) : ''));
+  const useLine = use ? `<div class="use-line">💬 <b>应用场景</b> · ${esc(use)}</div>` : '';
+  const clipHtml = S.id==='english' ? clipLine(q) : '';
+  let body='';
+  if(S.id==='xiehou'){
+    body = `<strong>${esc(q.front)} —— ${esc(q.back)}</strong><div class="src">${esc(q.note)}</div>${useLine}`;
+  }else if(S.id==='poem'){
+    body = `<strong>${esc(q.line)}，${esc(q.answer)}</strong><div class="src">—— ${esc(q.author)}《${esc(q.title)}》 · ${esc(q.note)}</div>${useLine}`;
+  }else{
+    const right=q.options.find(x=>x.ok);
+    body = `<strong>${esc(right.t)}</strong> —— ${esc(right.why)}<div class="src">${esc(q.tip)}</div>${useLine}${clipHtml}`;
+  }
+  if(o.ok){
+    S.correct++;
+    const bonus=award(10);
+    if(bonus && S.combo===3) SFX.combo(); else SFX.ok();
+    fb('ok', `答对了！+${10+bonus} 分${bonus?'（连击加成 +5）':''}`, body);
+  }else{
+    breakCombo();
+    const detail = q.options ? `你选的是「${esc(o.t)}」：${esc(o.why)}<br>` : `你选的是「${esc(o.t)}」。<br>`;
+    fb('no','这道题没蒙对', detail + body);
+    const right = S.id==='xiehou' ? q.back : S.id==='poem' ? q.answer : q.options.find(x=>x.ok).t;
+    const label = S.id==='xiehou' ? q.front : S.id==='poem' ? q.line : q.scene;
+    const note  = (S.id==='xiehou' ? q.note
+                : S.id==='poem'   ? `${q.author}《${q.title}》 · ${q.note}`
+                : `${q.options.find(x=>x.ok).why} ｜ ${q.tip}`) + (use ? ` ｜ 场景：${use}` : '');
+    addWrong({m:S.id, q:label, a:right, note, mine:o.t});
+  }
+  afterAnswer();
+  if(S.id==='english') addSpeak(q.options.find(x=>x.ok).t, q.line, q.lang);
+}
+
+function addSpeak(text, clip, lang){
+  if(!('speechSynthesis' in window)) return;
+  const f=$('feedback');
+  const actions=f.querySelector('.fb-actions') || (()=>{const d=document.createElement('div');d.className='fb-actions';f.appendChild(d);return d;})();
+  const mk=(label,t,l)=>{
+    const b=document.createElement('button');
+    b.className='speak'; b.textContent=label;
+    b.dataset.act='speak'; b.dataset.text=t;   // 用 DOM API 赋值，不做 HTML 转义
+    if(l) b.dataset.lang=l;
+    return b;
+  };
+  if(clip) actions.insertBefore(mk('🔊 听影视台词',clip,lang||'en-US'),actions.firstChild);
+  actions.insertBefore(mk('🔊 听地道发音',text,'en-US'),actions.firstChild);
+}
+
+function speak(text, lang){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang||'en-US'; u.rate=.88; u.pitch=1;
+  window.speechSynthesis.speak(u);
+}
+
+/* --- 成语接龙 --- */
+function idiomInfo(w, tipTail, tipPy){
+  const known=IDIOM_MAP.get(w);
+  if(known) return known;
+  return {word:w, hp:(w[0]===tipTail?tipPy:pyOf(w[0])), tp:pyOf(w[3]),
+          mean:'词库外成语 · 按同音规则放行', custom:true};
+}
+function submitIdiom(raw){
+  if(S.answered) return;
+  // 点击瞬间先给一条可见回显：只要这里变了，就说明按钮事件确实进来了
+  const tip=$('inlineTip');
+  if(tip){ tip.className='inline-tip show'; tip.style.background='var(--bg)'; tip.style.border='1px solid var(--line)';
+    tip.style.color='var(--muted)'; tip.innerHTML='⏳ 已收到「'+esc((raw||'').trim()||'（空）')+'」，正在核对…'; }
+  const w=(raw||'').trim();
+  const tipTail=S.tail, tipPy=S.tailPy;
+  // 一键填入的入口统一放在输入框下方的内联红条里，反馈区只陈述原因
+  const reject = (title,body)=> fb('no',title,body,'',{hideCard:true});
+  if(!/^[\u4e00-\u9fa5]{4}$/.test(w)){
+    reject('格式不太对','请输入<strong>四个汉字</strong>组成的成语，不要带标点或空格。');
+    return;
+  }
+  if(S.used.has(w)){
+    reject('这个用过啦',`「${esc(w)}」已经出现在本轮成语链里，换一个没用过的吧。`);
+    return;
+  }
+
+  // 词库内的成语按原有读音校验；词库外只要「同字或同音」也放行，不再把人卡在词库上
+  const info = idiomInfo(w, tipTail, tipPy);
+  if(info.hp !== tipPy){
+    const why = info.custom && !pyOf(w[0])
+      ? `「${esc(w[0])}」不在本页读音表里，无法确认是否同音；可以改用 <strong>${esc(tipTail)}</strong> 本身开头，或直接点候选。`
+      : `而「${esc(w)}」的首字「${esc(w[0])}」读音是 <strong>${esc(info.hp||'未知')}</strong>，对不上。`;
+    reject('没接上',`上一个成语以「${esc(tipTail)}」（拼音 <strong>${esc(tipPy)}</strong>）收尾，你要接的成语首字得与它<strong>同字或同音</strong>；${why}`);
+    return;
+  }
+
+  applyChain(w, false, info);
+}
+
+function answerIdiom(i){
+  if(S.answered) return;
+  const o = S.idiomOpts[i];
+  if(!o) return;
+  document.querySelectorAll('[data-act="iopt"]').forEach((el,k)=>{
+    el.disabled=true;
+    if(S.idiomOpts[k].ok) el.classList.add('correct');
+    else if(k===i) el.classList.add('wrong');
+  });
+  if(!o.ok){
+    S.total++; breakCombo();
+    const right = S.idiomOpts.find(x=>x.ok);
+    const oi=idiomInfo(o.t,S.tail,S.tailPy), ri=idiomInfo(right.t,S.tail,S.tailPy);
+    fb('no','这个接不上',`「${esc(o.t)}」的首字拼音是 <strong>${esc(oi.hp||'未知')}</strong>，和「${esc(S.tailPy)}」对不上。能接上的是 <strong>${esc(right.t)}</strong>。`);
+    addWrong({m:'idiom', q:`首字要与「${S.tail}」（拼音 ${S.tailPy}）同字或同音`, a:right.t,
+      note:`「${o.t}」首字拼音是 ${oi.hp||'未知'}，对不上；${right.t}：${ri.mean} ｜ 场景：${useForIdiom(ri)}`, mine:o.t});
+    afterAnswer(); return;
+  }
+  applyChain(o.t, true, o.ai ? idiomInfo(o.t,S.tail,S.tailPy) : undefined);
+}
+
+function applyChain(w, helped, infoOverride){
+  const info=infoOverride || IDIOM_MAP.get(w);
+  const tipTail=S.tail, tipPy=S.tailPy;
+  S.used.add(w); S.chain.push(w); S.tail=w[3]; S.tailPy=info.tp; S.total++; S.correct++;
+
+  let gained, suffix='';
+  if(helped){
+    breakCombo(); gained=5; suffix='（用了提示或候选，不计连击）';
+  }else{
+    S.combo++;
+    S.bestCombo = Math.max(S.bestCombo,S.combo);
+    const bonus = S.combo>=3 ? 5 : 0;
+    gained = 10 + bonus;
+    if(bonus) suffix = '（连击加成 +5）';
+  }
+  S.score += gained;
+  if(!helped && S.combo===3) SFX.combo(); else SFX.ok();
+
+  const link = w[0]===tipTail ? '同字相接' : '谐音相接';
+  let note = `<strong>${esc(w)}</strong> · ${esc(info.mean)}<div class="src">「${esc(tipTail)}」→「${esc(w[0])}」${link}（拼音 ${esc(tipPy)}） · 本轮已接 ${S.correct} 个</div>`;
+  if(info.custom) note += `<div class="src">这个词不在内置词库里，但首字读音对得上，已按谐音接龙规则放行 👍</div>`;
+  note += `<div class="use-line">💬 <b>应用场景</b> · ${esc(useForIdiom(info))}</div>`;
+  /* ★ 不再因为「本地词库没后继」就强制换起点：
+     玩家完全可以自己输入词库外的成语（全字表能算读音），链可以一直延续到 10 个。
+     只记录一个标志，供下一题的候选区显示「本地暂无候选 + 自己想 / AI 帮想」。 */
+  S.localDead = !S.tailPy || !successors(S.tailPy).some(o=>!S.used.has(o.word));
+  S.needSwitch = false;
+  if(S.localDead){
+    note += `<div class="src">本地词库暂时没有以这个读音开头的成语了，但接龙没断：你仍可自己输入任意合法四字成语（词库外也认），或点提示让 AI 帮想一个。</div>`;
+  }
+  // 词库外成语：给释义与场景加上可替换的锚点，AI 开启时异步补全（失败静默、不改判分）
+  if(info.custom){
+    note = note.replace(esc(info.mean), `<span id="aiMean">${esc(info.mean)}</span>`);
+    note = note.replace(`<div class="use-line">💬 <b>应用场景</b> · ${esc(useForIdiom(info))}</div>`,
+      `<div class="use-line" id="aiUse">💬 <b>应用场景</b> · ${esc(useForIdiom(info))}</div>`);
+  }
+  fb('ok',`接得漂亮！+${gained} 分${suffix}`,note);
+  afterAnswer();
+  if(info.custom) aiEnrich(w);
+  if(S.correct>=ROUND){ setTimeout(finish,700); }
+}
+
+/* AI 异步补全词库外成语的释义与用法；网络不通就什么都不做 */
+async function aiEnrich(word){
+  if(!aiActive() || !AI_CFG.enrich || !S || S.id!=='idiom') return;
+  const t=await aiChat(`请判断「${word}」是否为一个真实存在的四字成语，并用中文给一句简短释义和一个生活或工作里的使用例子。严格输出一行 JSON，不要 markdown 代码块：{"ok":true,"mean":"...","use":"..."}`);
+  if(!t) return;
+  let obj=null;
+  try{ const s=t.indexOf('{'), e=t.lastIndexOf('}'); if(s>=0&&e>s) obj=JSON.parse(t.slice(s,e+1)); }catch(e){}
+  if(!obj || !S || S.id!=='idiom' || S.chain[S.chain.length-1]!==word) return;
+  const m=$('aiMean'), u=$('aiUse');
+  if(!m || !u) return;  // 玩家已翻页，静默丢弃
+  if(obj.mean) m.textContent=String(obj.mean).slice(0,60);
+  if(obj.use) u.innerHTML='💬 <b>应用场景</b> · '+esc(String(obj.use).slice(0,110));
+  if(obj.ok===false) m.textContent='（AI 觉得这不太像标准成语，但按本页「同字/同音即可」规则仍算接上）· '+(obj.mean||'');
+}
+
+function useHint(){
+  if(S.answered) return;
+  const panel=$('hintPanel');
+  if(panel) panel.hidden=false;
+  const right=S.idiomOpts.find(o=>o.ok);
+  if(!right){
+    fb('info','候选区已展开 👇',`本地词库这个读音没有现成候选，下方给了<b>同音字提示</b>和「🤖 让 AI 帮我想一个」入口；你直接自己输入任意合法四字成语也行，词库外照样认、+10 分，接龙不会断。`);
+    return;
+  }
+  const info=idiomInfo(right.t,S.tail,S.tailPy);
+  fb('info','给你一点提示',`首字与「${esc(S.tail)}」同字或同音的成语里，<strong>${esc(right.t)}</strong>（${esc(info.mean)}）能接上。候选区已展开，点一下即可（这一接 +5 分）；自己想一个填进输入框仍是 +10 分。
+    <div class="use-line">💬 <b>应用场景</b> · ${esc(useForIdiom(info))}</div>`);
+}
+function skipChain(){
+  if(S.answered) return;
+  S.chance--; breakCombo(); S.needSwitch=false; S.localDead=false;
+  if(S.chance<=0){ fb('info','机会用完啦','本轮到此为止，看看你的成绩吧。'); setTimeout(finish,700); return; }
+  startChain('skip', true);
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  renderStage();
+  fb('info','换了个起点',`剩余 ${S.chance} 次机会。新成语已给出，继续接吧。`);
+}
+
+function next(){
+  if(!S.answered) return;
+  S.answered=false;
+  $('feedback').className='feedback'; $('feedback').innerHTML='';
+  if(S.id==='idiom'){
+    // 不再自动续起点：整条链一直连续，只有玩家主动点「换个起点」才分段
+    S.needSwitch=false;
+    renderStage(); return;
+  }
+  S.qIndex++;
+  if(S.qIndex>=S.queue.length){ finish(); return; }
+  renderStage();
+}
+
+/* =========================================================
+   七、结算
+   ========================================================= */
+function finish(){
+  if(!S || S.finished) return;
+  S.finished = true;
+  const isChain = S.id==='idiom';
+  const denom = isChain ? ROUND : S.total;
+  const rate = denom ? Math.min(100, Math.round(S.correct/denom*100)) : 0;
+  STATS.total += S.score;
+  STATS.plays += 1;
+  STATS.best[S.id] = Math.max(STATS.best[S.id]||0, S.score);
+  STATS.records.unshift({m:S.id, score:S.score, rate, at:stamp()});
+  STATS.records = STATS.records.slice(0,30);
+  if(!STATS.modules.includes(S.id)) STATS.modules.push(S.id);
+  const unlocked = BADGES.filter(b=>!STATS.badges.includes(b.id) && b.test(STATS,{rate,combo:S.bestCombo}));
+  unlocked.forEach(b=>STATS.badges.push(b.id));
+  saveStats(); renderHome(); renderProfile();
+
+  const p=$('result');
+  p.style.setProperty('--theme',S.mod.color);
+  $('ring').style.setProperty('--p',rate);
+  $('ringNum').textContent=S.score;
+  $('rCorrect').textContent = isChain ? `${S.correct}/${ROUND}` : `${S.correct}/${S.total}`;
+  $('rRate').textContent=rate+'%';
+  $('rCombo').textContent=S.bestCombo;
+  const secs = S.elapsed/1000/Math.max(1,S.total);
+  $('rTime').textContent = secs>=60 ? `${Math.floor(secs/60)}m${Math.round(secs%60)}s` : `${secs.toFixed(1)}s`;
+  $('newBadges').innerHTML = unlocked.length
+    ? `<div style="background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:18px;font-size:13px;font-weight:700">
+         🎉 新解锁 ${unlocked.length} 枚徽章：${unlocked.map(b=>b.icon+' '+b.name).join(' · ')}
+       </div>` : '';
+  SFX.finish();
+  if(unlocked.length) setTimeout(()=>SFX.badge(),520);
+  let title,sub;
+  if(rate>=90){title='🏆 脑力王者';sub='这一轮近乎满分，状态稳得漂亮。';}
+  else if(rate>=70){title='🌟 实力在线';sub='手感很稳，再刷一轮说不定就冲满分了。';}
+  else if(rate>=40){title='💪 渐入佳境';sub='节奏已经找到，多玩两轮知识点就都是你的了。';}
+  else{title='🚀 再来一把';sub='别急，反馈里都写了原因，第二轮会明显不一样。';}
+  $('rankTitle').textContent=title;
+  $('rankSub').textContent=`${S.mod.name} · ${sub}`;
+  show('result');
+}
+
+/* =========================================================
+   八、事件
+   ========================================================= */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');
+  if(!el) return;
+  const act=el.dataset.act;
+  if(act==='start') start(el.dataset.id);
+  else if(act==='home'){ S=null; show('home'); }
+  else if(act==='profile'){ renderProfile(); show('profile'); }
+  else if(act==='clips'){ renderClips(); show('clips'); }
+  else if(act==='aiSettings'){ renderAI(); show('ai'); }
+  else if(act==='aiSave'){ collectAIForm(); $('aiTestResult').className='ai-test good'; $('aiTestResult').innerHTML='✅ 已保存到本机浏览器。'; }
+  else if(act==='aiTest'){ aiTest(); }
+  else if(act==='aiCheckModels'){ aiCheckModels(); }
+  else if(act==='aiPickModel'){
+    const m=el.dataset.model||''; if(!m) return;
+    $('aiModel').value=m; renderAIPresets();
+    const t=$('aiTestResult');
+    if(t){ t.className='ai-test'; t.innerHTML='✅ 已从官方清单填入 <b>'+esc(m)+'</b>。点「💾 保存设置」→「🧪 测试连接」确认。'; }
+  }
+  else if(act==='aiPreset'){
+    const m=el.dataset.model||''; if(!m) return;
+    const sel=$('aiProvider');
+    if(sel && (sel.value==='puter' || sel.value==='pollinations' || sel.value==='zhipu' || sel.value==='gemini' || sel.value==='custom')){
+      sel.value='modelscope';
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    $('aiModel').value=m;
+    renderAIPresets();
+    const t=$('aiTestResult');
+    if(t){ t.className='ai-test'; t.innerHTML='✅ 已填入 <b>'+esc(m)+'</b>。还没保存：点「💾 保存设置」→「🧪 测试连接」确认这个模型当前能用。'; }
+  }
+  else if(act==='aiSuggest'){ aiSuggest(); }
+  else if(act==='aiCopyBridge'){
+    const code=$('bridgeCode')?$('bridgeCode').textContent:'';
+    const done=()=>{ const b=$('aiTestResult'); if(b){ b.className='ai-test good'; b.innerHTML='✅ 桥代码已复制，存成 bridge.py 即可运行。'; } };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(done,()=>fallbackCopy(code,done)); }
+    else fallbackCopy(code,done);
+  }
+  else if(act==='aiDownloadBridge'){
+    const code=$('bridgeCode')?$('bridgeCode').textContent:'';
+    try{
+      const blob=new Blob([code],{type:'text/x-python;charset=utf-8'});
+      const u=URL.createObjectURL(blob), a=document.createElement('a');
+      a.href=u; a.download='bridge.py'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),1000);
+      const b=$('aiTestResult'); if(b){ b.className='ai-test good'; b.innerHTML='✅ 已下载 bridge.py（无需安装任何依赖）。'; }
+    }catch(e){}
+  }
+  else if(act==='again'){ const id=S?S.id:'idiom'; start(id); }
+  else if(act==='theme'){ SETTINGS.dark=!SETTINGS.dark; applyTheme(); saveSettings(); }
+  else if(act==='sound'){ SETTINGS.sound=!SETTINGS.sound; applySound(); saveSettings(); if(SETTINGS.sound) SFX.ok(); }
+  else if(act==='clearWrong'){ STATS.wrongs=[]; saveStats(); renderProfile(); }
+  else if(act==='submitIdiom'){
+    const inp=$('idiomInput');
+    if(inp && S && S.id==='idiom') submitIdiom(inp.value);
+  }
+  else if(act==='opt') answerOption(Number(el.dataset.i));
+  else if(act==='iopt') answerIdiom(Number(el.dataset.i));
+  else if(act==='next') next();
+  else if(act==='showHint'){
+    const panel=$('hintPanel'), inp=$('idiomInput');
+    if(panel){ panel.hidden=false; clearInline();
+      const f=$('feedback'); if(f){ f.className='feedback'; f.innerHTML=''; }
+      if(inp) inp.focus();
+    }
+  }
+  else if(act==='hint') useHint();
+  else if(act==='skip') skipChain();
+  else if(act==='finish') finish();
+  else if(act==='speak') speak(el.dataset.text, el.dataset.lang);
+  else if(act==='speakClip'){ const q=ENGLISH[Number(el.dataset.ci)]; if(q) speak(q.line,q.lang); }
+});
+/* 不再用原生表单与其 submit 事件：某些环境（file://、内嵌 WebView）会把它当成真正提交并重载页面，
+   表现就是「点一下页面闪回去、像没反应」。现在全部走 click 事件委托 + 显式 Enter 判断。 */
+document.addEventListener('change',e=>{
+  if(e.target && e.target.id==='aiProvider'){ aiFillDefaults(true); aiKeyCheck(); }
+});
+document.addEventListener('input',e=>{
+  if(e.target && e.target.id==='aiKey') aiKeyCheck();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && !$('home').classList.contains('active')){ S=null; show('home'); return; }
+  if(e.key==='Enter' && document.activeElement && document.activeElement.id==='idiomInput'){
+    e.preventDefault();
+    if(S && S.id==='idiom' && !S.answered) submitIdiom(document.activeElement.value);
+    return;
+  }
+  if(/^[1-4]$/.test(e.key) && $('play').classList.contains('active') && S && !S.answered){
+    if(document.activeElement && document.activeElement.id==='idiomInput') return;
+    const opts=document.querySelectorAll('[data-act="opt"]:not(:disabled),[data-act="iopt"]:not(:disabled)');
+    const btn=opts[Number(e.key)-1];
+    if(btn) btn.click();
+  }
+});
+
+applyTheme(); applySound(); applyAI(); renderHome();
+</script>
+</body>
+</html>
